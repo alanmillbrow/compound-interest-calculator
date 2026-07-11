@@ -23,12 +23,14 @@ be pushed and redeployed easily.
 
 Two ways to ship an update, pick whichever you prefer:
 
-### Option A — push to GitHub, Netlify deploys automatically (recommended going forward)
-Netlify isn't currently connected to the GitHub repo for auto-deploys (it was deployed directly
-from the CLI). To wire that up:
-1. Open https://app.netlify.com/projects/compound-interest-calculator-611/configuration/deploys
-2. "Link repository" → choose `alanmillbrow/compound-interest-calculator` → branch `main`.
-3. From then on, `git push` to `main` auto-deploys.
+### Option A — push to GitHub, Netlify deploys automatically (default going forward)
+Netlify is linked to the GitHub repo (`alanmillbrow/compound-interest-calculator`, branch `main`)
+with a webhook that triggers a build on every push. Just:
+```bash
+git push
+```
+and the live site updates automatically within a minute or so. Check build status at
+https://app.netlify.com/projects/compound-interest-calculator-611/deploys
 
 ### Option B — manual CLI deploy
 ```bash
