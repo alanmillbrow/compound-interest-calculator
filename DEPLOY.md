@@ -2,7 +2,8 @@
 
 ## Where it lives
 
-- **Live site:** https://compound-interest-calculator-611.netlify.app
+- **Live site:** https://investingbuffalo.com (custom domain, registered and DNS-managed through Netlify)
+- **Netlify default subdomain:** https://compound-interest-calculator-611.netlify.app (still works, redirects aren't needed since both point at the same site)
 - **Netlify admin:** https://app.netlify.com/projects/compound-interest-calculator-611
 - **Source code:** https://github.com/alanmillbrow/compound-interest-calculator
 
