@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Compound Interest Calculator</title>
+<title>Investment Return Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
       </div>
       <div class="header-text">
         <span class="kicker">Financial planning</span>
-        <h1>Compound Interest Calculator</h1>
+        <h1>Investment Return Calculator</h1>
         <p>See how your money can grow over time with the power of compounding.</p>
       </div>
     </div>
@@ -44,8 +44,8 @@
       <div class="field">
         <label>Currency</label>
         <div class="segmented currency-segmented">
-          <button type="button" class="seg-btn active" data-currency="USD">$</button>
-          <button type="button" class="seg-btn" data-currency="GBP">£</button>
+          <button type="button" class="seg-btn active" data-currency="GBP">£</button>
+          <button type="button" class="seg-btn" data-currency="USD">$</button>
           <button type="button" class="seg-btn" data-currency="EUR">&euro;</button>
         </div>
       </div>
@@ -53,7 +53,7 @@
       <div class="field">
         <label for="principal">Initial investment</label>
         <div class="input-prefix">
-          <span id="principalSymbol">$</span>
+          <span id="principalSymbol">£</span>
           <input type="text" inputmode="decimal" id="principal" value="10,000">
         </div>
         <input type="range" id="principalRange" min="0" max="5000000" step="1000" value="10000" class="slider">
@@ -62,7 +62,7 @@
       <div class="field">
         <label for="contribution">Monthly contribution</label>
         <div class="input-prefix">
-          <span id="contributionSymbol">$</span>
+          <span id="contributionSymbol">£</span>
           <input type="text" inputmode="decimal" id="contribution" value="500">
         </div>
         <input type="range" id="contributionRange" min="0" max="10000" step="25" value="500" class="slider">
@@ -77,7 +77,7 @@
       </div>
 
       <div class="field">
-        <label for="rate">Annual interest rate</label>
+        <label for="rate">Annual investment return rate</label>
         <div class="input-suffix">
           <input type="text" inputmode="decimal" id="rate" value="7">
           <span>%</span>
@@ -110,21 +110,21 @@
       <div class="card summary-card">
         <div class="summary-main">
           <span class="summary-label">Future value</span>
-          <span class="summary-value" id="futureValue">$0</span>
+          <span class="summary-value" id="futureValue">£0</span>
         </div>
         <div class="summary-grid">
           <div class="summary-stat">
             <span class="dot dot-contrib"></span>
             <div>
               <span class="stat-label">Total contributions</span>
-              <span class="stat-value" id="totalContrib">$0</span>
+              <span class="stat-value" id="totalContrib">£0</span>
             </div>
           </div>
           <div class="summary-stat">
             <span class="dot dot-interest"></span>
             <div>
-              <span class="stat-label">Total interest earned</span>
-              <span class="stat-value" id="totalInterest">$0</span>
+              <span class="stat-label">Total investment return earned</span>
+              <span class="stat-value" id="totalInterest">£0</span>
             </div>
           </div>
           <div class="summary-stat">
@@ -142,7 +142,7 @@
           <h2>Growth over time</h2>
           <div class="legend">
             <span><i class="dot dot-contrib"></i>Contributions</span>
-            <span><i class="dot dot-interest"></i>Interest</span>
+            <span><i class="dot dot-interest"></i>Investment return</span>
           </div>
         </div>
         <canvas id="chart" height="260"></canvas>
@@ -160,7 +160,7 @@
               <tr>
                 <th>Year</th>
                 <th>Contributions</th>
-                <th>Interest</th>
+                <th>Investment return</th>
                 <th>Balance</th>
               </tr>
             </thead>

@@ -37,7 +37,7 @@
   let yearlyData = [];
 
   const CURRENCY_SYMBOLS = { USD: '$', GBP: '£', EUR: '€' };
-  let currentCurrency = 'USD';
+  let currentCurrency = 'GBP';
 
   // ---------- Formatting helpers ----------
   const fmtNumber = (n) => new Intl.NumberFormat('en-US').format(Math.round(n));
@@ -360,7 +360,7 @@
       <strong>Year ${point.year}</strong><br>
       Balance: ${fmtCurrency(point.balance)}<br>
       Contributed: ${fmtCurrency(point.contributed)}<br>
-      Interest: ${fmtCurrency(point.interest)}
+      Investment return: ${fmtCurrency(point.interest)}
     `;
   });
 
