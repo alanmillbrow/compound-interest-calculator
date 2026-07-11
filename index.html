@@ -6,17 +6,19 @@
 <title>Investment Return Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<!--
+  Font: stand-in for "Shackleton" (Adobe Fonts / Typekit).
+  Shackleton itself can't be linked without your Adobe Fonts kit embed code
+  (Typekit fonts are served from your personal kit URL, e.g.
+  https://use.typekit.net/xxxxxxx.css). Swap the line below for that kit
+  <link> and update font-family in style.css to use it once you have it.
+-->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="bg-decoration">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-  <div class="grain"></div>
-</div>
+<div class="bg-decoration"></div>
 
 <div class="app">
   <header class="app-header">
@@ -25,7 +27,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path></svg>
       </div>
       <div class="header-text">
-        <span class="kicker">Financial planning</span>
+        <span class="kicker">Investing Buffalo</span>
         <h1>Investment Return Calculator</h1>
         <p>See how your money can grow over time with the power of compounding.</p>
       </div>
@@ -107,33 +109,31 @@
 
     <!-- Results -->
     <section class="results-col">
-      <div class="card summary-card">
-        <div class="summary-main">
-          <span class="summary-label">Future value</span>
-          <span class="summary-value" id="futureValue">£0</span>
+      <div class="summary-row">
+        <div class="card ledger-card">
+          <div class="ledger-row ledger-head">
+            <span>Summary</span>
+            <span>Amount</span>
+          </div>
+          <div class="ledger-row">
+            <span>Total contributions</span>
+            <span id="totalContrib">£0</span>
+          </div>
+          <div class="ledger-row">
+            <span>Total investment return</span>
+            <span id="totalInterest">£0</span>
+          </div>
+          <div class="ledger-row">
+            <span>Growth multiple</span>
+            <span id="growthMultiple">0x</span>
+          </div>
         </div>
-        <div class="summary-grid">
-          <div class="summary-stat">
-            <span class="dot dot-contrib"></span>
-            <div>
-              <span class="stat-label">Total contributions</span>
-              <span class="stat-value" id="totalContrib">£0</span>
-            </div>
+
+        <div class="card headline-card">
+          <div class="ledger-row ledger-head">
+            <span>Future value</span>
           </div>
-          <div class="summary-stat">
-            <span class="dot dot-interest"></span>
-            <div>
-              <span class="stat-label">Total investment return</span>
-              <span class="stat-value" id="totalInterest">£0</span>
-            </div>
-          </div>
-          <div class="summary-stat">
-            <span class="dot dot-multiple"></span>
-            <div>
-              <span class="stat-label">Growth multiple</span>
-              <span class="stat-value" id="growthMultiple">0x</span>
-            </div>
-          </div>
+          <div class="headline-value" id="futureValue">£0</div>
         </div>
       </div>
 
