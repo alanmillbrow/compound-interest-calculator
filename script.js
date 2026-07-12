@@ -288,7 +288,8 @@
     // X axis labels (years)
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    const xLabelStep = Math.max(1, Math.ceil(maxYear / 15));
+    const maxLabels = width < 500 ? 10 : 15;
+    const xLabelStep = Math.max(1, Math.ceil(maxYear / Math.max(1, maxLabels - 1)));
     for (let y = 0; y <= maxYear; y += xLabelStep) {
       ctx.fillText('Yr ' + y, xForYear(y), height - padding.bottom + 8);
     }
