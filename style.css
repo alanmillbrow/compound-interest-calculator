@@ -380,11 +380,6 @@ select#frequency:focus {
   align-items: stretch;
 }
 
-.ledger-card {
-  padding: 0;
-  overflow: hidden;
-}
-
 .ledger-table {
   margin: 24px -28px -28px;
   border-top: 2px solid var(--card-border);
@@ -442,11 +437,32 @@ select#frequency:focus {
 }
 .ledger-head span:last-child { font-weight: 600; }
 
+.headline-title {
+  text-transform: none;
+  letter-spacing: -0.01em;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.ledger-head.headline-title span {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
 .headline-card {
   padding: 0;
   min-width: 220px;
   display: flex;
   flex-direction: column;
+}
+
+.card.summary-card {
+  padding-top: 20px;
+}
+
+.summary-card .ledger-table {
+  margin-top: 22px;
 }
 
 .headline-value {
@@ -604,6 +620,7 @@ tbody tr:hover { background: var(--accent-soft); }
 @media (max-width: 480px) {
   .app { padding: 28px 14px 56px; }
   .card { padding: 20px; }
+  .headline-card { padding: 0; }
   .brand { gap: 12px; }
   .brand-mark { width: 40px; height: 40px; }
   .ledger-table { margin: 20px -20px -20px; }
