@@ -23,6 +23,12 @@
   const totalInterestEl = $('totalInterest');
   const growthMultipleEl = $('growthMultiple');
 
+  const incomeEls = {
+    3: { annual: $('income3Annual'), monthly: $('income3Monthly') },
+    4: { annual: $('income4Annual'), monthly: $('income4Monthly') },
+    5: { annual: $('income5Annual'), monthly: $('income5Monthly') },
+  };
+
   const canvas = $('chart');
   const ctx = canvas.getContext('2d');
   const tooltip = $('tooltip');
@@ -190,6 +196,12 @@
     const multiple = data.totalContributed > 0 ? data.finalBalance / data.totalContributed : 0;
     growthMultipleEl.textContent = multiple.toFixed(2) + 'x';
 
+    for (const rate of [3, 4, 5]) {
+      const annual = data.finalBalance * (rate / 100);
+      incomeEls[rate].annual.textContent = fmtCurrency(annual);
+      incomeEls[rate].monthly.textContent = fmtCurrency(annual / 12);
+    }
+
     drawChart(yearlyData, data.principal);
     renderTable(yearlyData, data.principal);
   }
@@ -239,7 +251,7 @@
 
     if (!yearly.length) return;
 
-    const padding = { top: 16, right: 12, bottom: 28, left: 64 };
+    const padding = { top: 16, right: 24, bottom: 28, left: 64 };
     const plotW = width - padding.left - padding.right;
     const plotH = height - padding.top - padding.bottom;
 
@@ -276,7 +288,7 @@
     // X axis labels (years)
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    const xLabelStep = Math.max(1, Math.ceil(maxYear / 8));
+    const xLabelStep = Math.max(1, Math.ceil(maxYear / 15));
     for (let y = 0; y <= maxYear; y += xLabelStep) {
       ctx.fillText('Yr ' + y, xForYear(y), height - padding.bottom + 8);
     }

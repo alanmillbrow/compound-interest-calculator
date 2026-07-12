@@ -56,18 +56,18 @@
         <label for="principal">Initial investment</label>
         <div class="input-prefix">
           <span id="principalSymbol">£</span>
-          <input type="text" inputmode="decimal" id="principal" value="10,000">
+          <input type="text" inputmode="decimal" id="principal" value="100,000">
         </div>
-        <input type="range" id="principalRange" min="0" max="5000000" step="1000" value="10000" class="slider">
+        <input type="range" id="principalRange" min="0" max="5000000" step="10000" value="100000" class="slider">
       </div>
 
       <div class="field">
         <label for="contribution">Monthly contribution</label>
         <div class="input-prefix">
           <span id="contributionSymbol">£</span>
-          <input type="text" inputmode="decimal" id="contribution" value="500">
+          <input type="text" inputmode="decimal" id="contribution" value="1,000">
         </div>
-        <input type="range" id="contributionRange" min="0" max="10000" step="25" value="500" class="slider">
+        <input type="range" id="contributionRange" min="0" max="10000" step="50" value="1000" class="slider">
       </div>
 
       <div class="field contribution-timing">
@@ -84,7 +84,7 @@
           <input type="text" inputmode="decimal" id="rate" value="7">
           <span>%</span>
         </div>
-        <input type="range" id="rateRange" min="0" max="20" step="0.1" value="7" class="slider">
+        <input type="range" id="rateRange" min="0" max="20" step="0.5" value="7" class="slider">
       </div>
 
       <div class="field">
@@ -134,6 +134,33 @@
             <span>Future value</span>
           </div>
           <div class="headline-value" id="futureValue">£0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Future income</h2>
+        <p class="section-note">Estimated sustainable withdrawal from your future value, using common safe withdrawal rate rules.</p>
+        <div class="ledger-table">
+          <div class="ledger-row ledger-head cols-3">
+            <span>Rule</span>
+            <span>Annual income</span>
+            <span>Monthly income</span>
+          </div>
+          <div class="ledger-row cols-3">
+            <span>3% rule</span>
+            <span id="income3Annual">£0</span>
+            <span id="income3Monthly">£0</span>
+          </div>
+          <div class="ledger-row cols-3">
+            <span>4% rule</span>
+            <span id="income4Annual">£0</span>
+            <span id="income4Monthly">£0</span>
+          </div>
+          <div class="ledger-row cols-3">
+            <span>5% rule</span>
+            <span id="income5Annual">£0</span>
+            <span id="income5Monthly">£0</span>
+          </div>
         </div>
       </div>
 
