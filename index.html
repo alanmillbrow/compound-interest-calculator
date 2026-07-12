@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investment Return Calculator</title>
+<title>Investing Buffalo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!--
@@ -14,7 +14,7 @@
   <link> and update font-family in style.css to use it once you have it.
 -->
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
@@ -23,13 +23,12 @@
 <div class="app">
   <header class="app-header">
     <div class="brand">
-      <div class="brand-mark">
+      <a class="brand-mark" href="/" aria-label="Investing Buffalo home">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path></svg>
-      </div>
+      </a>
       <div class="header-text">
-        <span class="kicker">Investing Buffalo</span>
-        <h1>Investment Return Calculator</h1>
-        <p>See how your money can grow over time with the power of compounding.</p>
+        <h1>Investing Buffalo</h1>
+        <p>Navigating the path to financial strength.</p>
       </div>
     </div>
     <button id="themeToggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle light/dark theme">
@@ -38,174 +37,27 @@
     </button>
   </header>
 
-  <main class="layout">
-    <!-- Inputs -->
-    <section class="card inputs-card">
-      <h2>Your numbers</h2>
-
-      <div class="field">
-        <label>Currency</label>
-        <div class="segmented currency-segmented">
-          <button type="button" class="seg-btn active" data-currency="GBP">£</button>
-          <button type="button" class="seg-btn" data-currency="USD">$</button>
-          <button type="button" class="seg-btn" data-currency="EUR">&euro;</button>
-        </div>
+  <main class="home-layout">
+    <div class="about-card">
+      <img class="about-photo" src="/alan-portrait.jpg" alt="Alan, founder of Investing Buffalo">
+      <div class="about-text">
+        <p class="bio-lede">I built a <span class="stat-highlight">£1m</span> investment portfolio over <span class="stat-highlight">15 years</span>, while working a regular job.</p>
+        <p class="bio-body">This is where I share my thinking to help you do it sooner. Please check out my <a href="https://www.youtube.com/@InvestingBuffalo" target="_blank" rel="noopener">YouTube videos</a> for my latest thoughts and the <a href="/investment-return-calculator/">Investment Return Calculator</a> to visualise the power of compounding through investing.</p>
+        <h2>Welcome to Investing Buffalo by Alan</h2>
       </div>
+    </div>
 
-      <div class="field">
-        <label for="principal">Initial investment</label>
-        <div class="input-prefix">
-          <span id="principalSymbol">£</span>
-          <input type="text" inputmode="decimal" id="principal" value="100,000">
-        </div>
-        <input type="range" id="principalRange" min="0" max="2000000" step="10000" value="100000" class="slider">
-      </div>
-
-      <div class="field">
-        <label for="contribution">Monthly contribution</label>
-        <div class="input-prefix">
-          <span id="contributionSymbol">£</span>
-          <input type="text" inputmode="decimal" id="contribution" value="1,000">
-        </div>
-        <input type="range" id="contributionRange" min="0" max="10000" step="50" value="1000" class="slider">
-      </div>
-
-      <div class="field contribution-timing">
-        <label>Contribute at</label>
-        <div class="segmented">
-          <button type="button" class="seg-btn active" data-timing="end">End of month</button>
-          <button type="button" class="seg-btn" data-timing="begin">Start of month</button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="rate">Annual investment return</label>
-        <div class="input-suffix">
-          <input type="text" inputmode="decimal" id="rate" value="7">
-          <span>%</span>
-        </div>
-        <input type="range" id="rateRange" min="0" max="25" step="0.5" value="7" class="slider">
-      </div>
-
-      <div class="field">
-        <label for="years">Time horizon</label>
-        <div class="input-suffix">
-          <input type="text" inputmode="numeric" id="years" value="10">
-          <span>yrs</span>
-        </div>
-        <input type="range" id="yearsRange" min="1" max="50" step="1" value="10" class="slider">
-      </div>
-
-      <div class="field">
-        <label for="frequency">Compounding frequency</label>
-        <select id="frequency">
-          <option value="365">Daily</option>
-          <option value="12">Monthly</option>
-          <option value="4">Quarterly</option>
-          <option value="1" selected>Annually</option>
-        </select>
-      </div>
-    </section>
-
-    <!-- Results -->
-    <section class="results-col">
-      <div class="summary-row">
-        <div class="card summary-card">
-          <h2>Summary</h2>
-          <div class="ledger-table">
-            <div class="ledger-row ledger-head">
-              <span></span>
-              <span>Amount</span>
-            </div>
-            <div class="ledger-row">
-              <span>Total contributions</span>
-              <span id="totalContrib">£0</span>
-            </div>
-            <div class="ledger-row">
-              <span>Total investment return</span>
-              <span id="totalInterest">£0</span>
-            </div>
-            <div class="ledger-row">
-              <span>Growth multiple</span>
-              <span id="growthMultiple">0x</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="card headline-card">
-          <div class="ledger-row ledger-head headline-title">
-            <span>Future value</span>
-          </div>
-          <div class="headline-value" id="futureValue">£0</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Future income</h2>
-        <p class="section-note">Estimated sustainable withdrawal from your future value, using common safe withdrawal rate rules.</p>
-        <div class="ledger-table">
-          <div class="ledger-row ledger-head cols-3">
-            <span>Rule</span>
-            <span>Annual income</span>
-            <span>Monthly income</span>
-          </div>
-          <div class="ledger-row cols-3">
-            <span>3% rule</span>
-            <span id="income3Annual">£0</span>
-            <span id="income3Monthly">£0</span>
-          </div>
-          <div class="ledger-row cols-3">
-            <span>4% rule</span>
-            <span id="income4Annual">£0</span>
-            <span id="income4Monthly">£0</span>
-          </div>
-          <div class="ledger-row cols-3">
-            <span>5% rule</span>
-            <span id="income5Annual">£0</span>
-            <span id="income5Monthly">£0</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card chart-card">
-        <div class="chart-header">
-          <h2>Growth over time</h2>
-          <div class="legend">
-            <span><i class="dot dot-contrib"></i>Contributions</span>
-            <span><i class="dot dot-interest"></i>Investment return</span>
-          </div>
-        </div>
-        <canvas id="chart" height="260"></canvas>
-        <div id="tooltip" class="chart-tooltip"></div>
-      </div>
-
-      <div class="card table-card">
-        <div class="table-header">
-          <h2>Yearly breakdown</h2>
-          <button id="toggleTable" class="link-btn">Show table</button>
-        </div>
-        <div id="tableWrap" class="table-wrap hidden">
-          <table>
-            <thead>
-              <tr>
-                <th>Year</th>
-                <th>Contributions</th>
-                <th>Investment return</th>
-                <th>Balance</th>
-              </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+    <div class="tools-row">
+      <a class="card tool-box" href="https://www.youtube.com/@InvestingBuffalo" target="_blank" rel="noopener">YouTube Videos</a>
+      <a class="card tool-box" href="/investment-return-calculator/">Investment Return Calculator</a>
+    </div>
   </main>
 
   <footer class="app-footer">
-    <p>Estimates only &mdash; assumes a constant rate of return, which real investments do not provide. Not financial advice.</p>
+    <p>Educational tools only &mdash; not financial advice.</p>
   </footer>
 </div>
 
-<script src="script.js"></script>
+<script src="/theme.js"></script>
 </body>
 </html>

@@ -7,6 +7,24 @@
 - **Netlify admin:** https://app.netlify.com/projects/compound-interest-calculator-611
 - **Source code:** https://github.com/alanmillbrow/compound-interest-calculator
 
+## Site structure
+
+This is a multi-page static site — plain HTML/CSS/JS, no framework, no build step:
+
+- `index.html` — homepage, lists available tools
+- `investment-return-calculator/index.html` + `investment-return-calculator/script.js` — the
+  calculator, served at `/investment-return-calculator/`
+- `style.css` — shared design system (paper/ink theme) used by every page. Referenced via the
+  root-relative path `/style.css` so it resolves correctly no matter how deep a page's URL is.
+- `theme.js` — shared dark/light toggle logic (a small subset of what the calculator's own
+  `script.js` does), used by pages that don't need the calculator's logic. Both pages read/write
+  the same `localStorage` key so the theme choice persists across the whole site.
+- `TableV2Background.jpg` — shared background texture, referenced from `style.css`.
+
+To add a new page/tool: create a new folder (e.g. `retirement-calculator/index.html`), link
+`/style.css` and either `/theme.js` (if it's a simple page) or its own script, and add a row to
+the "Tools" table on the homepage (`index.html`) linking to it.
+
 ## Why this setup
 
 The app is a static site (plain HTML/CSS/JS, no build step, no backend), so it only needs a
