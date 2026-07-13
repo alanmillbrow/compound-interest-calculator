@@ -1,1 +1,2 @@
-/investment-return-calculator/*  /liquid-asset-calculator/:splat  301
+/investment-return-calculator/*  /liquid-asset-forecaster/:splat  301
+/liquid-asset-calculator/*  /liquid-asset-forecaster/:splat  301

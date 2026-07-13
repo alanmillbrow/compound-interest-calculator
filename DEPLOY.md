@@ -12,10 +12,10 @@
 This is a multi-page static site — plain HTML/CSS/JS, no framework, no build step:
 
 - `index.html` — homepage, lists available tools
-- `liquid-asset-calculator/index.html` + `liquid-asset-calculator/script.js` — the
-  calculator, served at `/liquid-asset-calculator/` (the old `/investment-return-calculator/`
-  path 301-redirects here via `_redirects`)
-- `_redirects` — Netlify redirect rules (keeps the old calculator URL working)
+- `liquid-asset-forecaster/index.html` + `liquid-asset-forecaster/script.js` — the
+  calculator, served at `/liquid-asset-forecaster/` (the old `/investment-return-calculator/`
+  and `/liquid-asset-calculator/` paths 301-redirect here via `_redirects`)
+- `_redirects` — Netlify redirect rules (keeps old calculator URLs working)
 - `style.css` — shared design system (paper/ink theme) used by every page. Referenced via the
   root-relative path `/style.css` so it resolves correctly no matter how deep a page's URL is.
 - `theme.js` — shared dark/light toggle logic (a small subset of what the calculator's own
