@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Freedom Formula</title>
+<link rel="preconnect" href="https://use.typekit.net">
+<!-- Shackleton (Adobe Fonts / Typekit) -->
+<link rel="stylesheet" href="https://use.typekit.net/zkf6zbb.css">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="bg-decoration"></div>
+
+<div class="app">
+  <header class="app-header">
+    <div class="brand">
+      <a class="brand-mark" href="/" aria-label="Investing Buffalo home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path></svg>
+      </a>
+      <div class="header-text">
+        <h1>The Freedom Formula</h1>
+        <p>See how long your money can keep you going</p>
+      </div>
+    </div>
+    <button id="themeToggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle light/dark theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </button>
+  </header>
+
+  <main class="layout">
+    <!-- Inputs -->
+    <section class="card inputs-card">
+      <h2>Your numbers</h2>
+
+      <div class="field">
+        <label>Currency</label>
+        <div class="segmented currency-segmented">
+          <button type="button" class="seg-btn active" data-currency="GBP">£</button>
+          <button type="button" class="seg-btn" data-currency="USD">$</button>
+          <button type="button" class="seg-btn" data-currency="EUR">&euro;</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="income">Monthly leveraged income</label>
+        <div class="input-prefix">
+          <span id="incomeSymbol">£</span>
+          <input type="text" inputmode="decimal" id="income" value="2,000">
+        </div>
+        <input type="range" id="incomeRange" min="0" max="20000" step="100" value="2000" class="slider">
+      </div>
+
+      <div class="field">
+        <label for="expenses">Monthly lifestyle expenses</label>
+        <div class="input-prefix">
+          <span id="expensesSymbol">£</span>
+          <input type="text" inputmode="decimal" id="expenses" value="3,000">
+        </div>
+        <input type="range" id="expensesRange" min="0" max="20000" step="100" value="3000" class="slider">
+      </div>
+
+      <div class="field">
+        <label for="assets">Total liquid assets</label>
+        <div class="input-prefix">
+          <span id="assetsSymbol">£</span>
+          <input type="text" inputmode="decimal" id="assets" value="10,000">
+        </div>
+        <input type="range" id="assetsRange" min="0" max="1000000" step="1000" value="10000" class="slider">
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section class="results-col">
+      <div class="summary-row">
+        <div class="card summary-card">
+          <h2>Your monthly position</h2>
+          <div class="ledger-table">
+            <div class="ledger-row ledger-head">
+              <span></span>
+              <span>Amount</span>
+            </div>
+            <div class="ledger-row">
+              <span>Leveraged income</span>
+              <span id="posIncome">£0</span>
+            </div>
+            <div class="ledger-row">
+              <span>Lifestyle expenses</span>
+              <span id="posExpenses">£0</span>
+            </div>
+            <div class="ledger-row">
+              <span>Monthly shortfall</span>
+              <span id="posShortfall">£0</span>
+            </div>
+            <div class="ledger-row">
+              <span>Income covers</span>
+              <span id="posCoverage">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card headline-card">
+          <div class="ledger-row ledger-head headline-title">
+            <span>Freedom runway</span>
+          </div>
+          <div class="headline-value" id="runwayValue">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>How long your money lasts</h2>
+        <p class="section-note">The same runway, expressed three ways</p>
+        <div class="formula">
+          <div class="formula-term">
+            <span class="formula-abbr" id="dWeeks">0</span>
+            <span class="formula-word">Weeks</span>
+          </div>
+          <div class="formula-term">
+            <span class="formula-abbr" id="dMonths">0</span>
+            <span class="formula-word">Months</span>
+          </div>
+          <div class="formula-term">
+            <span class="formula-abbr" id="dYears">0</span>
+            <span class="formula-word">Years</span>
+          </div>
+        </div>
+        <p class="formula-rule">Your runway is how long your <strong>liquid assets</strong> can cover the gap between what you spend and what your <strong>leveraged income</strong> brings in. When income covers your lifestyle, the runway never ends&mdash;you&rsquo;re free</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>This assumes your income, expenses and assets stay constant. This is not financial advice.</p>
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
