@@ -76,8 +76,7 @@ html, body {
 }
 
 body {
-  /* Stand-in for Shackleton (Adobe Fonts) until a Typekit kit is linked — see index.html <head> comment. */
-  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+  font-family: 'shackleton', Georgia, 'Times New Roman', serif;
   background: var(--bg);
   color: var(--text-primary);
   min-height: 100vh;
@@ -145,7 +144,7 @@ body {
 .kicker {
   display: inline-block;
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   text-decoration: none;
@@ -155,12 +154,11 @@ body {
 .kicker:hover { text-decoration: underline; }
 
 .header-text h1 {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'shackleton', Georgia, serif;
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   margin: 0 0 6px;
   letter-spacing: -0.01em;
-  font-weight: 700;
-  font-variation-settings: "opsz" 40;
+  font-weight: 400;
   line-height: 1.15;
 }
 
@@ -232,9 +230,9 @@ body {
   min-height: 96px;
   color: inherit;
   text-decoration: none;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'shackleton', Georgia, serif;
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: -0.01em;
   transition: background 0.15s ease;
 }
@@ -249,17 +247,17 @@ body {
 }
 
 .about-text h2 {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'shackleton', Georgia, serif;
   font-size: 1.75rem;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: -0.01em;
   margin: 24px 0 0;
 }
 
 .bio-lede {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'shackleton', Georgia, serif;
   font-size: 2rem;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.3;
   letter-spacing: -0.01em;
   margin: 0 0 18px;
@@ -267,7 +265,7 @@ body {
 
 .stat-highlight {
   color: var(--interest);
-  font-weight: 800;
+  font-weight: 400;
 }
 
 .bio-body {
@@ -279,7 +277,7 @@ body {
 }
 .bio-body a {
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 400;
   text-decoration: underline;
 }
 .bio-body a:hover { color: var(--interest); }
@@ -294,10 +292,10 @@ body {
 }
 
 .card h2 {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'shackleton', Georgia, serif;
   font-size: 1.15rem;
   margin: 0 0 22px;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: -0.01em;
 }
 
@@ -315,7 +313,7 @@ body {
 .field label {
   display: block;
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--text-secondary);
   margin-bottom: 9px;
   text-transform: uppercase;
@@ -338,7 +336,7 @@ body {
 
 .input-prefix span, .input-suffix span {
   color: var(--text-tertiary);
-  font-weight: 700;
+  font-weight: 400;
   font-size: 0.98rem;
 }
 
@@ -347,11 +345,11 @@ body {
   background: transparent;
   outline: none;
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--text-primary);
   padding: 12px 8px;
   width: 100%;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'shackleton', Georgia, serif;
   letter-spacing: -0.01em;
 }
 
@@ -365,7 +363,7 @@ select#frequency {
   background: var(--input-bg);
   color: var(--text-primary);
   font-size: 0.98rem;
-  font-weight: 650;
+  font-weight: 400;
   outline: none;
   cursor: pointer;
   appearance: none;
@@ -440,7 +438,7 @@ select#frequency:focus {
   background: transparent;
   border-radius: 0;
   color: var(--text-secondary);
-  font-weight: 650;
+  font-weight: 400;
   font-size: 0.85rem;
   cursor: pointer;
   font-family: inherit;
@@ -488,12 +486,12 @@ select#frequency:focus {
   padding: 16px 24px;
   border-bottom: 2px solid var(--card-border);
   font-size: 1.02rem;
-  font-weight: 600;
+  font-weight: 400;
 }
 .ledger-row:last-child { border-bottom: none; }
 
 .ledger-row span:last-child {
-  font-weight: 700;
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
 }
 
@@ -508,7 +506,7 @@ select#frequency:focus {
   text-align: left;
 }
 .ledger-row.cols-3 span:nth-child(2) {
-  font-weight: 700;
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
 }
 
@@ -522,7 +520,7 @@ select#frequency:focus {
   padding-top: 12px;
   padding-bottom: 12px;
 }
-.ledger-head span:last-child { font-weight: 600; }
+.ledger-head span:last-child { font-weight: 400; }
 
 .headline-title {
   text-transform: none;
@@ -531,9 +529,9 @@ select#frequency:focus {
   padding-bottom: 20px;
 }
 .ledger-head.headline-title span {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'shackleton', Georgia, serif;
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--text-primary);
 }
 
@@ -557,10 +555,9 @@ select#frequency:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'shackleton', Georgia, serif;
   font-size: clamp(2rem, 4.4vw, 2.9rem);
-  font-weight: 700;
-  font-variation-settings: "opsz" 40;
+  font-weight: 400;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   padding: 24px;
@@ -596,7 +593,7 @@ select#frequency:focus {
   gap: 6px;
   font-size: 0.82rem;
   color: var(--text-secondary);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .chart-card { position: relative; }
@@ -615,7 +612,7 @@ select#frequency:focus {
   padding: 10px 14px;
   border-radius: 0;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 400;
   opacity: 0;
   transform: translate(-50%, -112%);
   transition: opacity 0.12s ease;
@@ -629,7 +626,7 @@ select#frequency:focus {
   background: transparent;
   border: 2px solid var(--text-primary);
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 400;
   font-size: 0.85rem;
   cursor: pointer;
   padding: 8px 14px;
@@ -657,7 +654,7 @@ thead th {
   background: var(--bg);
   text-align: right;
   padding: 12px 18px;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--text-primary);
   font-size: 0.74rem;
   text-transform: uppercase;
@@ -672,7 +669,7 @@ tbody td {
   border-bottom: 1px solid var(--input-border);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 400;
 }
 tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover { background: var(--accent-soft); }
