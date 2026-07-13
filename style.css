@@ -165,9 +165,8 @@ body {
 .header-text p {
   margin: 0;
   color: var(--text-secondary);
-  font-size: 0.96rem;
+  font-size: 1.1rem;
   white-space: nowrap;
-  font-style: italic;
 }
 
 .theme-toggle {
