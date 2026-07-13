@@ -9,6 +9,8 @@
   const expensesRange = $('expensesRange');
   const assetsInput = $('assets');
   const assetsRange = $('assetsRange');
+  const returnRateInput = $('returnRate');
+  const returnRateRange = $('returnRateRange');
 
   const currencyButtons = document.querySelectorAll('.currency-segmented .seg-btn');
   const incomeSymbol = $('incomeSymbol');
@@ -52,7 +54,7 @@
     rangeEl.style.setProperty('--fill', pct + '%');
   }
 
-  function bindTextAndRange(textEl, rangeEl) {
+  function bindTextAndRange(textEl, rangeEl, { isCurrency = false } = {}) {
     function syncFromText() {
       let val = parseNumber(textEl.value);
       if (val < parseFloat(rangeEl.min)) val = parseFloat(rangeEl.min);
@@ -63,19 +65,22 @@
     }
     textEl.addEventListener('input', syncFromText);
     textEl.addEventListener('blur', () => {
-      textEl.value = fmtNumber(parseNumber(textEl.value));
+      const val = parseNumber(textEl.value);
+      textEl.value = isCurrency ? fmtNumber(val) : val;
     });
     rangeEl.addEventListener('input', () => {
-      textEl.value = fmtNumber(parseFloat(rangeEl.value));
+      const val = parseFloat(rangeEl.value);
+      textEl.value = isCurrency ? fmtNumber(val) : val;
       updateSliderFill(rangeEl);
       render();
     });
     updateSliderFill(rangeEl);
   }
 
-  bindTextAndRange(incomeInput, incomeRange);
-  bindTextAndRange(expensesInput, expensesRange);
-  bindTextAndRange(assetsInput, assetsRange);
+  bindTextAndRange(incomeInput, incomeRange, { isCurrency: true });
+  bindTextAndRange(expensesInput, expensesRange, { isCurrency: true });
+  bindTextAndRange(assetsInput, assetsRange, { isCurrency: true });
+  bindTextAndRange(returnRateInput, returnRateRange, {});
 
   currencyButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -112,7 +117,24 @@
 
     posShortfall.textContent = fmtCurrency(shortfall);
 
-    const months = assets / shortfall;
+    const monthlyRate = parseNumber(returnRateInput.value) / 100 / 12;
+
+    let months;
+    if (monthlyRate <= 0) {
+      months = assets / shortfall;
+    } else {
+      const x = (assets * monthlyRate) / shortfall;
+      if (x >= 1) {
+        // Investment growth on the unused balance outpaces the shortfall — never runs out
+        runwayValue.textContent = "You’re free";
+        dWeeks.textContent = '∞';
+        dMonths.textContent = '∞';
+        dYears.textContent = '∞';
+        return;
+      }
+      months = -Math.log(1 - x) / Math.log(1 + monthlyRate);
+    }
+
     const weeks = months * 52 / 12;
     const years = months / 12;
 

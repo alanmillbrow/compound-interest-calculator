@@ -90,6 +90,15 @@
         </div>
         <input type="range" id="assetsRange" min="0" max="2000000" step="10000" value="10000" class="slider">
       </div>
+
+      <div class="field">
+        <label for="returnRate">Annual investment return</label>
+        <div class="input-suffix">
+          <input type="text" inputmode="decimal" id="returnRate" value="0">
+          <span>%</span>
+        </div>
+        <input type="range" id="returnRateRange" min="0" max="20" step="0.5" value="0" class="slider">
+      </div>
     </section>
 
     <!-- Results -->
@@ -146,13 +155,13 @@
             <span class="formula-word">Years</span>
           </div>
         </div>
-        <p class="formula-rule">Your runway is how long your <strong>liquid assets</strong> can cover the gap between what you spend and what your <strong>leveraged income</strong> brings in. When income covers your lifestyle, the runway never ends&mdash;you&rsquo;re free</p>
+        <p class="formula-rule">Your runway is how long your <strong>liquid assets</strong> can cover the gap between what you spend and what your <strong>leveraged income</strong> brings in, assuming the unused balance keeps earning your <strong>investment return</strong> along the way. When income covers your lifestyle&mdash;or your return alone outpaces the gap&mdash;the runway never ends and you&rsquo;re free</p>
       </div>
     </section>
   </main>
 
   <footer class="app-footer">
-    <p>This assumes your income, expenses and assets stay constant. This is not financial advice.</p>
+    <p>This assumes your income, expenses and investment return stay constant. This is not financial advice.</p>
   </footer>
 </div>
 
