@@ -35,6 +35,10 @@
   const chartCtx = chartCanvas.getContext('2d');
   const chartTooltip = $('tooltip');
 
+  const toggleTableBtn = $('toggleTable');
+  const tableWrap = $('tableWrap');
+  const tableBody = $('tableBody');
+
   const CURRENCY_SYMBOLS = { USD: '$', GBP: '£', EUR: '€' };
   let currentCurrency = 'GBP';
 
@@ -237,6 +241,25 @@
     return color;
   }
 
+  function renderTable(points) {
+    tableBody.innerHTML = '';
+    for (const row of points) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${fmtDur(row.year)}</td>
+        <td>${fmtCurrency(row.contributed)}</td>
+        <td>${fmtCurrency(row.interest)}</td>
+        <td>${fmtCurrency(row.balance)}</td>
+      `;
+      tableBody.appendChild(tr);
+    }
+  }
+
+  toggleTableBtn.addEventListener('click', () => {
+    const hidden = tableWrap.classList.toggle('hidden');
+    toggleTableBtn.textContent = hidden ? 'Show table' : 'Hide table';
+  });
+
   function compactCurrency(v) {
     const symbol = CURRENCY_SYMBOLS[currentCurrency];
     const sign = v < 0 ? '-' : '';
@@ -269,6 +292,7 @@
     chartCtx.clearRect(0, 0, width, height);
 
     const points = [{ year: 0, contributed: assets, balance: assets, interest: 0 }, ...yearly];
+    renderTable(points);
 
     const padding = { top: 16, right: 24, bottom: 28, left: 64 };
     const plotW = width - padding.left - padding.right;
