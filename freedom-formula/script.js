@@ -47,10 +47,14 @@
     return isNaN(val) ? 0 : val;
   }
 
-  // Duration number: 1 decimal place, trimmed if whole
+  // Duration number: 1 decimal place, trimmed if whole, comma-separated
   function fmtDur(v) {
     const r = Math.round(v * 10) / 10;
-    return (Math.abs(r % 1) < 1e-9) ? String(Math.round(r)) : r.toFixed(1);
+    const isWhole = Math.abs(r % 1) < 1e-9;
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: isWhole ? 0 : 1,
+      maximumFractionDigits: 1,
+    }).format(r);
   }
 
   function updateSliderFill(rangeEl) {
@@ -177,16 +181,21 @@
       runwayValue.textContent = `${valStr} ${unit}${plural}`;
     }
 
-    const yearsToShow = months === null ? 50 : Math.min(50, Math.max(1, Math.ceil(months / 12)));
-    drawFreedomChart(assets, income, expenses, monthlyRate, yearsToShow);
+    drawFreedomChart(assets, income, expenses, monthlyRate, minAssets, months);
   }
 
   // ---------- Chart (canvas, no dependencies) ----------
-  function calculateChartSeries(assets, income, expenses, monthlyRate, yearsToShow) {
+  // runwayMonths is null when the balance never reaches minAssets (infinite runway)
+  function calculateChartSeries(assets, income, expenses, monthlyRate, minAssets, runwayMonths) {
     const netFlow = income - expenses;
+    const isInfinite = runwayMonths === null;
+    // The 50-year cap only applies when the money never runs out — a
+    // finite runway is always shown in full, however long it takes
+    const wholeYears = isInfinite ? 50 : Math.floor(runwayMonths / 12);
+
     let balance = assets;
     let contributed = assets;
-    const totalMonths = yearsToShow * 12;
+    const totalMonths = wholeYears * 12;
     const yearly = [];
     for (let m = 1; m <= totalMonths; m++) {
       balance = balance * (1 + monthlyRate) + netFlow;
@@ -195,6 +204,19 @@
         yearly.push({ year: m / 12, contributed, balance, interest: balance - contributed });
       }
     }
+
+    // Cut the line off at the exact moment the runway ends, rather than
+    // rounding up to the next whole year. At that instant the balance is
+    // exactly minAssets by definition, so this is a closed-form point —
+    // no need to simulate a partial month.
+    if (!isInfinite) {
+      const runwayYears = runwayMonths / 12;
+      if (runwayYears - wholeYears > 1e-9) {
+        const endContributed = assets + netFlow * runwayMonths;
+        yearly.push({ year: runwayYears, contributed: endContributed, balance: minAssets, interest: minAssets - endContributed });
+      }
+    }
+
     return yearly;
   }
 
@@ -239,10 +261,10 @@
   let lastChartGeometry = null;
   let lastChartParams = null;
 
-  function drawFreedomChart(assets, income, expenses, monthlyRate, yearsToShow) {
-    lastChartParams = { assets, income, expenses, monthlyRate, yearsToShow };
+  function drawFreedomChart(assets, income, expenses, monthlyRate, minAssets, runwayMonths) {
+    lastChartParams = { assets, income, expenses, monthlyRate, minAssets, runwayMonths };
 
-    const yearly = calculateChartSeries(assets, income, expenses, monthlyRate, yearsToShow);
+    const yearly = calculateChartSeries(assets, income, expenses, monthlyRate, minAssets, runwayMonths);
     const { width, height } = setupCanvasSize();
     chartCtx.clearRect(0, 0, width, height);
 
@@ -252,11 +274,12 @@
     const plotW = width - padding.left - padding.right;
     const plotH = height - padding.top - padding.bottom;
 
-    const allVals = points.flatMap((p) => [p.contributed, p.balance, 0]);
-    const minVal = Math.min(...allVals);
-    const maxVal = Math.max(...allVals);
+    // Y axis always starts at zero, even if the balance dips below it —
+    // the line/area simply runs off the bottom of the plot in that case
+    const minVal = 0;
+    const maxVal = Math.max(...points.flatMap((p) => [p.contributed, p.balance, 0]));
     const valRange = (maxVal - minVal) || 1;
-    const maxYear = points[points.length - 1].year;
+    const maxYear = points[points.length - 1].year || 1; // guard against a zero-length runway
 
     const xForYear = (y) => padding.left + (y / maxYear) * plotW;
     const yForVal = (v) => padding.top + plotH - ((v - minVal) / valRange) * plotH;
@@ -293,18 +316,22 @@
       chartCtx.fillText('Yr ' + y, xForYear(y), height - padding.bottom + 8);
     }
 
-    // Stacked area: contributions (bottom) + investment return (top)
+    // Stacked area: contributions (bottom) + investment return (top).
+    // Values are clamped to zero for drawing only — anything below the
+    // zero-pinned axis is simply not rendered, so it never draws over the
+    // x-axis labels. The real (possibly negative) figures still surface
+    // on hover.
     function drawArea(getTop, getBottom, color) {
       chartCtx.beginPath();
       points.forEach((p, i) => {
         const x = xForYear(p.year);
-        const y = yForVal(getTop(p));
+        const y = yForVal(Math.max(0, getTop(p)));
         if (i === 0) chartCtx.moveTo(x, y);
         else chartCtx.lineTo(x, y);
       });
       for (let i = points.length - 1; i >= 0; i--) {
         const p = points[i];
-        chartCtx.lineTo(xForYear(p.year), yForVal(getBottom(p)));
+        chartCtx.lineTo(xForYear(p.year), yForVal(Math.max(0, getBottom(p))));
       }
       chartCtx.closePath();
       chartCtx.fillStyle = color;
@@ -314,15 +341,33 @@
     drawArea((p) => p.contributed, () => 0, hexToRgba(contribColor, 0.35));
     drawArea((p) => p.balance, (p) => p.contributed, hexToRgba(interestColor, 0.35));
 
-    // Lines on top
+    // Lines on top. Stop exactly at the zero-crossing (interpolated) rather
+    // than clamping every point after it — otherwise several flat segments
+    // would sit right on top of the zero gridline, making it look thicker.
     function drawLine(getVal, color) {
       chartCtx.beginPath();
-      points.forEach((p, i) => {
-        const x = xForYear(p.year);
-        const y = yForVal(getVal(p));
-        if (i === 0) chartCtx.moveTo(x, y);
-        else chartCtx.lineTo(x, y);
-      });
+      let started = false;
+      for (let i = 0; i < points.length; i++) {
+        const raw = getVal(points[i]);
+        if (raw >= 0) {
+          const x = xForYear(points[i].year);
+          const y = yForVal(raw);
+          if (!started) { chartCtx.moveTo(x, y); started = true; }
+          else chartCtx.lineTo(x, y);
+        } else {
+          const prev = points[i - 1];
+          const prevRaw = prev ? getVal(prev) : raw;
+          if (prev && prevRaw > 0) {
+            const t = prevRaw / (prevRaw - raw);
+            const crossYear = prev.year + t * (points[i].year - prev.year);
+            const x = xForYear(crossYear);
+            const y = yForVal(0);
+            if (!started) { chartCtx.moveTo(x, y); started = true; }
+            else chartCtx.lineTo(x, y);
+          }
+          break;
+        }
+      }
       chartCtx.strokeStyle = color;
       chartCtx.lineWidth = 2.25;
       chartCtx.stroke();
@@ -338,17 +383,28 @@
     if (!lastChartGeometry) return;
     const rect = chartCanvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
-    const { points, maxYear, padding, plotW } = lastChartGeometry;
+    const { points, maxYear, padding, plotW, plotH } = lastChartGeometry;
     const relX = (mx - padding.left) / plotW;
-    const yearFloat = relX * maxYear;
-    const year = Math.round(Math.max(0, Math.min(maxYear, yearFloat)));
-    const point = points.find((p) => p.year === year) || points[points.length - 1];
+    const yearFloat = Math.max(0, Math.min(maxYear, relX * maxYear));
+
+    // Snap to whichever plotted point (whole year, or the exact runway-end
+    // fractional year) is nearest — points aren't always evenly spaced
+    let point = points[0];
+    let bestDist = Infinity;
+    for (const p of points) {
+      const dist = Math.abs(p.year - yearFloat);
+      if (dist < bestDist) { bestDist = dist; point = p; }
+    }
+
+    // Keep the tooltip box within the visible plot area even when the
+    // balance itself has run off the bottom (below the zero-pinned axis)
+    const tooltipY = Math.max(padding.top, Math.min(padding.top + plotH, lastChartGeometry.yForVal(point.balance)));
 
     chartTooltip.style.opacity = '1';
     chartTooltip.style.left = mx + 'px';
-    chartTooltip.style.top = (lastChartGeometry.yForVal(point.balance)) + 'px';
+    chartTooltip.style.top = tooltipY + 'px';
     chartTooltip.innerHTML = `
-      <strong>Year ${point.year}</strong><br>
+      <strong>Year ${fmtDur(point.year)}</strong><br>
       Balance: ${fmtCurrency(point.balance)}<br>
       Contributions: ${fmtCurrency(point.contributed)}<br>
       Investment return: ${fmtCurrency(point.interest)}
@@ -361,8 +417,8 @@
 
   window.addEventListener('resize', () => {
     if (lastChartParams) {
-      const { assets, income, expenses, monthlyRate, yearsToShow } = lastChartParams;
-      drawFreedomChart(assets, income, expenses, monthlyRate, yearsToShow);
+      const { assets, income, expenses, monthlyRate, minAssets, runwayMonths } = lastChartParams;
+      drawFreedomChart(assets, income, expenses, monthlyRate, minAssets, runwayMonths);
     }
   });
 
