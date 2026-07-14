@@ -11,11 +11,14 @@
   const assetsRange = $('assetsRange');
   const returnRateInput = $('returnRate');
   const returnRateRange = $('returnRateRange');
+  const minAssetsInput = $('minAssets');
+  const minAssetsRange = $('minAssetsRange');
 
   const currencyButtons = document.querySelectorAll('.currency-segmented .seg-btn');
   const incomeSymbol = $('incomeSymbol');
   const expensesSymbol = $('expensesSymbol');
   const assetsSymbol = $('assetsSymbol');
+  const minAssetsSymbol = $('minAssetsSymbol');
 
   const posIncome = $('posIncome');
   const posExpenses = $('posExpenses');
@@ -54,33 +57,57 @@
     rangeEl.style.setProperty('--fill', pct + '%');
   }
 
-  function bindTextAndRange(textEl, rangeEl, { isCurrency = false } = {}) {
-    function syncFromText() {
-      let val = parseNumber(textEl.value);
+  function bindTextAndRange(textEl, rangeEl, { isCurrency = false, onChange } = {}) {
+    function clamp(val) {
       if (val < parseFloat(rangeEl.min)) val = parseFloat(rangeEl.min);
       if (val > parseFloat(rangeEl.max)) val = parseFloat(rangeEl.max);
+      return val;
+    }
+    textEl.addEventListener('input', () => {
+      const val = clamp(parseNumber(textEl.value));
       rangeEl.value = val;
       updateSliderFill(rangeEl);
+      if (onChange) onChange(val);
       render();
-    }
-    textEl.addEventListener('input', syncFromText);
+    });
     textEl.addEventListener('blur', () => {
-      const val = parseNumber(textEl.value);
+      const val = clamp(parseNumber(textEl.value));
       textEl.value = isCurrency ? fmtNumber(val) : val;
+      rangeEl.value = val;
+      updateSliderFill(rangeEl);
+      if (onChange) onChange(val);
+      render();
     });
     rangeEl.addEventListener('input', () => {
       const val = parseFloat(rangeEl.value);
       textEl.value = isCurrency ? fmtNumber(val) : val;
       updateSliderFill(rangeEl);
+      if (onChange) onChange(val);
       render();
     });
     updateSliderFill(rangeEl);
   }
 
+  // Keep the minimum-liquid-assets slider capped at the current total liquid assets
+  function syncMinAssetsCeiling(assetsVal) {
+    minAssetsRange.max = assetsVal;
+    minAssetsRange.step = assetsVal < 100000 ? 1000 : assetsVal < 500000 ? 5000 : 10000;
+    let minVal = parseNumber(minAssetsInput.value);
+    if (minVal > assetsVal) {
+      minVal = assetsVal;
+      minAssetsInput.value = fmtNumber(minVal);
+    }
+    minAssetsRange.value = minVal;
+    updateSliderFill(minAssetsRange);
+  }
+
   bindTextAndRange(incomeInput, incomeRange, { isCurrency: true });
   bindTextAndRange(expensesInput, expensesRange, { isCurrency: true });
-  bindTextAndRange(assetsInput, assetsRange, { isCurrency: true });
+  bindTextAndRange(assetsInput, assetsRange, { isCurrency: true, onChange: syncMinAssetsCeiling });
   bindTextAndRange(returnRateInput, returnRateRange, {});
+  bindTextAndRange(minAssetsInput, minAssetsRange, { isCurrency: true });
+
+  syncMinAssetsCeiling(parseNumber(assetsInput.value));
 
   currencyButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -91,6 +118,7 @@
       incomeSymbol.textContent = s;
       expensesSymbol.textContent = s;
       assetsSymbol.textContent = s;
+      minAssetsSymbol.textContent = s;
       render();
     });
   });
@@ -99,6 +127,7 @@
     const income = parseNumber(incomeInput.value);
     const expenses = parseNumber(expensesInput.value);
     const assets = parseNumber(assetsInput.value);
+    const minAssets = Math.min(parseNumber(minAssetsInput.value), assets);
     const shortfall = expenses - income;
 
     posIncome.textContent = fmtCurrency(income);
@@ -121,7 +150,7 @@
 
     let months;
     if (monthlyRate <= 0) {
-      months = assets / shortfall;
+      months = (assets - minAssets) / shortfall;
     } else {
       const x = (assets * monthlyRate) / shortfall;
       if (x >= 1) {
@@ -132,7 +161,9 @@
         dYears.textContent = '∞';
         return;
       }
-      months = -Math.log(1 - x) / Math.log(1 + monthlyRate);
+      // Perpetuity balance level where growth exactly offsets the shortfall
+      const perpetuityLevel = shortfall / monthlyRate;
+      months = Math.log((perpetuityLevel - minAssets) / (perpetuityLevel - assets)) / Math.log(1 + monthlyRate);
     }
 
     const weeks = months * 52 / 12;

@@ -321,6 +321,14 @@ body {
   letter-spacing: 0.05em;
 }
 
+.field-hint {
+  display: block;
+  margin: -6px 0 9px;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--text-tertiary);
+}
+
 .input-prefix, .input-suffix {
   display: flex;
   align-items: center;

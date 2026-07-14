@@ -99,6 +99,16 @@
         </div>
         <input type="range" id="returnRateRange" min="0" max="20" step="0.5" value="4" class="slider">
       </div>
+
+      <div class="field">
+        <label for="minAssets">Minimum liquid assets</label>
+        <span class="field-hint">The value you want your liquid assets to stay above</span>
+        <div class="input-prefix">
+          <span id="minAssetsSymbol">£</span>
+          <input type="text" inputmode="decimal" id="minAssets" value="10,000">
+        </div>
+        <input type="range" id="minAssetsRange" min="0" max="100000" step="1000" value="10000" class="slider">
+      </div>
     </section>
 
     <!-- Results -->
@@ -155,13 +165,13 @@
             <span class="formula-word">Years</span>
           </div>
         </div>
-        <p class="formula-rule">Your runway is how long your <strong>liquid assets</strong> can cover the gap between what you spend and what your <strong>leveraged income</strong> brings in, assuming the unused balance keeps earning your <strong>investment return</strong> along the way. When income covers your lifestyle&mdash;or your return alone outpaces the gap&mdash;the runway never ends and you&rsquo;re free</p>
+        <p class="formula-rule">Your runway is how long your <strong>liquid assets</strong> can cover the gap between what you spend and what your <strong>leveraged income</strong> brings in, before dropping to your <strong>minimum liquid assets</strong>&mdash;assuming the unused balance keeps earning your <strong>investment return</strong> along the way. When income covers your lifestyle&mdash;or your return alone outpaces the gap&mdash;the runway never ends and you&rsquo;re free</p>
       </div>
     </section>
   </main>
 
   <footer class="app-footer">
-    <p>This assumes your income, expenses and investment return stay constant. This is not financial advice.</p>
+    <p>This assumes your income, expenses, investment return and minimum reserve stay constant. This is not financial advice.</p>
   </footer>
 </div>
 
