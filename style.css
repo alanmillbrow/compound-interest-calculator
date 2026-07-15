@@ -647,6 +647,28 @@ select#frequency:focus {
   line-height: 1.55;
 }
 
+.chart-years-control {
+  margin-top: 20px;
+}
+.chart-years-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 9px;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+.chart-years-label span:last-child {
+  font-weight: 400;
+  color: var(--text-primary);
+  text-transform: none;
+  letter-spacing: normal;
+  font-family: 'shackleton', Georgia, serif;
+  font-size: 0.95rem;
+}
+
 .link-btn {
   display: inline-block;
   background: transparent;

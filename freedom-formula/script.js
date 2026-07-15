@@ -34,6 +34,8 @@
   const chartCanvas = $('chart');
   const chartCtx = chartCanvas.getContext('2d');
   const chartTooltip = $('tooltip');
+  const chartYearsRange = $('chartYearsRange');
+  const chartYearsValue = $('chartYearsValue');
 
   const toggleTableBtn = $('toggleTable');
   const tableWrap = $('tableWrap');
@@ -43,6 +45,15 @@
   const shareLinkBtn = $('shareLinkBtn');
   const bookmarkBtn = $('bookmarkBtn');
   const shareStatus = $('shareStatus');
+
+  // How many years of the chart/table to show. null = follow the full
+  // natural range automatically; once the user drags the slider it holds
+  // that value (clamped down if the natural range later shrinks below it)
+  let chartYearsOverride = null;
+  chartYearsRange.addEventListener('input', () => {
+    chartYearsOverride = parseFloat(chartYearsRange.value);
+    render();
+  });
 
   const CURRENCY_SYMBOLS = { USD: '$', GBP: '£', EUR: '€' };
   let currentCurrency = 'GBP';
@@ -159,6 +170,13 @@
     syncMinAssetsCeiling(parseNumber(assetsInput.value));
     setField('rate', returnRateInput, returnRateRange, false);
     setField('minAssets', minAssetsInput, minAssetsRange, true);
+
+    // Not clamped here — chartYearsRange.max isn't computed yet at this
+    // point in startup. render() clamps it against the real natural
+    // range right after this runs.
+    if (params.has('chartYears')) {
+      chartYearsOverride = parseNumber(params.get('chartYears'));
+    }
   }
 
   function currentParams() {
@@ -169,6 +187,11 @@
     params.set('rate', parseNumber(returnRateInput.value));
     params.set('minAssets', Math.round(parseNumber(minAssetsInput.value)));
     params.set('currency', currentCurrency);
+    // Only include the years-shown slider once the user has actually
+    // moved it — otherwise it's just auto-tracking the full range anyway
+    if (chartYearsOverride !== null) {
+      params.set('chartYears', chartYearsOverride);
+    }
     return params;
   }
 
@@ -291,19 +314,41 @@
       runwayValue.textContent = `${valStr} ${unit}${plural}`;
     }
 
-    drawFreedomChart(assets, income, expenses, monthlyRate, minAssets, months);
+    // Keep the years-shown slider's ceiling in sync with the current
+    // natural range (the runway end, or 50 years when it never runs out).
+    // chartYearsOverride stays null (auto mode, always tracking the full
+    // range) until the user actually drags the slider; from then on it
+    // only clamps down if the natural range shrinks below it, but never
+    // auto-expands back out on its own
+    const naturalMaxYears = months === null ? 50 : months / 12;
+    if (chartYearsOverride !== null) {
+      chartYearsOverride = Math.min(chartYearsOverride, naturalMaxYears);
+    }
+    const effectiveYears = Math.max(0, chartYearsOverride === null ? naturalMaxYears : chartYearsOverride);
+    chartYearsRange.max = naturalMaxYears;
+    chartYearsRange.value = effectiveYears;
+    updateSliderFill(chartYearsRange);
+    chartYearsValue.textContent = fmtDur(effectiveYears) + ' yrs';
+
+    drawFreedomChart(assets, income, expenses, monthlyRate, minAssets, months, effectiveYears);
     updateUrl();
   }
 
   // ---------- Chart (canvas, no dependencies) ----------
-  // runwayMonths is null when the balance never reaches minAssets (infinite runway)
-  function calculateChartSeries(assets, income, expenses, monthlyRate, minAssets, runwayMonths) {
+  // runwayMonths is null when the balance never reaches minAssets (infinite
+  // runway). displayYears is the years-shown slider's current value — the
+  // natural range (runway end, or 50 years when it never runs out) unless
+  // the user has manually pulled the slider down below that
+  function calculateChartSeries(assets, income, expenses, monthlyRate, minAssets, runwayMonths, displayYears) {
     const netFlow = income - expenses;
     const isInfinite = runwayMonths === null;
     // The 50-year cap only applies when the money never runs out — a
     // finite runway is always shown in full, however long it takes
-    const wholeYears = isInfinite ? 50 : Math.floor(runwayMonths / 12);
+    const naturalMaxYears = isInfinite ? 50 : runwayMonths / 12;
+    const cutoffYears = Math.max(0, Math.min(displayYears, naturalMaxYears));
+    const atNaturalEnd = !isInfinite && cutoffYears >= naturalMaxYears - 1e-9;
 
+    const wholeYears = Math.floor(cutoffYears);
     let balance = assets;
     let contributed = assets;
     const totalMonths = wholeYears * 12;
@@ -316,15 +361,25 @@
       }
     }
 
-    // Cut the line off at the exact moment the runway ends, rather than
-    // rounding up to the next whole year. At that instant the balance is
-    // exactly minAssets by definition, so this is a closed-form point —
-    // no need to simulate a partial month.
-    if (!isInfinite) {
-      const runwayYears = runwayMonths / 12;
-      if (runwayYears - wholeYears > 1e-9) {
+    const fractionalYears = cutoffYears - wholeYears;
+    if (fractionalYears > 1e-9) {
+      if (atNaturalEnd) {
+        // Cut the line off at the exact moment the runway ends, rather
+        // than rounding up to the next whole year. At that instant the
+        // balance is exactly minAssets by definition, so this is a
+        // closed-form point — no need to simulate a partial month.
         const endContributed = assets + netFlow * runwayMonths;
-        yearly.push({ year: runwayYears, contributed: endContributed, balance: minAssets, interest: minAssets - endContributed });
+        yearly.push({ year: cutoffYears, contributed: endContributed, balance: minAssets, interest: minAssets - endContributed });
+      } else {
+        // An arbitrary (slider-chosen) cutoff — simulate the remaining
+        // whole months to stay consistent with the monthly-compounding
+        // model used everywhere else, rather than interpolating
+        const extraMonths = Math.max(1, Math.round(fractionalYears * 12));
+        for (let i = 0; i < extraMonths; i++) {
+          balance = balance * (1 + monthlyRate) + netFlow;
+          contributed += netFlow;
+        }
+        yearly.push({ year: wholeYears + extraMonths / 12, contributed, balance, interest: balance - contributed });
       }
     }
 
@@ -391,10 +446,10 @@
   let lastChartGeometry = null;
   let lastChartParams = null;
 
-  function drawFreedomChart(assets, income, expenses, monthlyRate, minAssets, runwayMonths) {
-    lastChartParams = { assets, income, expenses, monthlyRate, minAssets, runwayMonths };
+  function drawFreedomChart(assets, income, expenses, monthlyRate, minAssets, runwayMonths, displayYears) {
+    lastChartParams = { assets, income, expenses, monthlyRate, minAssets, runwayMonths, displayYears };
 
-    const yearly = calculateChartSeries(assets, income, expenses, monthlyRate, minAssets, runwayMonths);
+    const yearly = calculateChartSeries(assets, income, expenses, monthlyRate, minAssets, runwayMonths, displayYears);
     const { width, height } = setupCanvasSize();
     chartCtx.clearRect(0, 0, width, height);
 
@@ -548,8 +603,8 @@
 
   window.addEventListener('resize', () => {
     if (lastChartParams) {
-      const { assets, income, expenses, monthlyRate, minAssets, runwayMonths } = lastChartParams;
-      drawFreedomChart(assets, income, expenses, monthlyRate, minAssets, runwayMonths);
+      const { assets, income, expenses, monthlyRate, minAssets, runwayMonths, displayYears } = lastChartParams;
+      drawFreedomChart(assets, income, expenses, monthlyRate, minAssets, runwayMonths, displayYears);
     }
   });
 
