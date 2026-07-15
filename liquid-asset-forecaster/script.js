@@ -42,7 +42,6 @@
   const copyLinkBtn = $('copyLinkBtn');
   const shareLinkBtn = $('shareLinkBtn');
   const bookmarkBtn = $('bookmarkBtn');
-  const savePdfBtn = $('savePdfBtn');
   const shareStatus = $('shareStatus');
 
   let contributeAtStart = false;
@@ -228,10 +227,6 @@
     copyToClipboard(url)
       .then(() => setStatus(`Link copied — press ${shortcut} to bookmark this page`, 5000))
       .catch(() => window.prompt(`Copy this link, then press ${shortcut} to bookmark this page:`, url));
-  });
-
-  savePdfBtn.addEventListener('click', () => {
-    window.print();
   });
 
   applyUrlParams();

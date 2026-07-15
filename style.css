@@ -661,10 +661,6 @@ select#frequency:focus {
 }
 .share-status:empty { margin: 0; }
 
-@media print {
-  .share-card, .theme-toggle { display: none; }
-}
-
 .table-wrap {
   border-radius: var(--radius-sm);
   border: 2px solid var(--card-border);
