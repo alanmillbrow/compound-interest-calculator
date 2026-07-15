@@ -877,6 +877,7 @@ tbody tr:hover { background: var(--accent-soft); }
   margin: 22px 0;
 }
 .formula-term {
+  min-width: 0;
   padding: 22px 16px;
   text-align: center;
   border-right: 2px solid var(--card-border);
@@ -896,6 +897,8 @@ tbody tr:hover { background: var(--accent-soft); }
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 .formula-rule {
   margin: 0;
@@ -983,4 +986,9 @@ tbody tr:hover { background: var(--accent-soft); }
   .formula-abbr { font-size: 1.8rem; }
   .formula-word { font-size: 0.78rem; }
   .formula-term { padding: 16px 8px; }
+  /* Three tight columns can't fit a long single word (e.g. "Contribution")
+     without an ugly mid-word break, however small the font — stack instead */
+  .formula { grid-template-columns: 1fr; }
+  .formula-term { border-right: none; border-bottom: 2px solid var(--card-border); }
+  .formula-term:last-child { border-bottom: none; }
 }
