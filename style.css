@@ -238,6 +238,22 @@ body {
 }
 .tool-box:hover { background: var(--accent-soft); }
 
+.youtube-embed-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 2px solid var(--card-border);
+  background: #000;
+  overflow: hidden;
+}
+.youtube-embed-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 .about-photo {
   width: 320px;
   height: auto;
@@ -584,13 +600,13 @@ select#frequency:focus {
 .dot-interest { background: var(--interest); }
 .dot-multiple { background: var(--multiple); }
 
-.chart-header, .table-header {
+.chart-header, .table-header, .youtube-embed-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 18px;
 }
-.chart-header h2, .table-header h2 { margin: 0; }
+.chart-header h2, .table-header h2, .youtube-embed-header h2 { margin: 0; }
 
 .legend {
   display: flex;
@@ -632,11 +648,13 @@ select#frequency:focus {
 }
 
 .link-btn {
+  display: inline-block;
   background: transparent;
   border: 2px solid var(--text-primary);
   color: var(--text-primary);
   font-weight: 400;
   font-size: 0.85rem;
+  text-decoration: none;
   cursor: pointer;
   padding: 8px 14px;
   border-radius: 0;
