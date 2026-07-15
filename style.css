@@ -645,6 +645,26 @@ select#frequency:focus {
 }
 .link-btn:hover { background: var(--text-primary); color: var(--bg); }
 
+.share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+.share-actions .link-btn:disabled { opacity: 0.6; cursor: default; }
+
+.share-status {
+  margin: 12px 0 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+.share-status:empty { margin: 0; }
+
+@media print {
+  .share-card, .theme-toggle { display: none; }
+}
+
 .table-wrap {
   border-radius: var(--radius-sm);
   border: 2px solid var(--card-border);

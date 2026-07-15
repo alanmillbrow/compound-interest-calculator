@@ -39,6 +39,12 @@
   const tableWrap = $('tableWrap');
   const tableBody = $('tableBody');
 
+  const copyLinkBtn = $('copyLinkBtn');
+  const shareLinkBtn = $('shareLinkBtn');
+  const bookmarkBtn = $('bookmarkBtn');
+  const savePdfBtn = $('savePdfBtn');
+  const shareStatus = $('shareStatus');
+
   const CURRENCY_SYMBOLS = { USD: '$', GBP: '£', EUR: '€' };
   let currentCurrency = 'GBP';
 
@@ -119,7 +125,112 @@
   bindTextAndRange(returnRateInput, returnRateRange, {});
   bindTextAndRange(minAssetsInput, minAssetsRange, { isCurrency: true });
 
-  syncMinAssetsCeiling(parseNumber(assetsInput.value));
+  // ---------- Shareable link ----------
+  // Restore any values passed via the URL (e.g. from a bookmarked or
+  // shared link), falling back to the page's defaults for anything absent
+  function applyUrlParams() {
+    const params = new URLSearchParams(location.search);
+
+    const currencyParam = params.get('currency');
+    if (currencyParam && CURRENCY_SYMBOLS[currencyParam]) {
+      currentCurrency = currencyParam;
+      currencyButtons.forEach((b) => b.classList.toggle('active', b.dataset.currency === currencyParam));
+      const s = CURRENCY_SYMBOLS[currentCurrency];
+      incomeSymbol.textContent = s;
+      expensesSymbol.textContent = s;
+      assetsSymbol.textContent = s;
+      minAssetsSymbol.textContent = s;
+    }
+
+    function setField(param, textEl, rangeEl, isCurrency) {
+      if (!params.has(param)) return;
+      let val = parseNumber(params.get(param));
+      if (val < parseFloat(rangeEl.min)) val = parseFloat(rangeEl.min);
+      if (val > parseFloat(rangeEl.max)) val = parseFloat(rangeEl.max);
+      rangeEl.value = val;
+      textEl.value = isCurrency ? fmtNumber(val) : val;
+      updateSliderFill(rangeEl);
+    }
+
+    setField('income', incomeInput, incomeRange, true);
+    setField('expenses', expensesInput, expensesRange, true);
+    setField('assets', assetsInput, assetsRange, true);
+    // Refresh the minAssets ceiling before applying its own URL value,
+    // since it depends on the (possibly just-updated) assets value
+    syncMinAssetsCeiling(parseNumber(assetsInput.value));
+    setField('rate', returnRateInput, returnRateRange, false);
+    setField('minAssets', minAssetsInput, minAssetsRange, true);
+  }
+
+  function currentParams() {
+    const params = new URLSearchParams();
+    params.set('income', Math.round(parseNumber(incomeInput.value)));
+    params.set('expenses', Math.round(parseNumber(expensesInput.value)));
+    params.set('assets', Math.round(parseNumber(assetsInput.value)));
+    params.set('rate', parseNumber(returnRateInput.value));
+    params.set('minAssets', Math.round(parseNumber(minAssetsInput.value)));
+    params.set('currency', currentCurrency);
+    return params;
+  }
+
+  // Keep the address bar in sync so the page can be bookmarked directly,
+  // without needing an extra history entry per keystroke
+  function updateUrl() {
+    history.replaceState(null, '', `${location.pathname}?${currentParams().toString()}`);
+  }
+
+  function shareUrl() {
+    return `${location.origin}${location.pathname}?${currentParams().toString()}`;
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return Promise.reject(new Error('Clipboard API unavailable'));
+  }
+
+  let statusTimer = null;
+  function setStatus(msg, duration = 3000) {
+    shareStatus.textContent = msg;
+    clearTimeout(statusTimer);
+    if (duration) statusTimer = setTimeout(() => { shareStatus.textContent = ''; }, duration);
+  }
+
+  copyLinkBtn.addEventListener('click', () => {
+    const url = shareUrl();
+    copyToClipboard(url)
+      .then(() => setStatus('Link copied to your clipboard'))
+      .catch(() => window.prompt('Copy this link:', url));
+  });
+
+  shareLinkBtn.addEventListener('click', () => {
+    const url = shareUrl();
+    if (navigator.share) {
+      navigator.share({ title: document.title, url }).catch((err) => {
+        if (err && err.name !== 'AbortError') setStatus('Could not open the share sheet');
+      });
+    } else {
+      copyToClipboard(url)
+        .then(() => setStatus('Sharing isn’t supported here — link copied instead'))
+        .catch(() => window.prompt('Copy this link to share:', url));
+    }
+  });
+
+  bookmarkBtn.addEventListener('click', () => {
+    const url = shareUrl();
+    const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+    const shortcut = isMac ? '⌘D' : 'Ctrl+D';
+    copyToClipboard(url)
+      .then(() => setStatus(`Link copied — press ${shortcut} to bookmark this page`, 5000))
+      .catch(() => window.prompt(`Copy this link, then press ${shortcut} to bookmark this page:`, url));
+  });
+
+  savePdfBtn.addEventListener('click', () => {
+    window.print();
+  });
+
+  applyUrlParams();
 
   currencyButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -186,6 +297,7 @@
     }
 
     drawFreedomChart(assets, income, expenses, monthlyRate, minAssets, months);
+    updateUrl();
   }
 
   // ---------- Chart (canvas, no dependencies) ----------

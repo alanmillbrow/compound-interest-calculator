@@ -39,6 +39,12 @@
 
   const themeToggle = $('themeToggle');
 
+  const copyLinkBtn = $('copyLinkBtn');
+  const shareLinkBtn = $('shareLinkBtn');
+  const bookmarkBtn = $('bookmarkBtn');
+  const savePdfBtn = $('savePdfBtn');
+  const shareStatus = $('shareStatus');
+
   let contributeAtStart = false;
   let yearlyData = [];
 
@@ -115,6 +121,120 @@
       renderAll();
     });
   });
+
+  // ---------- Shareable link ----------
+  // Restore any values passed via the URL (e.g. from a bookmarked or
+  // shared link), falling back to the page's defaults for anything absent
+  function applyUrlParams() {
+    const params = new URLSearchParams(location.search);
+
+    const currencyParam = params.get('currency');
+    if (currencyParam && CURRENCY_SYMBOLS[currencyParam]) {
+      currentCurrency = currencyParam;
+      currencyButtons.forEach((b) => b.classList.toggle('active', b.dataset.currency === currencyParam));
+      const symbol = CURRENCY_SYMBOLS[currentCurrency];
+      principalSymbolEl.textContent = symbol;
+      contributionSymbolEl.textContent = symbol;
+    }
+
+    const timingParam = params.get('timing');
+    if (timingParam === 'begin' || timingParam === 'end') {
+      contributeAtStart = timingParam === 'begin';
+      segButtons.forEach((b) => b.classList.toggle('active', b.dataset.timing === timingParam));
+    }
+
+    function setField(param, textEl, rangeEl, isCurrency, isInt) {
+      if (!params.has(param)) return;
+      let val = parseNumber(params.get(param));
+      if (isInt) val = Math.round(val);
+      if (val < parseFloat(rangeEl.min)) val = parseFloat(rangeEl.min);
+      if (val > parseFloat(rangeEl.max)) val = parseFloat(rangeEl.max);
+      rangeEl.value = val;
+      textEl.value = isCurrency ? fmtNumber(val) : val;
+      updateSliderFill(rangeEl);
+    }
+
+    setField('principal', principalInput, principalRange, true, false);
+    setField('contribution', contributionInput, contributionRange, true, false);
+    setField('rate', rateInput, rateRange, false, false);
+    setField('years', yearsInput, yearsRange, false, true);
+
+    const frequencyParam = params.get('frequency');
+    if (frequencyParam && [...frequencySelect.options].some((o) => o.value === frequencyParam)) {
+      frequencySelect.value = frequencyParam;
+    }
+  }
+
+  function currentParams() {
+    const params = new URLSearchParams();
+    params.set('principal', Math.round(parseNumber(principalInput.value)));
+    params.set('contribution', Math.round(parseNumber(contributionInput.value)));
+    params.set('rate', parseNumber(rateInput.value));
+    params.set('years', Math.round(parseNumber(yearsInput.value)));
+    params.set('frequency', frequencySelect.value);
+    params.set('timing', contributeAtStart ? 'begin' : 'end');
+    params.set('currency', currentCurrency);
+    return params;
+  }
+
+  // Keep the address bar in sync so the page can be bookmarked directly,
+  // without needing an extra history entry per keystroke
+  function updateUrl() {
+    history.replaceState(null, '', `${location.pathname}?${currentParams().toString()}`);
+  }
+
+  function shareUrl() {
+    return `${location.origin}${location.pathname}?${currentParams().toString()}`;
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return Promise.reject(new Error('Clipboard API unavailable'));
+  }
+
+  let statusTimer = null;
+  function setStatus(msg, duration = 3000) {
+    shareStatus.textContent = msg;
+    clearTimeout(statusTimer);
+    if (duration) statusTimer = setTimeout(() => { shareStatus.textContent = ''; }, duration);
+  }
+
+  copyLinkBtn.addEventListener('click', () => {
+    const url = shareUrl();
+    copyToClipboard(url)
+      .then(() => setStatus('Link copied to your clipboard'))
+      .catch(() => window.prompt('Copy this link:', url));
+  });
+
+  shareLinkBtn.addEventListener('click', () => {
+    const url = shareUrl();
+    if (navigator.share) {
+      navigator.share({ title: document.title, url }).catch((err) => {
+        if (err && err.name !== 'AbortError') setStatus('Could not open the share sheet');
+      });
+    } else {
+      copyToClipboard(url)
+        .then(() => setStatus('Sharing isn’t supported here — link copied instead'))
+        .catch(() => window.prompt('Copy this link to share:', url));
+    }
+  });
+
+  bookmarkBtn.addEventListener('click', () => {
+    const url = shareUrl();
+    const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+    const shortcut = isMac ? '⌘D' : 'Ctrl+D';
+    copyToClipboard(url)
+      .then(() => setStatus(`Link copied — press ${shortcut} to bookmark this page`, 5000))
+      .catch(() => window.prompt(`Copy this link, then press ${shortcut} to bookmark this page:`, url));
+  });
+
+  savePdfBtn.addEventListener('click', () => {
+    window.print();
+  });
+
+  applyUrlParams();
 
   // ---------- Calculation ----------
   function calculate() {
@@ -204,6 +324,7 @@
 
     drawChart(yearlyData, data.principal);
     renderTable(yearlyData, data.principal);
+    updateUrl();
   }
 
   function renderTable(yearly, principal) {
