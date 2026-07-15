@@ -48,10 +48,18 @@
 
   // How many years of the chart/table to show. null = follow the full
   // natural range automatically; once the user drags the slider it holds
-  // that value (clamped down if the natural range later shrinks below it)
+  // that value (clamped down if the natural range later shrinks below it).
+  // Snapped to 0.1-year increments by hand (rather than a native step
+  // attribute, which would also round the max itself) so the very top of
+  // the track can still land on the exact, possibly-fractional, natural max
   let chartYearsOverride = null;
   chartYearsRange.addEventListener('input', () => {
-    chartYearsOverride = parseFloat(chartYearsRange.value);
+    const raw = parseFloat(chartYearsRange.value);
+    const max = parseFloat(chartYearsRange.max);
+    let snapped = Math.round(raw * 10) / 10;
+    if (raw >= max - 0.05 || snapped > max) snapped = max;
+    chartYearsOverride = snapped;
+    chartYearsRange.value = chartYearsOverride;
     render();
   });
 
@@ -201,6 +209,22 @@
     history.replaceState(null, '', `${location.pathname}?${currentParams().toString()}`);
   }
 
+  // Dragging a slider fires many 'input' events a second, and browsers
+  // rate-limit history.replaceState — burst past the limit and further
+  // calls are silently dropped, leaving the address bar stuck on a stale
+  // value. Trailing-throttle it instead; since updateUrl() reads live DOM
+  // state, the eventual call always flushes the current value. Copy
+  // link/Share/Bookmark are unaffected either way since they build the URL
+  // from live state directly, not from the address bar.
+  let urlUpdateTimer = null;
+  function scheduleUrlUpdate() {
+    if (urlUpdateTimer) return;
+    urlUpdateTimer = setTimeout(() => {
+      urlUpdateTimer = null;
+      updateUrl();
+    }, 200);
+  }
+
   function shareUrl() {
     return `${location.origin}${location.pathname}?${currentParams().toString()}`;
   }
@@ -331,7 +355,7 @@
     chartYearsValue.textContent = fmtDur(effectiveYears) + ' yrs';
 
     drawFreedomChart(assets, income, expenses, monthlyRate, minAssets, months, effectiveYears);
-    updateUrl();
+    scheduleUrlUpdate();
   }
 
   // ---------- Chart (canvas, no dependencies) ----------

@@ -182,6 +182,22 @@
     history.replaceState(null, '', `${location.pathname}?${currentParams().toString()}`);
   }
 
+  // Dragging a slider fires many 'input' events a second, and browsers
+  // rate-limit history.replaceState — burst past the limit and further
+  // calls are silently dropped, leaving the address bar stuck on a stale
+  // value. Trailing-throttle it instead; since updateUrl() reads live DOM
+  // state, the eventual call always flushes the current value. Copy
+  // link/Share/Bookmark are unaffected either way since they build the URL
+  // from live state directly, not from the address bar.
+  let urlUpdateTimer = null;
+  function scheduleUrlUpdate() {
+    if (urlUpdateTimer) return;
+    urlUpdateTimer = setTimeout(() => {
+      urlUpdateTimer = null;
+      updateUrl();
+    }, 200);
+  }
+
   function shareUrl() {
     return `${location.origin}${location.pathname}?${currentParams().toString()}`;
   }
@@ -319,7 +335,7 @@
 
     drawChart(yearlyData, data.principal);
     renderTable(yearlyData, data.principal);
-    updateUrl();
+    scheduleUrlUpdate();
   }
 
   function renderTable(yearly, principal) {
