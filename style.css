@@ -12,6 +12,8 @@
   --accent-2: #33291f;
   --accent-3: #6b5136;
   --accent-soft: rgba(51, 41, 31, 0.07);
+  --badge-free-bg: #8c3f34;
+  --badge-free-text: #f2e9d8;
 
   --interest: #786246;
   --interest-soft: rgba(120, 98, 70, 0.18);
@@ -51,6 +53,8 @@
   --accent-2: #e6d9bd;
   --accent-3: #c2a67d;
   --accent-soft: rgba(230, 217, 189, 0.08);
+  --badge-free-bg: #a8564a;
+  --badge-free-text: #f2e9d8;
 
   --interest: #b39a76;
   --interest-soft: rgba(179, 154, 118, 0.2);
@@ -258,6 +262,11 @@ body {
   padding: 4px 10px;
   border-left: 2px solid var(--card-border);
   border-bottom: 2px solid var(--card-border);
+}
+
+.tool-box-badge-free {
+  background: var(--badge-free-bg);
+  color: var(--badge-free-text);
 }
 
 .youtube-embed-frame {
