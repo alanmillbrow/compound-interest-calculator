@@ -238,6 +238,28 @@ body {
 }
 .tool-box:hover { background: var(--accent-soft); }
 
+.card.tool-box-featured {
+  background: var(--card-border);
+  color: var(--card-bg-solid);
+  border-color: var(--card-border);
+}
+.card.tool-box-featured:hover { background: var(--accent-3); }
+
+.tool-box-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--accent-3);
+  color: var(--card-bg-solid);
+  font-family: 'shackleton', Georgia, serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-left: 2px solid var(--card-border);
+  border-bottom: 2px solid var(--card-border);
+}
+
 .youtube-embed-frame {
   position: relative;
   width: 100%;
