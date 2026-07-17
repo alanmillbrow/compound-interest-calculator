@@ -138,12 +138,32 @@ body {
   justify-content: center;
   color: var(--text-primary);
   background: transparent;
-  border: 2px solid var(--text-primary);
   text-decoration: none;
   transition: opacity 0.15s ease;
 }
 .brand-mark:hover { opacity: 0.7; }
 .brand-mark svg { width: 22px; height: 22px; }
+/* Recolor the raster silhouette by using it as a mask over a solid-color
+   box, rather than drawing the (fixed-black) image directly — this way it
+   always matches --text-primary exactly, in both themes, with no separate
+   dark-mode override needed */
+.brand-mark-icon {
+  display: inline-block;
+  position: relative;
+  top: -7px;
+  left: 5px;
+  width: 42px;
+  height: 42px;
+  background-color: var(--text-primary);
+  -webkit-mask-image: url(/BuffaloImage.png);
+  mask-image: url(/BuffaloImage.png);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
 
 .kicker {
   display: inline-block;
