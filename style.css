@@ -554,6 +554,21 @@ select#frequency:focus {
   font-style: italic;
 }
 
+.newsletter-signup .formkit-form {
+  margin: 0 auto;
+}
+/* Kit's embed reserves space for a modal-style header above ~700px wide,
+   which reads as an oversized gap here since this is an inline form */
+.newsletter-signup [data-style="clean"] {
+  padding-top: 16px !important;
+  padding-bottom: 0 !important;
+}
+/* Kit's default button blue is inline-styled on the element itself, so it
+   needs !important here to override it with a tone that fits the palette */
+.newsletter-signup .formkit-submit {
+  background-color: #5C7A8A !important;
+}
+
 .ledger-row {
   display: flex;
   align-items: center;
