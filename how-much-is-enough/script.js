@@ -298,7 +298,9 @@
       const pmt = requiredMonthlySavings(potRequired, assets, monthlyRate, months);
       let pmtForChart = 0;
       if (pmt === null) {
-        els.savings.textContent = potRequired <= assets ? 'On track' : 'Needed now';
+        els.savings.innerHTML = potRequired <= assets
+          ? 'On track'
+          : `<span>${fmtCurrency(potRequired - futureAssets)}<span class="headline-value-caption">needed now</span></span>`;
         els.totalSaved.textContent = fmtCurrency(0);
       } else if (pmt <= 0) {
         els.savings.textContent = 'On track';

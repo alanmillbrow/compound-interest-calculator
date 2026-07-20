@@ -666,6 +666,11 @@ select#frequency:focus {
   text-align: center;
 }
 
+.headline-value-caption {
+  display: block;
+  margin-top: 8px;
+}
+
 .dot {
   width: 10px;
   height: 10px;
