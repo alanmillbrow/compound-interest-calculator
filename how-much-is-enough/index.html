@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Much Is Enough?</title>
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://use.typekit.net">
+<!-- Shackleton (Adobe Fonts / Typekit) -->
+<link rel="stylesheet" href="https://use.typekit.net/zkf6zbb.css">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="bg-decoration"></div>
+
+<div class="app">
+  <header class="app-header">
+    <div class="brand">
+      <a class="brand-mark" href="/" aria-label="Investing Buffalo home">
+        <span class="brand-mark-icon" role="img" aria-label="Investing Buffalo"></span>
+      </a>
+      <div class="header-text">
+        <h1>How Much Is Enough?</h1>
+        <p>Work out the pot size and savings rate you need to reach your future income goal</p>
+      </div>
+    </div>
+    <button id="themeToggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle light/dark theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </button>
+  </header>
+
+  <section class="card formula-card formula-summary">
+    <h2>How Much Is Enough?</h2>
+    <div class="formula">
+      <div class="formula-term">
+        <span class="formula-abbr">FI</span>
+        <span class="formula-word">Future Income</span>
+      </div>
+      <div class="formula-term">
+        <span class="formula-abbr">LI</span>
+        <span class="formula-word">Leveraged Income</span>
+      </div>
+      <div class="formula-term">
+        <span class="formula-abbr">SWR</span>
+        <span class="formula-word">Safe Withdrawal Rate</span>
+      </div>
+    </div>
+    <p class="formula-rule">The pot you need is your <strong>Future Income</strong> minus your <strong>Leveraged Income</strong>, divided by your <strong>Safe Withdrawal Rate</strong></p>
+  </section>
+
+  <main class="layout">
+    <!-- Inputs -->
+    <section class="card inputs-card">
+      <h2>Your numbers</h2>
+
+      <div class="field">
+        <label>Currency</label>
+        <div class="segmented currency-segmented">
+          <button type="button" class="seg-btn active" data-currency="GBP">£</button>
+          <button type="button" class="seg-btn" data-currency="USD">$</button>
+          <button type="button" class="seg-btn" data-currency="EUR">&euro;</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="income">Desired monthly income</label>
+        <span class="field-hint">At today&rsquo;s purchasing power</span>
+        <div class="input-prefix">
+          <span id="incomeSymbol">£</span>
+          <input type="text" inputmode="decimal" id="income" value="3,000">
+        </div>
+        <input type="range" id="incomeRange" min="0" max="20000" step="100" value="3000" class="slider">
+      </div>
+
+      <div class="field">
+        <label for="years">Years until income starts</label>
+        <div class="input-suffix">
+          <input type="text" inputmode="numeric" id="years" value="10">
+          <span>yrs</span>
+        </div>
+        <input type="range" id="yearsRange" min="0" max="50" step="1" value="10" class="slider">
+      </div>
+
+      <div class="field">
+        <label for="inflation">Expected annual inflation</label>
+        <div class="input-suffix">
+          <input type="text" inputmode="decimal" id="inflation" value="3.5">
+          <span>%</span>
+        </div>
+        <input type="range" id="inflationRange" min="0" max="10" step="0.1" value="3.5" class="slider">
+      </div>
+
+      <div class="field">
+        <label for="assets">Current liquid assets</label>
+        <div class="input-prefix">
+          <span id="assetsSymbol">£</span>
+          <input type="text" inputmode="decimal" id="assets" value="100,000">
+        </div>
+        <input type="range" id="assetsRange" min="0" max="2000000" step="10000" value="100000" class="slider">
+      </div>
+
+      <div class="field">
+        <label for="returnRate">Expected annual return</label>
+        <div class="input-suffix">
+          <input type="text" inputmode="decimal" id="returnRate" value="7">
+          <span>%</span>
+        </div>
+        <input type="range" id="returnRateRange" min="0" max="25" step="0.5" value="7" class="slider">
+      </div>
+
+      <div class="field">
+        <label for="leveraged">Monthly leveraged income</label>
+        <span class="field-hint">Leveraged income you expect to be generating when withdrawals start</span>
+        <div class="input-prefix">
+          <span id="leveragedSymbol">£</span>
+          <input type="text" inputmode="decimal" id="leveraged" value="0">
+        </div>
+        <input type="range" id="leveragedRange" min="0" max="20000" step="100" value="0" class="slider">
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section class="results-col">
+      <div class="card share-card">
+        <h2>Save or share this result</h2>
+        <div class="share-actions">
+          <button id="copyLinkBtn" class="link-btn">Copy link</button>
+          <button id="shareLinkBtn" class="link-btn">Share</button>
+          <button id="bookmarkBtn" class="link-btn">Bookmark</button>
+        </div>
+        <p class="share-status" id="shareStatus"></p>
+      </div>
+
+      <div class="card">
+        <h2>Income required, inflation-adjusted</h2>
+        <p class="section-note">Your desired income, compounded by inflation over the years until it starts</p>
+        <div class="ledger-table">
+          <div class="ledger-row ledger-head cols-3">
+            <span></span>
+            <span>Annual</span>
+            <span>Monthly</span>
+          </div>
+          <div class="ledger-row cols-3">
+            <span>Income required</span>
+            <span id="reqIncomeAnnual">£0</span>
+            <span id="reqIncomeMonthly">£0</span>
+          </div>
+          <div class="ledger-row cols-3">
+            <span>Passive income required</span>
+            <span id="reqPassiveAnnual">£0</span>
+            <span id="reqPassiveMonthly">£0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-row">
+        <div class="card summary-card">
+          <h2>3% withdrawal rule</h2>
+          <div class="ledger-table">
+            <div class="ledger-row"><span>This is enough (pot required)</span><span id="pot3">£0</span></div>
+            <div class="ledger-row"><span>Future value of current assets</span><span id="fvAssets3">£0</span></div>
+            <div class="ledger-row"><span>Still to be saved</span><span id="totalSaved3">£0</span></div>
+            <div class="ledger-row"><span>Future value of monthly savings</span><span id="fvSavings3">£0</span></div>
+          </div>
+        </div>
+        <div class="card headline-card">
+          <div class="ledger-row ledger-head headline-title"><span>Monthly savings needed</span></div>
+          <div class="headline-value" id="savings3">£0</div>
+        </div>
+      </div>
+
+      <div class="summary-row">
+        <div class="card summary-card">
+          <h2>4% withdrawal rule</h2>
+          <div class="ledger-table">
+            <div class="ledger-row"><span>This is enough (pot required)</span><span id="pot4">£0</span></div>
+            <div class="ledger-row"><span>Future value of current assets</span><span id="fvAssets4">£0</span></div>
+            <div class="ledger-row"><span>Still to be saved</span><span id="totalSaved4">£0</span></div>
+            <div class="ledger-row"><span>Future value of monthly savings</span><span id="fvSavings4">£0</span></div>
+          </div>
+        </div>
+        <div class="card headline-card">
+          <div class="ledger-row ledger-head headline-title"><span>Monthly savings needed</span></div>
+          <div class="headline-value" id="savings4">£0</div>
+        </div>
+      </div>
+
+      <div class="summary-row">
+        <div class="card summary-card">
+          <h2>5% withdrawal rule</h2>
+          <div class="ledger-table">
+            <div class="ledger-row"><span>This is enough (pot required)</span><span id="pot5">£0</span></div>
+            <div class="ledger-row"><span>Future value of current assets</span><span id="fvAssets5">£0</span></div>
+            <div class="ledger-row"><span>Still to be saved</span><span id="totalSaved5">£0</span></div>
+            <div class="ledger-row"><span>Future value of monthly savings</span><span id="fvSavings5">£0</span></div>
+          </div>
+        </div>
+        <div class="card headline-card">
+          <div class="ledger-row ledger-head headline-title"><span>Monthly savings needed</span></div>
+          <div class="headline-value" id="savings5">£0</div>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="chart-header">
+          <h2>Reaching your pot</h2>
+          <div class="legend">
+            <span><i class="dot dot-contrib"></i>Savings</span>
+            <span><i class="dot dot-interest"></i>Investment return</span>
+            <span><i class="dot dot-multiple"></i>Target pot</span>
+          </div>
+        </div>
+        <div class="field chart-rate-field">
+          <label>Withdrawal rule</label>
+          <div class="segmented chart-rate-segmented">
+            <button type="button" class="seg-btn" data-rate="3">3% rule</button>
+            <button type="button" class="seg-btn active" data-rate="4">4% rule</button>
+            <button type="button" class="seg-btn" data-rate="5">5% rule</button>
+          </div>
+        </div>
+        <p class="chart-target-note" id="chartTarget"></p>
+        <canvas id="chart" height="260"></canvas>
+        <div id="tooltip" class="chart-tooltip"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>This assumes a constant rate of return and inflation, and monthly contributions made at the end of each month. This is not financial advice.</p>
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

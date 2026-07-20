@@ -554,6 +554,17 @@ select#frequency:focus {
   font-style: italic;
 }
 
+.chart-target-note {
+  margin: 24px 0 14px;
+  color: var(--text-secondary);
+  font-size: 0.98rem;
+}
+.chart-target-note strong {
+  color: var(--text-primary);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
 .newsletter-signup .formkit-form {
   margin: 0 auto;
 }
