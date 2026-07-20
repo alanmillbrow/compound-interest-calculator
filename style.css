@@ -330,6 +330,16 @@ body {
   margin: 0 0 24px;
 }
 
+.bio-lede-line2 {
+  display: block;
+  margin-top: 12px;
+}
+
+.bio-body-line2 {
+  display: block;
+  margin-top: 12px;
+}
+
 .stat-highlight {
   color: var(--interest);
   font-weight: 400;
@@ -940,6 +950,23 @@ tbody tr:hover { background: var(--accent-soft); }
   line-height: 1.55;
   color: var(--text-secondary);
   max-width: 54ch;
+}
+
+/* Calculators index page */
+.calculators-list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.calculator-entry {
+  text-align: center;
+}
+.calculator-blurb {
+  margin: 0 auto 20px;
+  font-size: 1.1rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 60ch;
 }
 
 /* Freedom formula */
