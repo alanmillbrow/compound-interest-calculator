@@ -340,6 +340,16 @@ body {
   margin-top: 12px;
 }
 
+.bio-body-cta {
+  display: block;
+  margin-top: 12px;
+  color: var(--text-primary);
+}
+.bio-body .bio-body-cta a {
+  color: var(--interest);
+  text-decoration: underline;
+}
+
 .stat-highlight {
   color: var(--interest);
   font-weight: 400;
@@ -890,6 +900,47 @@ tbody tr:hover { background: var(--accent-soft); }
   font-size: 1.1rem;
 }
 
+/* ---------- About Me page ---------- */
+.story {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.story-p {
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.story-p a {
+  color: var(--interest);
+  text-decoration: underline;
+}
+.story-cta {
+  color: var(--text-primary);
+}
+.story-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.story-photo {
+  width: 220px;
+  flex-shrink: 0;
+  display: block;
+  border: 2px solid var(--card-border);
+}
+.story-photo-row .story-p { flex: 1; }
+.story-signoff {
+  font-family: 'shackleton', Georgia, serif;
+  font-size: 1.5rem;
+  font-style: italic;
+  font-weight: 400;
+  margin: 8px 0 0;
+}
+
 /* Vertical numbered roadmap */
 .roadmap {
   list-style: none;
@@ -1086,6 +1137,8 @@ tbody tr:hover { background: var(--accent-soft); }
   .ledger-row.cols-3 { font-size: 0.9rem; gap: 8px; }
   .about-card { flex-direction: column; text-align: center; gap: 16px; padding: 8px 0 24px; }
   .about-photo { width: 230px; margin: 0 auto; }
+  .story-photo-row { flex-direction: column; text-align: center; gap: 16px; }
+  .story-photo { width: 200px; margin: 0 auto; }
   .narrow-layout { gap: 40px; }
   .roadmap::before { left: 29px; }
   .stage { gap: 18px; }
