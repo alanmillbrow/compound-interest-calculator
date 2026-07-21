@@ -91,29 +91,36 @@ function writeCache(data) {
 
 async function loadStock(symbol) {
   const base = 'https://api.twelvedata.com';
-  const [quote, stats, history] = await Promise.all([
+  // Each call is fetched independently (allSettled, not all) because /statistics
+  // requires a paid Twelve Data plan and 403s on the free tier for most symbols —
+  // that shouldn't stop price/all-time-high (quote + time_series) from rendering.
+  const [quoteResult, statsResult, historyResult] = await Promise.allSettled([
     rateLimitedFetchJson(`${base}/quote?symbol=${symbol}&apikey=${API_KEY}`),
     rateLimitedFetchJson(`${base}/statistics?symbol=${symbol}&apikey=${API_KEY}`),
     rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
   ]);
 
-  const price = parseFloat(quote.close);
-  const pe = stats?.statistics?.valuations_metrics?.trailing_pe ?? null;
+  const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
+  const pe = statsResult.status === 'fulfilled'
+    ? statsResult.value?.statistics?.valuations_metrics?.trailing_pe ?? null
+    : null;
 
   let athPrice = null;
   let athDate = null;
-  for (const bar of history.values || []) {
-    const high = parseFloat(bar.high);
-    if (athPrice === null || high > athPrice) {
-      athPrice = high;
-      athDate = bar.datetime;
+  if (historyResult.status === 'fulfilled') {
+    for (const bar of historyResult.value.values || []) {
+      const high = parseFloat(bar.high);
+      if (athPrice === null || high > athPrice) {
+        athPrice = high;
+        athDate = bar.datetime;
+      }
     }
   }
 
   const daysSinceAth = athDate
     ? Math.round((Date.now() - new Date(`${athDate}T00:00:00Z`).getTime()) / 86400000)
     : null;
-  const vsAth = athPrice ? ((price - athPrice) / athPrice) * 100 : null;
+  const vsAth = (price !== null && athPrice) ? ((price - athPrice) / athPrice) * 100 : null;
 
   return { symbol, price, athPrice, athDate, daysSinceAth, vsAth, pe };
 }
