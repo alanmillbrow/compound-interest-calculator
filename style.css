@@ -806,8 +806,15 @@ select#frequency:focus {
 .table-wrap {
   border-radius: var(--radius-sm);
   border: 2px solid var(--card-border);
+  overflow-x: auto;
 }
 .table-wrap.hidden { display: none; }
+
+.stock-table {
+  table-layout: fixed;
+}
+.stock-table th:first-child, .stock-table td:first-child { width: 25%; }
+.stock-table th:not(:first-child), .stock-table td:not(:first-child) { width: 15%; }
 
 table {
   width: 100%;
@@ -850,6 +857,18 @@ tbody tr:hover { background: var(--accent-soft); }
   font-size: 0.8rem;
   margin: 0;
   font-style: italic;
+}
+
+.app-footer-link {
+  margin-top: 8px !important;
+}
+.app-footer-link a {
+  color: var(--text-tertiary);
+  font-style: normal;
+  text-decoration: underline;
+}
+.app-footer-link a:hover {
+  color: var(--text-primary);
 }
 
 /* ---------- Financial Freedom Roadmap page ---------- */
