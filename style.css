@@ -899,6 +899,10 @@ tbody tr:hover { background: var(--accent-soft); }
   max-width: 60ch;
   margin: 0 auto 28px;
 }
+.rm-lede a {
+  color: var(--interest);
+  text-decoration: underline;
+}
 
 .flow {
   display: flex;
@@ -1037,6 +1041,22 @@ tbody tr:hover { background: var(--accent-soft); }
   line-height: 1.55;
   color: var(--text-secondary);
   max-width: 60ch;
+}
+
+/* Reading list page */
+.book-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.book-entry {
+  text-align: center;
+}
+.book-author {
+  margin: 0 auto 12px;
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--text-secondary);
 }
 
 /* Freedom formula */
