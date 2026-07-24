@@ -318,10 +318,10 @@
     let savingsSentence;
     if (selected.rawPmt === null) {
       savingsSentence = selected.potRequired <= futureAssets
-        ? `You are already on track to reach this, no further saving required`
+        ? `You are already on track to reach this, <strong>no further saving required</strong>`
         : `You need <strong>${fmtCurrency(selected.potRequired - futureAssets)}</strong> right now to reach this`;
     } else if (selected.rawPmt <= 0) {
-      savingsSentence = `You are already on track to reach this, no further saving required`;
+      savingsSentence = `You are already on track to reach this, <strong>no further saving required</strong>`;
     } else {
       savingsSentence = `You need to save <strong>${fmtCurrency(selected.rawPmt)}</strong> each month to reach this`;
     }
