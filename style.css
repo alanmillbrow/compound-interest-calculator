@@ -1052,12 +1052,6 @@ tbody tr:hover { background: var(--accent-soft); }
 .book-entry {
   text-align: center;
 }
-.book-author {
-  margin: 0 auto 12px;
-  font-size: 1rem;
-  font-style: italic;
-  color: var(--text-secondary);
-}
 
 /* Freedom formula */
 .formula-summary {

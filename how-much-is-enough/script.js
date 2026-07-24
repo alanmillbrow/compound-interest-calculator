@@ -310,17 +310,30 @@
         els.totalSaved.textContent = fmtCurrency(pmt * months);
         pmtForChart = pmt;
       }
-      chartData[rate] = { potRequired, pmt: pmtForChart };
+      chartData[rate] = { potRequired, pmt: pmtForChart, rawPmt: pmt };
     }
 
     const selected = chartData[selectedChartRate];
 
+    let savingsSentence;
+    if (selected.rawPmt === null) {
+      savingsSentence = selected.potRequired <= futureAssets
+        ? `You are already on track to reach this, no further saving required`
+        : `You need <strong>${fmtCurrency(selected.potRequired - futureAssets)}</strong> right now to reach this`;
+    } else if (selected.rawPmt <= 0) {
+      savingsSentence = `You are already on track to reach this, no further saving required`;
+    } else {
+      savingsSentence = `You need to save <strong>${fmtCurrency(selected.rawPmt)}</strong> each month to reach this`;
+    }
+
     let sentence;
     if (leveraged > 0) {
-      sentence = `<strong>${fmtCurrency(selected.potRequired)}</strong> is enough to provide <strong>${fmtCurrency(passiveMonthly)}</strong> a month in passive income, using the ${selectedChartRate}% rule.`;
+      sentence = `Using the ${selectedChartRate}% rule, <strong>${fmtCurrency(selected.potRequired)}</strong> is enough to provide <strong>${fmtCurrency(passiveMonthly)}</strong> a month in passive income.`;
+      sentence += ` ${savingsSentence}.`;
       sentence += ` Combined with your expected <strong>${fmtCurrency(leveraged)}</strong> a month leveraged income, that provides your <strong>${fmtCurrency(futureMonthlyIncome)}</strong> desired monthly income`;
     } else {
-      sentence = `<strong>${fmtCurrency(selected.potRequired)}</strong> is enough to provide your <strong>${fmtCurrency(passiveMonthly)}</strong> desired monthly income, using the ${selectedChartRate}% rule`;
+      sentence = `Using the ${selectedChartRate}% rule, <strong>${fmtCurrency(selected.potRequired)}</strong> is enough to provide your <strong>${fmtCurrency(passiveMonthly)}</strong> desired monthly income.`;
+      sentence += ` ${savingsSentence}`;
     }
     chartTargetEl.innerHTML = sentence;
 
