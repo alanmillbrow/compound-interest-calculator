@@ -974,16 +974,33 @@ tbody tr:hover { background: var(--accent-soft); }
 }
 .story-photo-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 28px;
 }
 .story-photo {
-  width: 220px;
+  width: 280px;
   flex-shrink: 0;
   display: block;
   border: 2px solid var(--card-border);
 }
 .story-photo-row .story-p { flex: 1; }
+.story-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+.story-figure {
+  flex-shrink: 0;
+  margin: 0;
+  text-align: center;
+}
+.story-caption {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--text-secondary);
+}
 .story-signoff {
   font-family: 'shackleton', Georgia, serif;
   font-size: 1.5rem;
