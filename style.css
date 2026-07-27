@@ -1236,7 +1236,8 @@ tbody tr:hover { background: var(--accent-soft); }
   .ledger-row.cols-3 { font-size: 0.9rem; gap: 8px; }
   .about-card { flex-direction: column; text-align: center; gap: 16px; padding: 8px 0 24px; }
   .about-photo { width: 230px; margin: 0 auto; }
-  .story-photo-row { flex-direction: column; gap: 16px; }
+  .story-photo-row { flex-direction: column; align-items: center; gap: 16px; }
+  .story-text-group { width: 100%; }
   .story-photo { width: 200px; margin: 0 auto; }
   .narrow-layout { gap: 40px; }
   .roadmap::before { left: 29px; }
