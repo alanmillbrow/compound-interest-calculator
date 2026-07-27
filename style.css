@@ -289,6 +289,25 @@ body {
   color: var(--badge-free-text);
 }
 
+.follow-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.follow-bar h2 { margin: 0; }
+.follow-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.follow-links a {
+  display: flex;
+  color: var(--text-primary);
+  transition: color 0.15s ease;
+}
+.follow-links a:hover { color: var(--interest); }
+.follow-links svg { width: 26px; height: 26px; }
+
 .youtube-embed-frame {
   position: relative;
   width: 100%;
@@ -1204,6 +1223,7 @@ tbody tr:hover { background: var(--accent-soft); }
   .tools-row { grid-template-columns: 1fr; }
   .freedoms { grid-template-columns: 1fr; }
   .mob-grid { grid-template-columns: 1fr; }
+  .follow-bar { flex-direction: column; gap: 16px; text-align: center; }
 }
 
 @media (max-width: 480px) {
