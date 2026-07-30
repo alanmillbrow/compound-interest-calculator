@@ -12,12 +12,12 @@ if (!API_KEY) {
 
 const STOCKS = [
   { symbol: 'AAPL', name: 'Apple' },
-  { symbol: 'MSFT', name: 'Microsoft' },
-  { symbol: 'META', name: 'Meta' },
-  { symbol: 'GOOGL', name: 'Alphabet' },
   { symbol: 'NVDA', name: 'Nvidia' },
-  { symbol: 'TSLA', name: 'Tesla' },
+  { symbol: 'GOOGL', name: 'Alphabet' },
+  { symbol: 'MSFT', name: 'Microsoft' },
   { symbol: 'AMZN', name: 'Amazon' },
+  { symbol: 'META', name: 'Meta' },
+  { symbol: 'TSLA', name: 'Tesla' },
 ];
 
 // Twelve Data's free plan 404s on raw index symbols (SPX, NDX) — "available
