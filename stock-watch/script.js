@@ -101,10 +101,12 @@ function buildRows() {
   indexTbody.innerHTML = INDICES.map((index) => `
     <tr id="idx-${index.symbol}">
       <td>${index.name} <span class="section-note">(${index.symbol})</span></td>
+      <td>&mdash;</td>
       <td data-col="ath">&hellip;</td>
       <td data-col="price">&hellip;</td>
       <td data-col="vsAth">&hellip;</td>
       <td data-col="daysSinceAth">&hellip;</td>
+      <td>&mdash;</td>
     </tr>
   `).join('');
 }

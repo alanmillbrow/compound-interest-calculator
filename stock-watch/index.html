@@ -26,7 +26,7 @@
       </a>
       <div class="header-text">
         <h1>Stock Watch</h1>
-        <p>Live snapshot of the Magnificent Seven</p>
+        <p>Current snapshot of key indices and stocks</p>
       </div>
     </div>
     <button id="themeToggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle light/dark theme">
@@ -38,7 +38,7 @@
   <main class="home-layout">
     <section class="card table-card">
       <div class="table-header">
-        <h2>Big Seven</h2>
+        <h2>Magnificent Seven</h2>
         <span class="section-note" id="stockWatchStatus">Loading&hellip;</span>
       </div>
       <div class="table-wrap">
@@ -71,10 +71,12 @@
           <thead>
             <tr>
               <th>Index</th>
+              <th>Market Cap</th>
               <th>All-Time High</th>
               <th>Price</th>
               <th>Drawdown</th>
               <th>Days Since ATH</th>
+              <th>P/E Ratio</th>
             </tr>
           </thead>
           <tbody id="indexTableBody">
