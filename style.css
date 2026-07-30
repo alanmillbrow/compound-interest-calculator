@@ -468,6 +468,16 @@ body {
   letter-spacing: -0.01em;
 }
 
+.input-prefix-readonly {
+  background: var(--interest-soft);
+  border-color: var(--interest);
+}
+.input-prefix-readonly input {
+  color: var(--interest);
+  cursor: default;
+}
+.input-prefix-readonly span { color: var(--interest); }
+
 .input-suffix input { text-align: left; }
 
 select#frequency {
@@ -970,6 +980,97 @@ tbody tr:hover { background: var(--accent-soft); }
   color: var(--text-secondary);
 }
 
+/* Freedom Flow (Sankey) */
+.sankey-diagram-wrap {
+  margin: 20px 0 8px;
+}
+.sankey-diagram-wrap svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+.sankey-node {
+  stroke: var(--card-border);
+  stroke-width: 2;
+}
+.sankey-node-hero {
+  stroke: var(--interest);
+  stroke-width: 3;
+}
+.sankey-ribbon {
+  transition: opacity 0.15s ease;
+}
+.sankey-hero-glow {
+  fill: var(--interest-soft);
+}
+.sankey-col-caption {
+  font-family: 'shackleton', Georgia, serif;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  fill: var(--text-tertiary);
+}
+.sankey-node-name {
+  font-family: 'shackleton', Georgia, serif;
+  font-size: 15px;
+  fill: var(--text-primary);
+}
+.sankey-node-value {
+  font-family: 'shackleton', Georgia, serif;
+  font-size: 14px;
+  fill: var(--text-secondary);
+}
+.sankey-node-value-hero {
+  fill: var(--interest);
+  font-weight: 400;
+}
+
+.sankey-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 28px;
+}
+.sankey-col-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-3);
+  margin-bottom: 16px;
+}
+
+.sankey-warning {
+  margin: 20px 0 0;
+  padding: 12px 16px;
+  border: 2px solid var(--badge-free-bg);
+  color: var(--badge-free-bg);
+  font-size: 0.9rem;
+  display: none;
+}
+.sankey-warning.is-visible { display: block; }
+
+.sankey-footer-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px 32px;
+  margin-top: 28px;
+}
+.sankey-currency-field {
+  width: 260px;
+  flex-shrink: 0;
+  margin-top: 0;
+}
+.sankey-share {
+  text-align: right;
+  flex-shrink: 0;
+}
+.sankey-share .share-actions { justify-content: flex-end; }
+.sankey-share .share-status { text-align: right; }
+
 /* ---------- About Me page ---------- */
 .story {
   max-width: 820px;
@@ -1224,6 +1325,12 @@ tbody tr:hover { background: var(--accent-soft); }
   .tools-row { grid-template-columns: 1fr; }
   .freedoms { grid-template-columns: 1fr; }
   .mob-grid { grid-template-columns: 1fr; }
+  .sankey-controls { grid-template-columns: 1fr; gap: 8px; }
+  .sankey-col-label:not(:first-child) { margin-top: 24px; }
+  .sankey-footer-row { flex-direction: column; gap: 24px; }
+  .sankey-currency-field { width: 100%; }
+  .sankey-share { text-align: left; width: 100%; }
+  .sankey-share .share-actions, .sankey-share .share-status { justify-content: flex-start; text-align: left; }
   .follow-bar { flex-direction: column; gap: 16px; text-align: center; }
 }
 

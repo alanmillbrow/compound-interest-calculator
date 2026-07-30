@@ -66,6 +66,102 @@
       <p class="source-note">The detail behind each step is coming soon</p>
     </section>
 
+    <!-- Freedom Flow (interactive Sankey) -->
+    <section class="card sankey-card">
+      <h2>Freedom Flow</h2>
+      <p class="section-note">See how your income splits between lifestyle, personal growth and your investment engine &mdash; drag the sliders to explore</p>
+
+      <div class="sankey-diagram-wrap">
+        <svg id="sankeySvg" viewBox="0 0 800 460" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Sankey diagram of income flowing into lifestyle expenses, personal investment and the investment engine"></svg>
+      </div>
+
+      <div class="sankey-controls">
+        <div class="sankey-col">
+          <span class="sankey-col-label">Income</span>
+
+          <div class="field">
+            <label for="effortIncome">Effort Income</label>
+            <div class="input-prefix">
+              <span id="effortIncomeSymbol">£</span>
+              <input type="text" inputmode="decimal" id="effortIncome" value="4,000">
+            </div>
+            <input type="range" id="effortIncomeRange" min="0" max="10000" step="50" value="4000" class="slider">
+          </div>
+
+          <div class="field">
+            <label for="leveragedIncome">Leveraged Income</label>
+            <div class="input-prefix">
+              <span id="leveragedIncomeSymbol">£</span>
+              <input type="text" inputmode="decimal" id="leveragedIncome" value="500">
+            </div>
+            <input type="range" id="leveragedIncomeRange" min="0" max="10000" step="50" value="500" class="slider">
+          </div>
+
+          <div class="field">
+            <label for="passiveIncome">Passive Income</label>
+            <div class="input-prefix">
+              <span id="passiveIncomeSymbol">£</span>
+              <input type="text" inputmode="decimal" id="passiveIncome" value="500">
+            </div>
+            <input type="range" id="passiveIncomeRange" min="0" max="10000" step="50" value="500" class="slider">
+          </div>
+        </div>
+
+        <div class="sankey-col">
+          <span class="sankey-col-label">Outgoings</span>
+
+          <div class="field">
+            <label for="lifestyleExpenses">Lifestyle Expenses</label>
+            <div class="input-prefix">
+              <span id="lifestyleExpensesSymbol">£</span>
+              <input type="text" inputmode="decimal" id="lifestyleExpenses" value="3,000">
+            </div>
+            <input type="range" id="lifestyleExpensesRange" min="0" max="10000" step="50" value="3000" class="slider">
+          </div>
+
+          <div class="field">
+            <label for="personalInvestment">Personal Development</label>
+            <div class="input-prefix">
+              <span id="personalInvestmentSymbol">£</span>
+              <input type="text" inputmode="decimal" id="personalInvestment" value="500">
+            </div>
+            <input type="range" id="personalInvestmentRange" min="0" max="10000" step="50" value="500" class="slider">
+          </div>
+
+          <div class="field">
+            <label for="engineValue">Investment Engine</label>
+            <div class="input-prefix input-prefix-readonly">
+              <span id="engineSymbol">£</span>
+              <input type="text" id="engineValue" value="1,500" readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="sankey-warning" id="sankeyWarning"></p>
+
+      <div class="sankey-footer-row">
+        <div class="field sankey-currency-field">
+          <label>Currency</label>
+          <div class="segmented currency-segmented">
+            <button type="button" class="seg-btn active" data-currency="GBP">£</button>
+            <button type="button" class="seg-btn" data-currency="USD">$</button>
+            <button type="button" class="seg-btn" data-currency="EUR">&euro;</button>
+          </div>
+        </div>
+
+        <div class="sankey-share">
+          <span class="sankey-col-label">Save or share this result</span>
+          <div class="share-actions">
+            <button id="copyLinkBtn" class="link-btn">Copy link</button>
+            <button id="shareLinkBtn" class="link-btn">Share</button>
+            <button id="bookmarkBtn" class="link-btn">Bookmark</button>
+          </div>
+          <p class="share-status" id="shareStatus"></p>
+        </div>
+      </div>
+    </section>
+
     <!-- Freedom formula -->
     <section class="card formula-card">
       <h2>The Freedom Formula</h2>
@@ -116,6 +212,6 @@
   </footer>
 </div>
 
-<script src="/theme.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
