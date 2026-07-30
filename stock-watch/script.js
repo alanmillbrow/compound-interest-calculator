@@ -13,6 +13,13 @@ const STOCKS = [
   { symbol: 'AMZN', name: 'Amazon' },
 ];
 
+// Tracked via the ETFs that follow each index — see the comment in
+// .github/scripts/fetch-stock-data.mjs for why.
+const INDICES = [
+  { symbol: 'SPY', name: 'S&P 500' },
+  { symbol: 'QQQ', name: 'Nasdaq-100' },
+];
+
 function fmtUsd(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return '—';
   return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -60,6 +67,22 @@ function renderRow(stock, result) {
   row.querySelector('[data-col="pe"]').textContent = fmtPe(result.pe);
 }
 
+function renderIndexRow(index, result) {
+  const row = document.getElementById(`idx-${index.symbol}`);
+  if (!row) return;
+
+  if (!result || result.error) {
+    row.querySelectorAll('td[data-col]').forEach((td) => { td.textContent = '—'; });
+    if (result?.error) row.querySelector('[data-col="price"]').title = result.error;
+    return;
+  }
+
+  row.querySelector('[data-col="ath"]').textContent = fmtUsd(result.athPrice);
+  row.querySelector('[data-col="price"]').textContent = fmtUsd(result.price);
+  row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(result.vsAth);
+  row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(result.daysSinceAth);
+}
+
 function buildRows() {
   const tbody = document.getElementById('stockTableBody');
   tbody.innerHTML = STOCKS.map((stock) => `
@@ -71,6 +94,17 @@ function buildRows() {
       <td data-col="vsAth">&hellip;</td>
       <td data-col="daysSinceAth">&hellip;</td>
       <td data-col="pe">&hellip;</td>
+    </tr>
+  `).join('');
+
+  const indexTbody = document.getElementById('indexTableBody');
+  indexTbody.innerHTML = INDICES.map((index) => `
+    <tr id="idx-${index.symbol}">
+      <td>${index.name} <span class="section-note">(${index.symbol})</span></td>
+      <td data-col="ath">&hellip;</td>
+      <td data-col="price">&hellip;</td>
+      <td data-col="vsAth">&hellip;</td>
+      <td data-col="daysSinceAth">&hellip;</td>
     </tr>
   `).join('');
 }
@@ -85,6 +119,7 @@ async function init() {
     if (!res.ok) throw new Error(`Failed to load data (${res.status})`);
     const data = await res.json();
     STOCKS.forEach((stock) => renderRow(stock, data.stocks?.[stock.symbol]));
+    INDICES.forEach((index) => renderIndexRow(index, data.indices?.[index.symbol]));
     status.textContent = `Last refreshed ${new Date(data.savedAt).toLocaleString()}`;
   } catch (err) {
     status.textContent = `Couldn't load stock data: ${err.message}`;
