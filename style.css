@@ -604,11 +604,10 @@ select#frequency:focus {
 }
 
 .stock-watch-status {
-  margin: 0 0 -12px;
+  margin: -12px 0 0;
   text-align: right;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   font-size: 0.88rem;
-  font-style: italic;
 }
 
 .chart-target-note {
