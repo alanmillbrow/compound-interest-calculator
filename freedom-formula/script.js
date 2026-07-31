@@ -491,7 +491,7 @@
     // Y axis always starts at zero, even if the balance dips below it —
     // the line/area simply runs off the bottom of the plot in that case
     const minVal = 0;
-    const maxVal = Math.max(...points.flatMap((p) => [p.contributed, p.balance, 0]));
+    const maxVal = Math.max(minAssets, ...points.flatMap((p) => [p.contributed, p.balance, 0]));
     const valRange = (maxVal - minVal) || 1;
     const maxYear = points[points.length - 1].year || 1; // guard against a zero-length runway
 
@@ -500,6 +500,7 @@
 
     const contribColor = cssVar('--contrib');
     const interestColor = cssVar('--interest');
+    const targetColor = cssVar('--multiple');
     const textSecondary = cssVar('--text-secondary');
     const gridColor = cssVar('--card-border');
 
@@ -589,6 +590,19 @@
 
     drawLine((p) => p.contributed, contribColor);
     drawLine((p) => p.balance, interestColor);
+
+    // Minimum liquid assets — dashed reference line, same treatment as the
+    // target pot line on the How Much Is Enough chart
+    chartCtx.save();
+    chartCtx.setLineDash([6, 5]);
+    chartCtx.beginPath();
+    const minAssetsY = yForVal(minAssets);
+    chartCtx.moveTo(padding.left, minAssetsY);
+    chartCtx.lineTo(width - padding.right, minAssetsY);
+    chartCtx.strokeStyle = targetColor;
+    chartCtx.lineWidth = 2;
+    chartCtx.stroke();
+    chartCtx.restore();
 
     lastChartGeometry = { padding, plotW, plotH, maxYear, points, xForYear, yForVal, width, height };
   }
