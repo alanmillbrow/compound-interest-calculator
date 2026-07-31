@@ -94,25 +94,25 @@
   }
 
   function bindTextAndRange(textEl, rangeEl, { isCurrency = false, onChange } = {}) {
-    function clamp(val) {
-      if (val < parseFloat(rangeEl.min)) val = parseFloat(rangeEl.min);
-      if (val > parseFloat(rangeEl.max)) val = parseFloat(rangeEl.max);
-      return val;
+    // The slider's own value/fill is clamped to its min/max (a range input
+    // can't go beyond that anyway), but the text field is left untouched —
+    // typing a number past the slider's ceiling keeps that full value for
+    // the actual calculation, with the slider thumb just pinned at its end.
+    // Matches the standard pattern used across the other calculators.
+    function syncFromText() {
+      const rawVal = parseNumber(textEl.value);
+      let rangeVal = rawVal;
+      if (rangeVal < parseFloat(rangeEl.min)) rangeVal = parseFloat(rangeEl.min);
+      if (rangeVal > parseFloat(rangeEl.max)) rangeVal = parseFloat(rangeEl.max);
+      rangeEl.value = rangeVal;
+      updateSliderFill(rangeEl);
+      if (onChange) onChange(rawVal);
+      render();
     }
-    textEl.addEventListener('input', () => {
-      const val = clamp(parseNumber(textEl.value));
-      rangeEl.value = val;
-      updateSliderFill(rangeEl);
-      if (onChange) onChange(val);
-      render();
-    });
+    textEl.addEventListener('input', syncFromText);
     textEl.addEventListener('blur', () => {
-      const val = clamp(parseNumber(textEl.value));
+      const val = parseNumber(textEl.value);
       textEl.value = isCurrency ? fmtNumber(val) : val;
-      rangeEl.value = val;
-      updateSliderFill(rangeEl);
-      if (onChange) onChange(val);
-      render();
     });
     rangeEl.addEventListener('input', () => {
       const val = parseFloat(rangeEl.value);
@@ -162,10 +162,14 @@
 
     function setField(param, textEl, rangeEl, isCurrency) {
       if (!params.has(param)) return;
-      let val = parseNumber(params.get(param));
-      if (val < parseFloat(rangeEl.min)) val = parseFloat(rangeEl.min);
-      if (val > parseFloat(rangeEl.max)) val = parseFloat(rangeEl.max);
-      rangeEl.value = val;
+      // Mirror bindTextAndRange: clamp only the slider's own value/fill to
+      // its min/max, but keep the text field (and so the real calculation)
+      // at the full saved value even if it's past the slider's ceiling
+      const val = parseNumber(params.get(param));
+      let rangeVal = val;
+      if (rangeVal < parseFloat(rangeEl.min)) rangeVal = parseFloat(rangeEl.min);
+      if (rangeVal > parseFloat(rangeEl.max)) rangeVal = parseFloat(rangeEl.max);
+      rangeEl.value = rangeVal;
       textEl.value = isCurrency ? fmtNumber(val) : val;
       updateSliderFill(rangeEl);
     }
