@@ -1,93 +1,93 @@
 {
-  "savedAt": "2026-07-31T16:02:21.324Z",
+  "savedAt": "2026-07-31T17:47:57.329Z",
   "stocks": {
     "NVDA": {
       "symbol": "NVDA",
-      "price": 196.28,
+      "price": 199.43,
       "marketCap": null,
       "athPrice": 236.53999,
       "athDate": "2026-05-14",
       "daysSinceAth": 79,
-      "vsAth": -17.020373595179397,
+      "vsAth": -15.688674883261806,
       "pe": null
     },
     "AAPL": {
       "symbol": "AAPL",
-      "price": 301.6,
+      "price": 301.41,
       "marketCap": 4897204964206,
       "athPrice": 344.57001,
       "athDate": "2026-07-29",
       "daysSinceAth": 3,
-      "vsAth": -12.470618090065354,
+      "vsAth": -12.525759278934345,
       "pe": 41.615616
-    },
-    "MSFT": {
-      "symbol": "MSFT",
-      "price": 463.1,
-      "marketCap": null,
-      "athPrice": 555.45001,
-      "athDate": "2025-07-31",
-      "daysSinceAth": 366,
-      "vsAth": -16.626160471218643,
-      "pe": null
     },
     "GOOGL": {
       "symbol": "GOOGL",
-      "price": 351.625,
+      "price": 353.755,
       "marketCap": null,
       "athPrice": 408.60999,
       "athDate": "2026-05-18",
       "daysSinceAth": 75,
-      "vsAth": -13.946058930179358,
+      "vsAth": -13.424779457790542,
       "pe": null
     },
     "AMZN": {
       "symbol": "AMZN",
-      "price": 268.88,
+      "price": 270.76,
       "marketCap": null,
       "athPrice": 278.56,
       "athDate": "2026-05-05",
       "daysSinceAth": 88,
-      "vsAth": -3.475014359563472,
+      "vsAth": -2.800114876507758,
+      "pe": null
+    },
+    "MSFT": {
+      "symbol": "MSFT",
+      "price": 461.52,
+      "marketCap": null,
+      "athPrice": 555.45001,
+      "athDate": "2025-07-31",
+      "daysSinceAth": 366,
+      "vsAth": -16.910614512366294,
       "pe": null
     },
     "META": {
       "symbol": "META",
-      "price": 545.9,
+      "price": 548.97,
       "marketCap": null,
       "athPrice": 796.25,
       "athDate": "2025-08-15",
       "daysSinceAth": 351,
-      "vsAth": -31.44113029827316,
+      "vsAth": -31.055572998430137,
       "pe": null
     },
     "TSLA": {
       "symbol": "TSLA",
-      "price": 307.56,
+      "price": 310.28,
       "marketCap": null,
       "athPrice": 498.82999,
       "athDate": "2025-12-22",
       "daysSinceAth": 222,
-      "vsAth": -38.34372307887904,
+      "vsAth": -37.79844712223498,
       "pe": null
     }
   },
   "indices": {
     "SPY": {
       "symbol": "SPY",
-      "price": 743.13,
+      "price": 745.78,
       "athPrice": 760.40002,
       "athDate": "2026-06-02",
       "daysSinceAth": 60,
-      "vsAth": -2.2711756372652445
+      "vsAth": -1.9226748573731058
     },
     "QQQ": {
       "symbol": "QQQ",
-      "price": 684.74,
+      "price": 689.12,
       "athPrice": 748.65002,
       "athDate": "2026-06-03",
       "daysSinceAth": 59,
-      "vsAth": -8.536701835658807
+      "vsAth": -7.951648755716327
     }
   }
 }
