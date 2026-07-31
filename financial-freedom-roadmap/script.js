@@ -54,23 +54,22 @@
   }
 
   function bindTextAndRange(textEl, rangeEl) {
-    function clamp(val) {
+    // The slider's own value/fill is clamped to its min/max (a range input
+    // can't go beyond that anyway), but the text field is left untouched —
+    // typing a number past the slider's ceiling keeps that full value for
+    // the actual calculation, with the slider thumb just pinned at its end.
+    // Matches how-much-is-enough / liquid-asset-forecaster's inputs.
+    function syncFromText() {
+      let val = parseNumber(textEl.value);
       if (val < parseFloat(rangeEl.min)) val = parseFloat(rangeEl.min);
       if (val > parseFloat(rangeEl.max)) val = parseFloat(rangeEl.max);
-      return val;
+      rangeEl.value = val;
+      updateSliderFill(rangeEl);
+      render();
     }
-    textEl.addEventListener('input', () => {
-      const val = clamp(parseNumber(textEl.value));
-      rangeEl.value = val;
-      updateSliderFill(rangeEl);
-      render();
-    });
+    textEl.addEventListener('input', syncFromText);
     textEl.addEventListener('blur', () => {
-      const val = clamp(parseNumber(textEl.value));
-      textEl.value = fmtNumber(val);
-      rangeEl.value = val;
-      updateSliderFill(rangeEl);
-      render();
+      textEl.value = fmtNumber(parseNumber(textEl.value));
     });
     rangeEl.addEventListener('input', () => {
       const val = parseFloat(rangeEl.value);
