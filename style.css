@@ -603,6 +603,14 @@ select#frequency:focus {
   font-style: italic;
 }
 
+.stock-watch-status {
+  margin: 0 0 -12px;
+  text-align: right;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
 .chart-target-note {
   margin: 24px 0 14px;
   color: var(--text-secondary);

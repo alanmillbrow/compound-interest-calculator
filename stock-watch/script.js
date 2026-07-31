@@ -49,6 +49,18 @@ function fmtDays(n) {
   return n === 0 ? 'Today' : String(n);
 }
 
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// "30 Jul 26, 21:05" — dd mmm yy, hh:mm (local time, 24-hour)
+function fmtRefreshedAt(date) {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = MONTH_NAMES[date.getMonth()];
+  const year = String(date.getFullYear()).slice(-2);
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${day} ${month} ${year}, ${hours}:${minutes}`;
+}
+
 function renderRow(stock, result) {
   const row = document.getElementById(`row-${stock.symbol}`);
   if (!row) return;
@@ -122,7 +134,7 @@ async function init() {
     const data = await res.json();
     STOCKS.forEach((stock) => renderRow(stock, data.stocks?.[stock.symbol]));
     INDICES.forEach((index) => renderIndexRow(index, data.indices?.[index.symbol]));
-    status.textContent = `Last refreshed ${new Date(data.savedAt).toLocaleString()}`;
+    status.textContent = `Last refreshed ${fmtRefreshedAt(new Date(data.savedAt))}`;
   } catch (err) {
     status.textContent = `Couldn't load stock data: ${err.message}`;
   }
