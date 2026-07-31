@@ -1063,6 +1063,7 @@ tbody tr:hover { background: var(--accent-soft); }
   width: 260px;
   flex-shrink: 0;
   margin-top: 0;
+  margin-bottom: 0;
 }
 .sankey-share {
   text-align: right;
