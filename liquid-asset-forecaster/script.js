@@ -144,11 +144,15 @@
 
     function setField(param, textEl, rangeEl, isCurrency, isInt) {
       if (!params.has(param)) return;
+      // Mirror bindTextAndRange: clamp only the slider's own value/fill to
+      // its min/max, but keep the text field (and so the real calculation)
+      // at the full saved value even if it's past the slider's ceiling
       let val = parseNumber(params.get(param));
       if (isInt) val = Math.round(val);
-      if (val < parseFloat(rangeEl.min)) val = parseFloat(rangeEl.min);
-      if (val > parseFloat(rangeEl.max)) val = parseFloat(rangeEl.max);
-      rangeEl.value = val;
+      let rangeVal = val;
+      if (rangeVal < parseFloat(rangeEl.min)) rangeVal = parseFloat(rangeEl.min);
+      if (rangeVal > parseFloat(rangeEl.max)) rangeVal = parseFloat(rangeEl.max);
+      rangeEl.value = rangeVal;
       textEl.value = isCurrency ? fmtNumber(val) : val;
       updateSliderFill(rangeEl);
     }
