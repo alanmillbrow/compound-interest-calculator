@@ -888,18 +888,6 @@ tbody tr:hover { background: var(--accent-soft); }
   font-style: italic;
 }
 
-.app-footer-link {
-  margin-top: 8px !important;
-}
-.app-footer-link a {
-  color: var(--text-tertiary);
-  font-style: normal;
-  text-decoration: underline;
-}
-.app-footer-link a:hover {
-  color: var(--text-primary);
-}
-
 /* ---------- Financial Freedom Roadmap page ---------- */
 .narrow-layout {
   max-width: 820px;
