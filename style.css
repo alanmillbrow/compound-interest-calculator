@@ -1271,6 +1271,43 @@ tbody tr:hover { background: var(--accent-soft); }
 }
 
 /* Calculators index page */
+.cal-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.cal-intro-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 28px;
+  border-top: 1px solid var(--input-border);
+}
+.cal-intro-list {
+  margin: 4px 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cal-intro-list li {
+  position: relative;
+  padding-left: 24px;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.cal-intro-list li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--interest);
+}
 .calculators-list {
   display: flex;
   flex-direction: column;
