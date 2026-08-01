@@ -1,34 +1,34 @@
 {
-  "savedAt": "2026-08-01T07:08:15.808Z",
+  "savedAt": "2026-08-01T07:12:17.915Z",
   "stocks": {
-    "AAPL": {
-      "symbol": "AAPL",
-      "price": null,
-      "marketCap": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null,
-      "pe": null
-    },
     "NVDA": {
       "symbol": "NVDA",
-      "price": null,
+      "price": 200.75,
       "marketCap": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null,
+      "athPrice": 236.53999,
+      "athDate": "2026-05-14",
+      "daysSinceAth": 79,
+      "vsAth": -15.130629708743959,
       "pe": null
     },
-    "GOOGL": {
-      "symbol": "GOOGL",
-      "price": null,
+    "AAPL": {
+      "symbol": "AAPL",
+      "price": 308.91,
+      "marketCap": 4537071141960,
+      "athPrice": 344.57001,
+      "athDate": "2026-07-29",
+      "daysSinceAth": 3,
+      "vsAth": -10.349133402526817,
+      "pe": 35.344395
+    },
+    "AMZN": {
+      "symbol": "AMZN",
+      "price": 271.57999,
       "marketCap": null,
-      "athPrice": 408.60999,
-      "athDate": "2026-05-18",
-      "daysSinceAth": 75,
-      "vsAth": null,
+      "athPrice": 278.56,
+      "athDate": "2026-05-05",
+      "daysSinceAth": 88,
+      "vsAth": -2.505747415278573,
       "pe": null
     },
     "MSFT": {
@@ -51,16 +51,6 @@
       "vsAth": -30.083513971742544,
       "pe": null
     },
-    "AMZN": {
-      "symbol": "AMZN",
-      "price": 271.57999,
-      "marketCap": null,
-      "athPrice": 278.56,
-      "athDate": "2026-05-05",
-      "daysSinceAth": 88,
-      "vsAth": -2.505747415278573,
-      "pe": null
-    },
     "TSLA": {
       "symbol": "TSLA",
       "price": 311.20999,
@@ -70,17 +60,19 @@
       "daysSinceAth": 222,
       "vsAth": -37.612012862338126,
       "pe": null
+    },
+    "GOOGL": {
+      "symbol": "GOOGL",
+      "price": 356.13,
+      "marketCap": null,
+      "athPrice": 408.60999,
+      "athDate": "2026-05-18",
+      "daysSinceAth": 75,
+      "vsAth": -12.843540609469677,
+      "pe": null
     }
   },
   "indices": {
-    "QQQ": {
-      "symbol": "QQQ",
-      "price": 687.98999,
-      "athPrice": 748.65002,
-      "athDate": "2026-06-03",
-      "daysSinceAth": 59,
-      "vsAth": -8.102588443128607
-    },
     "SPY": {
       "symbol": "SPY",
       "price": 747.030029,
@@ -88,6 +80,14 @@
       "athDate": "2026-06-02",
       "daysSinceAth": 60,
       "vsAth": -1.7582838832644991
+    },
+    "QQQ": {
+      "symbol": "QQQ",
+      "price": 687.98999,
+      "athPrice": 748.65002,
+      "athDate": "2026-06-03",
+      "daysSinceAth": 59,
+      "vsAth": -8.102588443128607
     }
   }
 }
