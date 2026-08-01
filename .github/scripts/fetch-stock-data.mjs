@@ -73,6 +73,7 @@ async function loadStock(symbol) {
   ]);
 
   const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
+  console.error(`[DEBUG stats:${symbol}]`, statsResult.status, statsResult.status === 'rejected' ? statsResult.reason?.message : JSON.stringify(statsResult.value));
   const valuations = statsResult.status === 'fulfilled'
     ? statsResult.value?.statistics?.valuations_metrics
     : null;
