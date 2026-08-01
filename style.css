@@ -1161,6 +1161,11 @@ tbody tr:hover { background: var(--accent-soft); }
 .story-cta {
   color: var(--text-primary);
 }
+/* Pull the standalone CTA line (Financial Freedom Roadmap page) closer to
+   its neighbours than the default 48px narrow-layout gap */
+.narrow-layout > .story-cta {
+  margin: -24px 0;
+}
 .story-photo-row {
   display: flex;
   align-items: flex-start;
