@@ -182,12 +182,18 @@ async function loadIndex(symbol) {
 }
 
 async function debugGbpSymbolCheck() {
-  try {
-    const res = await fetch(`https://api.twelvedata.com/symbol_search?symbol=Vanguard FTSE Global All Cap&apikey=${API_KEY}`);
-    const data = await res.json();
-    console.error('[DEBUG search:global-all-cap]', JSON.stringify(data));
-  } catch (err) {
-    console.error('[DEBUG search:global-all-cap] failed', err.message);
+  for (const sym of ['0P00018XAO', '0P00018XAR']) {
+    try {
+      const [qRes, hRes] = await Promise.all([
+        fetch(`https://api.twelvedata.com/quote?symbol=${sym}&exchange=LSE&apikey=${API_KEY}`),
+        fetch(`https://api.twelvedata.com/time_series?symbol=${sym}&exchange=LSE&interval=1day&outputsize=5&apikey=${API_KEY}`),
+      ]);
+      const [qData, hData] = await Promise.all([qRes.json(), hRes.json()]);
+      console.error(`[DEBUG mf-quote:${sym}]`, JSON.stringify(qData));
+      console.error(`[DEBUG mf-hist:${sym}]`, JSON.stringify(hData));
+    } catch (err) {
+      console.error(`[DEBUG mf:${sym}] failed`, err.message);
+    }
   }
 }
 
