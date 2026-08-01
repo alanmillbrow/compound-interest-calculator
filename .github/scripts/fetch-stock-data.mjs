@@ -30,6 +30,15 @@ const INDICES = [
   { symbol: 'QQQ', name: 'Nasdaq-100' },
 ];
 
+// GBP-denominated LSE-listed index trackers. Acc/Dist pairs of the same
+// underlying index (Vanguard's accumulating vs distributing share classes).
+const INDICES_GBP = [
+  { symbol: 'VUAG', name: 'S&P 500 (Acc)', exchange: 'LSE' },
+  { symbol: 'VUSA', name: 'S&P 500 (Dist)', exchange: 'LSE' },
+  { symbol: 'VWRP', name: 'FTSE All-World (Acc)', exchange: 'LSE' },
+  { symbol: 'VWRL', name: 'FTSE All-World (Dist)', exchange: 'LSE' },
+];
+
 // Twelve Data enforces a rolling per-minute credit budget, but different
 // endpoints cost different (undocumented) amounts of it — quote, earnings
 // and time_series don't all cost the same, and time_series' cost scales
@@ -152,11 +161,15 @@ async function loadStock(symbol) {
   return { symbol, price, marketCap, athPrice, athDate, daysSinceAth, vsAth, pe };
 }
 
-async function loadIndex(symbol) {
+async function loadIndex(symbol, exchange) {
   const base = 'https://api.twelvedata.com';
+  // An explicit exchange keeps ambiguous tickers pinned to the right
+  // instrument — without it, some symbols resolve to an unrelated company
+  // that happens to share the same ticker on a different exchange.
+  const exchangeParam = exchange ? `&exchange=${exchange}` : '';
   const [quoteResult, historyResult] = await Promise.allSettled([
-    rateLimitedFetchJson(`${base}/quote?symbol=${symbol}&apikey=${API_KEY}`),
-    rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
+    rateLimitedFetchJson(`${base}/quote?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`),
+    rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}${exchangeParam}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
   ]);
 
   const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
@@ -184,6 +197,7 @@ async function loadIndex(symbol) {
 async function main() {
   const stocks = {};
   const indices = {};
+  const indicesGbp = {};
   await Promise.all([
     ...STOCKS.map(async (stock) => {
       try {
@@ -199,9 +213,16 @@ async function main() {
         indices[index.symbol] = { symbol: index.symbol, error: err.message };
       }
     }),
+    ...INDICES_GBP.map(async (index) => {
+      try {
+        indicesGbp[index.symbol] = await loadIndex(index.symbol, index.exchange);
+      } catch (err) {
+        indicesGbp[index.symbol] = { symbol: index.symbol, error: err.message };
+      }
+    }),
   ]);
 
-  const output = { savedAt: new Date().toISOString(), stocks, indices };
+  const output = { savedAt: new Date().toISOString(), stocks, indices, indicesGbp };
   const fs = await import('node:fs/promises');
   const outPath = new URL('../../stock-watch/data.json', import.meta.url);
   await fs.writeFile(outPath, JSON.stringify(output, null, 2) + '\n');

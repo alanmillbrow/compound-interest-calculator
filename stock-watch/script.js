@@ -20,9 +20,23 @@ const INDICES = [
   { symbol: 'QQQ', name: 'Nasdaq-100' },
 ];
 
+// GBP-denominated LSE-listed index trackers — see the comment in
+// .github/scripts/fetch-stock-data.mjs for why these specific symbols.
+const INDICES_GBP = [
+  { symbol: 'VUAG', name: 'S&P 500 (Acc)' },
+  { symbol: 'VUSA', name: 'S&P 500 (Dist)' },
+  { symbol: 'VWRP', name: 'FTSE All-World (Acc)' },
+  { symbol: 'VWRL', name: 'FTSE All-World (Dist)' },
+];
+
 function fmtUsd(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return '—';
   return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtGbp(n) {
+  if (n === null || n === undefined || Number.isNaN(n)) return '—';
+  return n.toLocaleString('en-GB', { style: 'currency', currency: 'GBP', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function fmtMarketCap(n) {
@@ -79,8 +93,8 @@ function renderRow(stock, result) {
   row.querySelector('[data-col="pe"]').textContent = fmtPe(result.pe);
 }
 
-function renderIndexRow(index, result) {
-  const row = document.getElementById(`idx-${index.symbol}`);
+function renderIndexRow(index, result, { idPrefix = 'idx', fmt = fmtUsd } = {}) {
+  const row = document.getElementById(`${idPrefix}-${index.symbol}`);
   if (!row) return;
 
   if (!result || result.error) {
@@ -89,8 +103,8 @@ function renderIndexRow(index, result) {
     return;
   }
 
-  row.querySelector('[data-col="ath"]').textContent = fmtUsd(result.athPrice);
-  row.querySelector('[data-col="price"]').textContent = fmtUsd(result.price);
+  row.querySelector('[data-col="ath"]').textContent = fmt(result.athPrice);
+  row.querySelector('[data-col="price"]').textContent = fmt(result.price);
   row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(result.vsAth);
   row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(result.daysSinceAth);
 }
@@ -121,6 +135,19 @@ function buildRows() {
       <td>&mdash;</td>
     </tr>
   `).join('');
+
+  const indexGbpTbody = document.getElementById('indexGbpTableBody');
+  indexGbpTbody.innerHTML = INDICES_GBP.map((index) => `
+    <tr id="idxgbp-${index.symbol}">
+      <td>${index.name} <span class="section-note">(${index.symbol})</span></td>
+      <td>&mdash;</td>
+      <td data-col="ath">&hellip;</td>
+      <td data-col="price">&hellip;</td>
+      <td data-col="vsAth">&hellip;</td>
+      <td data-col="daysSinceAth">&hellip;</td>
+      <td>&mdash;</td>
+    </tr>
+  `).join('');
 }
 
 async function init() {
@@ -134,6 +161,7 @@ async function init() {
     const data = await res.json();
     STOCKS.forEach((stock) => renderRow(stock, data.stocks?.[stock.symbol]));
     INDICES.forEach((index) => renderIndexRow(index, data.indices?.[index.symbol]));
+    INDICES_GBP.forEach((index) => renderIndexRow(index, data.indicesGbp?.[index.symbol], { idPrefix: 'idxgbp', fmt: fmtGbp }));
     status.textContent = `Last refreshed ${fmtRefreshedAt(new Date(data.savedAt))}`;
   } catch (err) {
     status.textContent = `Couldn't load stock data: ${err.message}`;
