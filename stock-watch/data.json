@@ -1,16 +1,6 @@
 {
-  "savedAt": "2026-08-01T06:44:15.372Z",
+  "savedAt": "2026-08-01T06:48:28.002Z",
   "stocks": {
-    "AAPL": {
-      "symbol": "AAPL",
-      "price": 308.91,
-      "marketCap": 4537071141960,
-      "athPrice": 344.57001,
-      "athDate": "2026-07-29",
-      "daysSinceAth": 3,
-      "vsAth": -10.349133402526817,
-      "pe": 35.344395
-    },
     "NVDA": {
       "symbol": "NVDA",
       "price": 200.75,
@@ -21,6 +11,16 @@
       "vsAth": -15.130629708743959,
       "pe": null
     },
+    "AAPL": {
+      "symbol": "AAPL",
+      "price": 308.91,
+      "marketCap": 4537071141960,
+      "athPrice": 344.57001,
+      "athDate": "2026-07-29",
+      "daysSinceAth": 3,
+      "vsAth": -10.349133402526817,
+      "pe": 35.344395
+    },
     "GOOGL": {
       "symbol": "GOOGL",
       "price": 356.13,
@@ -29,16 +29,6 @@
       "athDate": "2026-05-18",
       "daysSinceAth": 75,
       "vsAth": -12.843540609469677,
-      "pe": null
-    },
-    "META": {
-      "symbol": "META",
-      "price": 556.71002,
-      "marketCap": null,
-      "athPrice": 796.25,
-      "athDate": "2025-08-15",
-      "daysSinceAth": 351,
-      "vsAth": -30.083513971742544,
       "pe": null
     },
     "AMZN": {
@@ -61,6 +51,16 @@
       "vsAth": -16.33450506194068,
       "pe": null
     },
+    "META": {
+      "symbol": "META",
+      "price": 556.71002,
+      "marketCap": null,
+      "athPrice": 796.25,
+      "athDate": "2025-08-15",
+      "daysSinceAth": 351,
+      "vsAth": -30.083513971742544,
+      "pe": null
+    },
     "TSLA": {
       "symbol": "TSLA",
       "price": 311.20999,
@@ -73,14 +73,6 @@
     }
   },
   "indices": {
-    "QQQ": {
-      "symbol": "QQQ",
-      "price": 687.98999,
-      "athPrice": 748.65002,
-      "athDate": "2026-06-03",
-      "daysSinceAth": 59,
-      "vsAth": -8.102588443128607
-    },
     "SPY": {
       "symbol": "SPY",
       "price": 747.030029,
@@ -88,6 +80,14 @@
       "athDate": "2026-06-02",
       "daysSinceAth": 60,
       "vsAth": -1.7582838832644991
+    },
+    "QQQ": {
+      "symbol": "QQQ",
+      "price": 687.98999,
+      "athPrice": 748.65002,
+      "athDate": "2026-06-03",
+      "daysSinceAth": 59,
+      "vsAth": -8.102588443128607
     }
   }
 }
