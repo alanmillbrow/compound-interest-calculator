@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Fetches quote, statistics, and daily history for each stock in STOCKS from
+// Fetches quote, earnings, and daily history for each stock in STOCKS from
 // Twelve Data and writes the results to stock-watch/data.json. Run hourly by
 // .github/workflows/refresh-stock-data.yml so the stock-watch page can read a
 // static file instead of every visitor's browser calling the API directly.
@@ -20,19 +20,21 @@ const STOCKS = [
   { symbol: 'TSLA', name: 'Tesla' },
 ];
 
-// Twelve Data's free plan 404s on raw index symbols (SPX, NDX) — "available
-// starting with the Grow or Venture plan". SPY and QQQ, the ETFs that track
-// the S&P 500 and Nasdaq-100, work fine on the free tier and are a close
+// Raw index symbols (SPX, NDX) are ambiguous on Twelve Data — without an
+// exchange qualifier they resolve to unrelated small-cap tickers that happen
+// to share the same symbol, not the indices themselves. SPY and QQQ, the
+// ETFs that track the S&P 500 and Nasdaq-100, are unambiguous and a close
 // practical stand-in.
 const INDICES = [
   { symbol: 'SPY', name: 'S&P 500' },
   { symbol: 'QQQ', name: 'Nasdaq-100' },
 ];
 
-// Twelve Data's free Basic plan allows 8 API credits per minute. Each stock costs
-// 3 credits (quote + statistics + time_series), so this queue paces every request
-// across all stocks to stay under that ceiling instead of bursting and getting 429s.
-const RATE_LIMIT = 8;
+// The current Twelve Data Grow plan allows 55 API credits per minute. Each
+// stock costs 3 credits (quote + earnings + time_series), so this queue
+// paces every request to stay under that ceiling instead of bursting and
+// getting 429s.
+const RATE_LIMIT = 50;
 const RATE_WINDOW_MS = 60 * 1000;
 const callTimestamps = [];
 
@@ -63,21 +65,41 @@ async function rateLimitedFetchJson(url) {
 
 async function loadStock(symbol) {
   const base = 'https://api.twelvedata.com';
-  // Each call is fetched independently (allSettled, not all) because /statistics
-  // requires a paid Twelve Data plan and 403s on the free tier for most symbols —
-  // that shouldn't stop price/all-time-high (quote + time_series) from rendering.
-  const [quoteResult, statsResult, historyResult] = await Promise.allSettled([
+  // /statistics — which would hand back a ready-made trailing P/E and market
+  // cap in one call — requires Twelve Data's Pro tier or above, out of reach
+  // on the current Grow plan. /earnings *is* included on Grow, so trailing
+  // P/E is computed here instead from the last four quarters' reported EPS.
+  // Market cap has no such workaround (it needs shares outstanding, which no
+  // Grow-tier endpoint exposes) and stays unavailable until upgrading further.
+  // Each call is fetched independently (allSettled, not all) so a failure on
+  // one doesn't stop price/all-time-high (quote + time_series) from rendering.
+  const [quoteResult, earningsResult, historyResult] = await Promise.allSettled([
     rateLimitedFetchJson(`${base}/quote?symbol=${symbol}&apikey=${API_KEY}`),
-    rateLimitedFetchJson(`${base}/statistics?symbol=${symbol}&apikey=${API_KEY}`),
+    rateLimitedFetchJson(`${base}/earnings?symbol=${symbol}&apikey=${API_KEY}`),
     rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
   ]);
 
   const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
-  const valuations = statsResult.status === 'fulfilled'
-    ? statsResult.value?.statistics?.valuations_metrics
-    : null;
-  const pe = valuations?.trailing_pe ?? null;
-  const marketCap = valuations?.market_capitalization ?? null;
+
+  // Trailing (TTM) P/E = price / sum of the last four quarters' actual EPS.
+  // Twelve Data returns earnings most-recent-first, so the first four
+  // entries with a reported (non-null) eps_actual are the trailing year.
+  // Requires a full four quarters to avoid a misleading partial-year figure.
+  let pe = null;
+  if (earningsResult.status === 'fulfilled' && price !== null) {
+    const quarters = (earningsResult.value.earnings || [])
+      .map((q) => q.eps_actual)
+      .filter((v) => typeof v === 'number')
+      .slice(0, 4);
+    if (quarters.length === 4) {
+      const ttmEps = quarters.reduce((sum, v) => sum + v, 0);
+      if (ttmEps > 0) pe = price / ttmEps;
+    }
+  }
+
+  // Requires shares outstanding, which isn't exposed by any endpoint
+  // available on the current plan
+  const marketCap = null;
 
   let athPrice = null;
   let athDate = null;
@@ -128,23 +150,7 @@ async function loadIndex(symbol) {
   return { symbol, price, athPrice, athDate, daysSinceAth, vsAth };
 }
 
-async function debugFundamentalsCheck() {
-  try {
-    const res = await fetch(`https://api.twelvedata.com/profile?symbol=NVDA&apikey=${API_KEY}`);
-    const data = await res.json();
-    console.error('[DEBUG profile keys]', JSON.stringify(Object.keys(data)));
-    console.error('[DEBUG profile shares/cap fields]', JSON.stringify({
-      shares_outstanding: data.shares_outstanding,
-      market_cap: data.market_cap,
-      marketCap: data.marketCap,
-    }));
-  } catch (err) {
-    console.error('[DEBUG profile] failed', err.message);
-  }
-}
-
 async function main() {
-  await debugFundamentalsCheck();
   const stocks = {};
   const indices = {};
   await Promise.all([
