@@ -129,7 +129,18 @@ async function loadIndex(symbol) {
   return { symbol, price, athPrice, athDate, daysSinceAth, vsAth };
 }
 
+async function debugPlanCheck() {
+  try {
+    const res = await fetch(`https://api.twelvedata.com/api_usage?apikey=${API_KEY}`);
+    const data = await res.json();
+    console.error('[DEBUG plan]', JSON.stringify(data));
+  } catch (err) {
+    console.error('[DEBUG plan] failed', err.message);
+  }
+}
+
 async function main() {
+  await debugPlanCheck();
   const stocks = {};
   const indices = {};
   await Promise.all([
