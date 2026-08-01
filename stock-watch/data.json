@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-01T19:03:42.929Z",
+  "savedAt": "2026-08-01T20:46:16.295Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -73,14 +73,6 @@
     }
   },
   "indices": {
-    "QQQ": {
-      "symbol": "QQQ",
-      "price": 687.98999,
-      "athPrice": 748.65002,
-      "athDate": "2026-06-03",
-      "daysSinceAth": 60,
-      "vsAth": -8.102588443128607
-    },
     "SPY": {
       "symbol": "SPY",
       "price": 747.030029,
@@ -88,25 +80,17 @@
       "athDate": "2026-06-02",
       "daysSinceAth": 61,
       "vsAth": -1.7582838832644991
+    },
+    "QQQ": {
+      "symbol": "QQQ",
+      "price": 687.98999,
+      "athPrice": 748.65002,
+      "athDate": "2026-06-03",
+      "daysSinceAth": 60,
+      "vsAth": -8.102588443128607
     }
   },
   "indicesGbp": {
-    "VWRP": {
-      "symbol": "VWRP",
-      "price": 139.16,
-      "athPrice": 144.25999,
-      "athDate": "2026-06-22",
-      "daysSinceAth": 41,
-      "vsAth": -3.5352768290085086
-    },
-    "VUSA": {
-      "symbol": "VUSA",
-      "price": 104.6675,
-      "athPrice": 107.72,
-      "athDate": "2026-06-22",
-      "daysSinceAth": 41,
-      "vsAth": -2.8337356108429215
-    },
     "VUAG": {
       "symbol": "VUAG",
       "price": 106.66,
@@ -115,6 +99,14 @@
       "daysSinceAth": 41,
       "vsAth": -2.8774358040429764
     },
+    "VWRP": {
+      "symbol": "VWRP",
+      "price": 139.16,
+      "athPrice": 144.25999,
+      "athDate": "2026-06-22",
+      "daysSinceAth": 41,
+      "vsAth": -3.5352768290085086
+    },
     "VWRL": {
       "symbol": "VWRL",
       "price": 134.83,
@@ -122,6 +114,14 @@
       "athDate": "2026-06-18",
       "daysSinceAth": 45,
       "vsAth": -3.6997319502073065
+    },
+    "VUSA": {
+      "symbol": "VUSA",
+      "price": 104.6675,
+      "athPrice": 107.72,
+      "athDate": "2026-06-22",
+      "daysSinceAth": 41,
+      "vsAth": -2.8337356108429215
     }
   }
 }
