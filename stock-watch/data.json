@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-01T06:52:13.587Z",
+  "savedAt": "2026-08-01T06:56:21.752Z",
   "stocks": {
     "NVDA": {
       "symbol": "NVDA",
@@ -21,26 +21,6 @@
       "vsAth": -10.349133402526817,
       "pe": 35.344395
     },
-    "GOOGL": {
-      "symbol": "GOOGL",
-      "price": 356.13,
-      "marketCap": null,
-      "athPrice": 408.60999,
-      "athDate": "2026-05-18",
-      "daysSinceAth": 75,
-      "vsAth": -12.843540609469677,
-      "pe": null
-    },
-    "AMZN": {
-      "symbol": "AMZN",
-      "price": 271.57999,
-      "marketCap": null,
-      "athPrice": 278.56,
-      "athDate": "2026-05-05",
-      "daysSinceAth": 88,
-      "vsAth": -2.505747415278573,
-      "pe": null
-    },
     "MSFT": {
       "symbol": "MSFT",
       "price": 464.72,
@@ -51,6 +31,16 @@
       "vsAth": -16.33450506194068,
       "pe": null
     },
+    "GOOGL": {
+      "symbol": "GOOGL",
+      "price": 356.13,
+      "marketCap": null,
+      "athPrice": 408.60999,
+      "athDate": "2026-05-18",
+      "daysSinceAth": 75,
+      "vsAth": -12.843540609469677,
+      "pe": null
+    },
     "META": {
       "symbol": "META",
       "price": 556.71002,
@@ -59,6 +49,16 @@
       "athDate": "2025-08-15",
       "daysSinceAth": 351,
       "vsAth": -30.083513971742544,
+      "pe": null
+    },
+    "AMZN": {
+      "symbol": "AMZN",
+      "price": 271.57999,
+      "marketCap": null,
+      "athPrice": 278.56,
+      "athDate": "2026-05-05",
+      "daysSinceAth": 88,
+      "vsAth": -2.505747415278573,
       "pe": null
     },
     "TSLA": {
@@ -73,14 +73,6 @@
     }
   },
   "indices": {
-    "SPY": {
-      "symbol": "SPY",
-      "price": 747.030029,
-      "athPrice": 760.40002,
-      "athDate": "2026-06-02",
-      "daysSinceAth": 60,
-      "vsAth": -1.7582838832644991
-    },
     "QQQ": {
       "symbol": "QQQ",
       "price": 687.98999,
@@ -88,6 +80,14 @@
       "athDate": "2026-06-03",
       "daysSinceAth": 59,
       "vsAth": -8.102588443128607
+    },
+    "SPY": {
+      "symbol": "SPY",
+      "price": 747.030029,
+      "athPrice": 760.40002,
+      "athDate": "2026-06-02",
+      "daysSinceAth": 60,
+      "vsAth": -1.7582838832644991
     }
   }
 }
