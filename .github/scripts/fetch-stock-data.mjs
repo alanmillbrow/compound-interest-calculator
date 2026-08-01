@@ -182,15 +182,12 @@ async function loadIndex(symbol) {
 }
 
 async function debugGbpSymbolCheck() {
-  const symbols = ['VUAG', 'VUSA', 'VWRP', 'VWRL', 'VAFTGAG', 'VFGAIGI'];
-  for (const sym of symbols) {
-    try {
-      const res = await fetch(`https://api.twelvedata.com/quote?symbol=${sym}&exchange=LSE&apikey=${API_KEY}`);
-      const data = await res.json();
-      console.error(`[DEBUG gbp:${sym}]`, JSON.stringify(data));
-    } catch (err) {
-      console.error(`[DEBUG gbp:${sym}] failed`, err.message);
-    }
+  try {
+    const res = await fetch(`https://api.twelvedata.com/symbol_search?symbol=Vanguard FTSE Global All Cap&apikey=${API_KEY}`);
+    const data = await res.json();
+    console.error('[DEBUG search:global-all-cap]', JSON.stringify(data));
+  } catch (err) {
+    console.error('[DEBUG search:global-all-cap] failed', err.message);
   }
 }
 
