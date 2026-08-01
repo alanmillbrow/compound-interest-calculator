@@ -1403,6 +1403,10 @@ main > .newsletter-signup:last-child { margin-bottom: 0; }
   .sankey-share { text-align: left; width: 100%; }
   .sankey-share .share-actions, .sankey-share .share-status { justify-content: flex-start; text-align: left; }
   .follow-bar { flex-direction: column; gap: 16px; text-align: center; }
+  /* The heading and note used to sit side by side and fight for space,
+     each wrapping to two lines and visually overlapping — stack instead */
+  .table-header-note { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .table-header-note .section-note { text-align: left; }
 }
 
 @media (max-width: 480px) {
