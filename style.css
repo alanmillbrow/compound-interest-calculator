@@ -1038,6 +1038,10 @@ tbody tr:hover { background: var(--accent-soft); }
   font-size: 0.98rem;
   font-style: normal;
 }
+.sankey-card > .section-note strong {
+  color: var(--text-primary);
+  font-weight: 400;
+}
 .sankey-diagram-wrap {
   margin: 20px 0 8px;
 }
