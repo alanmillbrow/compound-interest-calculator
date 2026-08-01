@@ -139,8 +139,21 @@ async function debugPlanCheck() {
   }
 }
 
+async function debugIndexCheck() {
+  for (const sym of ['SPX', 'NDX']) {
+    try {
+      const res = await fetch(`https://api.twelvedata.com/quote?symbol=${sym}&apikey=${API_KEY}`);
+      const data = await res.json();
+      console.error(`[DEBUG index:${sym}]`, JSON.stringify(data));
+    } catch (err) {
+      console.error(`[DEBUG index:${sym}] failed`, err.message);
+    }
+  }
+}
+
 async function main() {
   await debugPlanCheck();
+  await debugIndexCheck();
   const stocks = {};
   const indices = {};
   await Promise.all([
