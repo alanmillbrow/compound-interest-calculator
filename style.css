@@ -849,8 +849,12 @@ select#frequency:focus {
 .stock-table {
   table-layout: fixed;
 }
-.stock-table th:first-child, .stock-table td:first-child { width: 25%; }
-.stock-table th:not(:first-child), .stock-table td:not(:first-child) { width: 15%; }
+.stock-table th:first-child, .stock-table td:first-child { width: 28%; }
+.stock-table th:not(:first-child), .stock-table td:not(:first-child) {
+  width: 12%;
+  padding-left: 12px;
+  padding-right: 12px;
+}
 
 table {
   width: 100%;
