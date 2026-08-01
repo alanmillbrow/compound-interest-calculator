@@ -30,44 +30,68 @@ const INDICES = [
   { symbol: 'QQQ', name: 'Nasdaq-100' },
 ];
 
-// The current Twelve Data Grow plan allows 55 API credits per minute. Each
-// stock costs 3 credits (quote + earnings + time_series), so this queue
-// paces every request to stay under that ceiling instead of bursting and
-// getting 429s.
-const RATE_LIMIT = 50;
-const RATE_WINDOW_MS = 60 * 1000;
-const callTimestamps = [];
+// Twelve Data enforces a rolling per-minute credit budget, but different
+// endpoints cost different (undocumented) amounts of it — quote, earnings
+// and time_series don't all cost the same, and time_series' cost scales
+// with outputsize — so pre-calculating how many calls fit isn't reliable.
+// Instead: cap how many requests are in flight at once to avoid bursting,
+// and when the server does return 429 ("out of credits for the current
+// minute"), wait out the window and retry rather than giving up on that
+// field.
+const MAX_CONCURRENT = 4;
+const RETRY_WAIT_MS = 65 * 1000;
+const MAX_ATTEMPTS = 3;
+
+let activeCount = 0;
+const waitQueue = [];
+
+function acquireSlot() {
+  return new Promise((resolve) => {
+    const tryAcquire = () => {
+      if (activeCount < MAX_CONCURRENT) {
+        activeCount++;
+        resolve();
+      } else {
+        waitQueue.push(tryAcquire);
+      }
+    };
+    tryAcquire();
+  });
+}
+
+function releaseSlot() {
+  activeCount--;
+  const next = waitQueue.shift();
+  if (next) next();
+}
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function rateLimitedFetchJson(url) {
-  for (;;) {
-    const now = Date.now();
-    while (callTimestamps.length && now - callTimestamps[0] >= RATE_WINDOW_MS) {
-      callTimestamps.shift();
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    await acquireSlot();
+    let res, data;
+    try {
+      res = await fetch(url);
+      data = await res.json();
+    } finally {
+      releaseSlot();
     }
-    if (callTimestamps.length < RATE_LIMIT) {
-      callTimestamps.push(now);
-      break;
-    }
-    await sleep(RATE_WINDOW_MS - (now - callTimestamps[0]) + 250);
-  }
 
-  let res;
-  try {
-    res = await fetch(url);
-  } catch (err) {
-    console.error(`[DEBUG netfail] ${url}`, err.message);
-    throw err;
+    if (data.code === 429) {
+      if (attempt === MAX_ATTEMPTS) {
+        throw new Error(data.message || 'Rate limited after retries');
+      }
+      await sleep(RETRY_WAIT_MS);
+      continue;
+    }
+    if (data.status === 'error' || data.code >= 400) {
+      throw new Error(data.message || `Twelve Data error (${data.code || res.status})`);
+    }
+    return data;
   }
-  const data = await res.json();
-  if (data.status === 'error' || data.code >= 400) {
-    console.error(`[DEBUG apierr] ${url}`, res.status, JSON.stringify(data));
-    throw new Error(data.message || `Twelve Data error (${data.code || res.status})`);
-  }
-  return data;
 }
 
 async function loadStock(symbol) {
