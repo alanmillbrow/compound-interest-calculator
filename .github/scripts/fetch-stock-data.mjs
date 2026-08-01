@@ -55,9 +55,16 @@ async function rateLimitedFetchJson(url) {
     await sleep(RATE_WINDOW_MS - (now - callTimestamps[0]) + 250);
   }
 
-  const res = await fetch(url);
+  let res;
+  try {
+    res = await fetch(url);
+  } catch (err) {
+    console.error(`[DEBUG netfail] ${url}`, err.message);
+    throw err;
+  }
   const data = await res.json();
   if (data.status === 'error' || data.code >= 400) {
+    console.error(`[DEBUG apierr] ${url}`, res.status, JSON.stringify(data));
     throw new Error(data.message || `Twelve Data error (${data.code || res.status})`);
   }
   return data;
