@@ -745,6 +745,11 @@ select#frequency:focus {
   margin-bottom: 18px;
 }
 .chart-header h2, .table-header h2, .youtube-embed-header h2 { margin: 0; }
+/* Centering a heading and a smaller note by box height (the default above)
+   looks visually off — their different font sizes give each box different
+   internal leading, so the glyphs themselves don't line up even though the
+   boxes are centered. Baseline alignment lines up the actual text instead. */
+.table-header-note { align-items: baseline; }
 
 .legend {
   display: flex;
@@ -1410,8 +1415,11 @@ main > .newsletter-signup:last-child { margin-bottom: 0; }
   .follow-bar { flex-direction: column; gap: 16px; text-align: center; }
   /* The heading and note used to sit side by side and fight for space,
      each wrapping to two lines and visually overlapping — stack instead */
-  .table-header-note { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .table-header-note .section-note { text-align: left; }
+  .table-header-note { flex-direction: column; align-items: flex-start; gap: 10px; }
+  /* .section-note's own -12px top margin is a desktop-only nudge for its
+     row position next to the heading — reset it here or it eats into (and
+     overlaps past) the gap above now that it's stacked underneath instead */
+  .table-header-note .section-note { text-align: left; margin-top: 0; }
 }
 
 @media (max-width: 480px) {
