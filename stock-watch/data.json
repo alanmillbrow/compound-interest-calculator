@@ -1,26 +1,6 @@
 {
-  "savedAt": "2026-08-01T07:18:06.476Z",
+  "savedAt": "2026-08-01T07:28:54.734Z",
   "stocks": {
-    "MSFT": {
-      "symbol": "MSFT",
-      "price": null,
-      "marketCap": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null,
-      "pe": null
-    },
-    "AMZN": {
-      "symbol": "AMZN",
-      "price": null,
-      "marketCap": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null,
-      "pe": null
-    },
     "META": {
       "symbol": "META",
       "price": null,
@@ -41,24 +21,44 @@
       "vsAth": null,
       "pe": null
     },
-    "AAPL": {
-      "symbol": "AAPL",
-      "price": 308.91,
+    "MSFT": {
+      "symbol": "MSFT",
+      "price": 464.72,
       "marketCap": null,
       "athPrice": null,
       "athDate": null,
       "daysSinceAth": null,
       "vsAth": null,
+      "pe": 26.893518518518523
+    },
+    "AMZN": {
+      "symbol": "AMZN",
+      "price": 271.57999,
+      "marketCap": null,
+      "athPrice": null,
+      "athDate": null,
+      "daysSinceAth": null,
+      "vsAth": null,
+      "pe": null
+    },
+    "AAPL": {
+      "symbol": "AAPL",
+      "price": 308.91,
+      "marketCap": null,
+      "athPrice": 344.57001,
+      "athDate": "2026-07-29",
+      "daysSinceAth": 3,
+      "vsAth": -10.349133402526817,
       "pe": 35.425458715596335
     },
     "GOOGL": {
       "symbol": "GOOGL",
       "price": 356.13,
       "marketCap": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null,
+      "athPrice": 408.60999,
+      "athDate": "2026-05-18",
+      "daysSinceAth": 75,
+      "vsAth": -12.843540609469677,
       "pe": null
     },
     "NVDA": {
@@ -73,16 +73,16 @@
     }
   },
   "indices": {
-    "QQQ": {
-      "symbol": "QQQ",
+    "SPY": {
+      "symbol": "SPY",
       "price": null,
       "athPrice": null,
       "athDate": null,
       "daysSinceAth": null,
       "vsAth": null
     },
-    "SPY": {
-      "symbol": "SPY",
+    "QQQ": {
+      "symbol": "QQQ",
       "price": null,
       "athPrice": null,
       "athDate": null,
