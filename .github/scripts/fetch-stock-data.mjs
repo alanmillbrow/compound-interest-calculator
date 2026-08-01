@@ -73,7 +73,6 @@ async function loadStock(symbol) {
   ]);
 
   const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
-  console.error(`[DEBUG stats:${symbol}]`, statsResult.status, statsResult.status === 'rejected' ? statsResult.reason?.message : JSON.stringify(statsResult.value));
   const valuations = statsResult.status === 'fulfilled'
     ? statsResult.value?.statistics?.valuations_metrics
     : null;
@@ -129,31 +128,7 @@ async function loadIndex(symbol) {
   return { symbol, price, athPrice, athDate, daysSinceAth, vsAth };
 }
 
-async function debugPlanCheck() {
-  try {
-    const res = await fetch(`https://api.twelvedata.com/api_usage?apikey=${API_KEY}`);
-    const data = await res.json();
-    console.error('[DEBUG plan]', JSON.stringify(data));
-  } catch (err) {
-    console.error('[DEBUG plan] failed', err.message);
-  }
-}
-
-async function debugIndexCheck() {
-  for (const sym of ['SPX', 'NDX']) {
-    try {
-      const res = await fetch(`https://api.twelvedata.com/quote?symbol=${sym}&apikey=${API_KEY}`);
-      const data = await res.json();
-      console.error(`[DEBUG index:${sym}]`, JSON.stringify(data));
-    } catch (err) {
-      console.error(`[DEBUG index:${sym}] failed`, err.message);
-    }
-  }
-}
-
 async function main() {
-  await debugPlanCheck();
-  await debugIndexCheck();
   const stocks = {};
   const indices = {};
   await Promise.all([
