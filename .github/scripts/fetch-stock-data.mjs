@@ -129,14 +129,17 @@ async function loadIndex(symbol) {
 }
 
 async function debugFundamentalsCheck() {
-  for (const ep of ['profile', 'earnings']) {
-    try {
-      const res = await fetch(`https://api.twelvedata.com/${ep}?symbol=NVDA&apikey=${API_KEY}`);
-      const data = await res.json();
-      console.error(`[DEBUG fundbody:${ep}]`, JSON.stringify(data).slice(0, 1500));
-    } catch (err) {
-      console.error(`[DEBUG fundbody:${ep}] failed`, err.message);
-    }
+  try {
+    const res = await fetch(`https://api.twelvedata.com/profile?symbol=NVDA&apikey=${API_KEY}`);
+    const data = await res.json();
+    console.error('[DEBUG profile keys]', JSON.stringify(Object.keys(data)));
+    console.error('[DEBUG profile shares/cap fields]', JSON.stringify({
+      shares_outstanding: data.shares_outstanding,
+      market_cap: data.market_cap,
+      marketCap: data.marketCap,
+    }));
+  } catch (err) {
+    console.error('[DEBUG profile] failed', err.message);
   }
 }
 
