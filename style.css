@@ -1034,6 +1034,10 @@ tbody tr:hover { background: var(--accent-soft); }
 }
 
 /* Freedom Flow (Sankey) */
+.sankey-card > .section-note {
+  font-size: 0.98rem;
+  font-style: normal;
+}
 .sankey-diagram-wrap {
   margin: 20px 0 8px;
 }
