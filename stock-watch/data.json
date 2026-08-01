@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-01T07:12:17.915Z",
+  "savedAt": "2026-08-01T07:16:03.574Z",
   "stocks": {
     "NVDA": {
       "symbol": "NVDA",
@@ -21,6 +21,16 @@
       "vsAth": -10.349133402526817,
       "pe": 35.344395
     },
+    "MSFT": {
+      "symbol": "MSFT",
+      "price": 464.72,
+      "marketCap": null,
+      "athPrice": 555.45001,
+      "athDate": "2025-07-31",
+      "daysSinceAth": 366,
+      "vsAth": -16.33450506194068,
+      "pe": null
+    },
     "AMZN": {
       "symbol": "AMZN",
       "price": 271.57999,
@@ -31,14 +41,14 @@
       "vsAth": -2.505747415278573,
       "pe": null
     },
-    "MSFT": {
-      "symbol": "MSFT",
-      "price": 464.72,
+    "GOOGL": {
+      "symbol": "GOOGL",
+      "price": 356.13,
       "marketCap": null,
-      "athPrice": 555.45001,
-      "athDate": "2025-07-31",
-      "daysSinceAth": 366,
-      "vsAth": -16.33450506194068,
+      "athPrice": 408.60999,
+      "athDate": "2026-05-18",
+      "daysSinceAth": 75,
+      "vsAth": -12.843540609469677,
       "pe": null
     },
     "META": {
@@ -59,16 +69,6 @@
       "athDate": "2025-12-22",
       "daysSinceAth": 222,
       "vsAth": -37.612012862338126,
-      "pe": null
-    },
-    "GOOGL": {
-      "symbol": "GOOGL",
-      "price": 356.13,
-      "marketCap": null,
-      "athPrice": 408.60999,
-      "athDate": "2026-05-18",
-      "daysSinceAth": 75,
-      "vsAth": -12.843540609469677,
       "pe": null
     }
   },
