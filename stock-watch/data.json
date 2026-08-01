@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-01T00:00:27.117Z",
+  "savedAt": "2026-08-01T02:55:16.453Z",
   "stocks": {
     "NVDA": {
       "symbol": "NVDA",
@@ -19,17 +19,7 @@
       "athDate": "2026-07-29",
       "daysSinceAth": 3,
       "vsAth": -10.349133402526817,
-      "pe": 41.615616
-    },
-    "TSLA": {
-      "symbol": "TSLA",
-      "price": 311.20999,
-      "marketCap": null,
-      "athPrice": 498.82999,
-      "athDate": "2025-12-22",
-      "daysSinceAth": 222,
-      "vsAth": -37.612012862338126,
-      "pe": null
+      "pe": 35.344395
     },
     "GOOGL": {
       "symbol": "GOOGL",
@@ -69,6 +59,16 @@
       "athDate": "2025-08-15",
       "daysSinceAth": 351,
       "vsAth": -30.083513971742544,
+      "pe": null
+    },
+    "TSLA": {
+      "symbol": "TSLA",
+      "price": 311.20999,
+      "marketCap": null,
+      "athPrice": 498.82999,
+      "athDate": "2025-12-22",
+      "daysSinceAth": 222,
+      "vsAth": -37.612012862338126,
       "pe": null
     }
   },
