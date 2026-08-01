@@ -1,6 +1,26 @@
 {
-  "savedAt": "2026-08-01T07:28:54.734Z",
+  "savedAt": "2026-08-01T07:30:22.854Z",
   "stocks": {
+    "MSFT": {
+      "symbol": "MSFT",
+      "price": null,
+      "marketCap": null,
+      "athPrice": null,
+      "athDate": null,
+      "daysSinceAth": null,
+      "vsAth": null,
+      "pe": null
+    },
+    "AMZN": {
+      "symbol": "AMZN",
+      "price": null,
+      "marketCap": null,
+      "athPrice": null,
+      "athDate": null,
+      "daysSinceAth": null,
+      "vsAth": null,
+      "pe": null
+    },
     "META": {
       "symbol": "META",
       "price": null,
@@ -21,26 +41,6 @@
       "vsAth": null,
       "pe": null
     },
-    "MSFT": {
-      "symbol": "MSFT",
-      "price": 464.72,
-      "marketCap": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null,
-      "pe": 26.893518518518523
-    },
-    "AMZN": {
-      "symbol": "AMZN",
-      "price": 271.57999,
-      "marketCap": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null,
-      "pe": null
-    },
     "AAPL": {
       "symbol": "AAPL",
       "price": 308.91,
@@ -53,12 +53,12 @@
     },
     "GOOGL": {
       "symbol": "GOOGL",
-      "price": 356.13,
+      "price": null,
       "marketCap": null,
       "athPrice": 408.60999,
       "athDate": "2026-05-18",
       "daysSinceAth": 75,
-      "vsAth": -12.843540609469677,
+      "vsAth": null,
       "pe": null
     },
     "NVDA": {
