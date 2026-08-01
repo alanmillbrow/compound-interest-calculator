@@ -181,7 +181,21 @@ async function loadIndex(symbol) {
   return { symbol, price, athPrice, athDate, daysSinceAth, vsAth };
 }
 
+async function debugGbpSymbolCheck() {
+  const symbols = ['VUAG', 'VUSA', 'VWRP', 'VWRL', 'VAFTGAG', 'VFGAIGI'];
+  for (const sym of symbols) {
+    try {
+      const res = await fetch(`https://api.twelvedata.com/quote?symbol=${sym}&exchange=LSE&apikey=${API_KEY}`);
+      const data = await res.json();
+      console.error(`[DEBUG gbp:${sym}]`, JSON.stringify(data));
+    } catch (err) {
+      console.error(`[DEBUG gbp:${sym}] failed`, err.message);
+    }
+  }
+}
+
 async function main() {
+  await debugGbpSymbolCheck();
   const stocks = {};
   const indices = {};
   await Promise.all([
