@@ -129,18 +129,13 @@ async function loadIndex(symbol) {
 }
 
 async function debugFundamentalsCheck() {
-  const endpoints = [
-    'statistics', 'profile', 'income_statement', 'balance_sheet',
-    'cash_flow', 'earnings', 'market_cap', 'dividends', 'splits',
-  ];
-  for (const ep of endpoints) {
+  for (const ep of ['profile', 'earnings']) {
     try {
       const res = await fetch(`https://api.twelvedata.com/${ep}?symbol=NVDA&apikey=${API_KEY}`);
       const data = await res.json();
-      const ok = !(data.status === 'error' || data.code >= 400);
-      console.error(`[DEBUG fund:${ep}]`, ok ? 'OK' : `BLOCKED (${data.code}) ${data.message}`);
+      console.error(`[DEBUG fundbody:${ep}]`, JSON.stringify(data).slice(0, 1500));
     } catch (err) {
-      console.error(`[DEBUG fund:${ep}] failed`, err.message);
+      console.error(`[DEBUG fundbody:${ep}] failed`, err.message);
     }
   }
 }
