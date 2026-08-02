@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-02T10:38:39.032Z",
+  "savedAt": "2026-08-02T12:00:36.159Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -57,7 +57,7 @@
       "marketCap": null,
       "athPrice": 796.25,
       "athDate": "2025-08-15",
-      "daysSinceAth": 352,
+      "daysSinceAth": 353,
       "vsAth": -30.083513971742544,
       "pe": 24.62229190623618
     },
@@ -67,27 +67,27 @@
       "marketCap": null,
       "athPrice": 498.82999,
       "athDate": "2025-12-22",
-      "daysSinceAth": 223,
+      "daysSinceAth": 224,
       "vsAth": -37.612012862338126,
       "pe": 232.24626119402984
     }
   },
   "indices": {
-    "SPY": {
-      "symbol": "SPY",
-      "price": 747.030029,
-      "athPrice": 760.40002,
-      "athDate": "2026-06-02",
-      "daysSinceAth": 61,
-      "vsAth": -1.7582838832644991
-    },
     "QQQ": {
       "symbol": "QQQ",
       "price": 687.98999,
       "athPrice": 748.65002,
       "athDate": "2026-06-03",
-      "daysSinceAth": 60,
+      "daysSinceAth": 61,
       "vsAth": -8.102588443128607
+    },
+    "SPY": {
+      "symbol": "SPY",
+      "price": 747.030029,
+      "athPrice": 760.40002,
+      "athDate": "2026-06-02",
+      "daysSinceAth": 62,
+      "vsAth": -1.7582838832644991
     }
   },
   "indicesGbp": {
@@ -96,32 +96,32 @@
       "price": 106.66,
       "athPrice": 109.82,
       "athDate": "2026-06-22",
-      "daysSinceAth": 41,
+      "daysSinceAth": 42,
       "vsAth": -2.8774358040429764
-    },
-    "VWRP": {
-      "symbol": "VWRP",
-      "price": 139.16,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null
-    },
-    "VWRL": {
-      "symbol": "VWRL",
-      "price": 134.83,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null
     },
     "VUSA": {
       "symbol": "VUSA",
       "price": 104.6675,
       "athPrice": 107.72,
       "athDate": "2026-06-22",
-      "daysSinceAth": 41,
+      "daysSinceAth": 42,
       "vsAth": -2.8337356108429215
+    },
+    "VWRP": {
+      "symbol": "VWRP",
+      "price": 139.16,
+      "athPrice": 144.25999,
+      "athDate": "2026-06-22",
+      "daysSinceAth": 42,
+      "vsAth": -3.5352768290085086
+    },
+    "VWRL": {
+      "symbol": "VWRL",
+      "price": 134.83,
+      "athPrice": 140.0099945,
+      "athDate": "2026-06-18",
+      "daysSinceAth": 46,
+      "vsAth": -3.6997319502073065
     }
   }
 }
