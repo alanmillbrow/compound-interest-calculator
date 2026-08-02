@@ -903,6 +903,10 @@ select#frequency:focus {
    equal width. */
 .yearly-table {
   table-layout: fixed;
+  /* Fixed % widths on their own just shrink to fit any container instead
+     of overflowing, which silently defeated .table-wrap's horizontal
+     scroll on narrow screens — same fix as .stock-table's min-width. */
+  min-width: 480px;
 }
 .yearly-table th:first-child, .yearly-table td:first-child { width: 16%; }
 .yearly-table th:not(:first-child), .yearly-table td:not(:first-child) { width: 28%; }
