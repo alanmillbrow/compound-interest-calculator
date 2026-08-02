@@ -119,6 +119,15 @@
       </div>
 
       <div class="field">
+        <label for="inflation">Expected annual inflation</label>
+        <div class="input-suffix">
+          <input type="text" inputmode="decimal" id="inflation" value="3.5">
+          <span>%</span>
+        </div>
+        <input type="range" id="inflationRange" min="0" max="10" step="0.1" value="3.5" class="slider">
+      </div>
+
+      <div class="field">
         <label for="frequency">Compounding frequency</label>
         <select id="frequency">
           <option value="365">Daily</option>
@@ -174,27 +183,35 @@
 
       <div class="card">
         <h2>Future income</h2>
-        <p class="section-note">Estimated sustainable withdrawal from your future value, using safe withdrawal rate rules</p>
-        <div class="ledger-table">
-          <div class="ledger-row ledger-head cols-3">
+        <p class="section-note">Estimated sustainable withdrawal from your future value, using safe withdrawal rate rules. Shown in future pounds and at today&rsquo;s purchasing power</p>
+        <div class="ledger-table ledger-table-scroll">
+          <div class="ledger-row ledger-head cols-5">
             <span>Rule</span>
             <span>Annual income</span>
             <span>Monthly income</span>
+            <span>Annual income today&rsquo;s PP</span>
+            <span>Monthly income today&rsquo;s PP</span>
           </div>
-          <div class="ledger-row cols-3">
+          <div class="ledger-row cols-5">
             <span>3% rule</span>
             <span id="income3Annual">£0</span>
             <span id="income3Monthly">£0</span>
+            <span id="income3AnnualReal">£0</span>
+            <span id="income3MonthlyReal">£0</span>
           </div>
-          <div class="ledger-row cols-3">
+          <div class="ledger-row cols-5">
             <span>4% rule</span>
             <span id="income4Annual">£0</span>
             <span id="income4Monthly">£0</span>
+            <span id="income4AnnualReal">£0</span>
+            <span id="income4MonthlyReal">£0</span>
           </div>
-          <div class="ledger-row cols-3">
+          <div class="ledger-row cols-5">
             <span>5% rule</span>
             <span id="income5Annual">£0</span>
             <span id="income5Monthly">£0</span>
+            <span id="income5AnnualReal">£0</span>
+            <span id="income5MonthlyReal">£0</span>
           </div>
         </div>
       </div>
@@ -217,7 +234,7 @@
           <button id="toggleTable" class="link-btn">Hide table</button>
         </div>
         <div id="tableWrap" class="table-wrap">
-          <table>
+          <table class="yearly-table">
             <thead>
               <tr>
                 <th>Year</th>

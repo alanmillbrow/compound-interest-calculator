@@ -12,6 +12,8 @@
   const rateRange = $('rateRange');
   const yearsInput = $('years');
   const yearsRange = $('yearsRange');
+  const inflationInput = $('inflation');
+  const inflationRange = $('inflationRange');
   const frequencySelect = $('frequency');
   const segButtons = document.querySelectorAll('.contribution-timing .seg-btn');
   const currencyButtons = document.querySelectorAll('.currency-segmented .seg-btn');
@@ -24,9 +26,18 @@
   const growthMultipleEl = $('growthMultiple');
 
   const incomeEls = {
-    3: { annual: $('income3Annual'), monthly: $('income3Monthly') },
-    4: { annual: $('income4Annual'), monthly: $('income4Monthly') },
-    5: { annual: $('income5Annual'), monthly: $('income5Monthly') },
+    3: {
+      annual: $('income3Annual'), monthly: $('income3Monthly'),
+      annualReal: $('income3AnnualReal'), monthlyReal: $('income3MonthlyReal'),
+    },
+    4: {
+      annual: $('income4Annual'), monthly: $('income4Monthly'),
+      annualReal: $('income4AnnualReal'), monthlyReal: $('income4MonthlyReal'),
+    },
+    5: {
+      annual: $('income5Annual'), monthly: $('income5Monthly'),
+      annualReal: $('income5AnnualReal'), monthlyReal: $('income5MonthlyReal'),
+    },
   };
 
   const canvas = $('chart');
@@ -98,6 +109,7 @@
   bindTextAndRange(contributionInput, contributionRange, { isCurrency: true });
   bindTextAndRange(rateInput, rateRange, {});
   bindTextAndRange(yearsInput, yearsRange, { isInt: true });
+  bindTextAndRange(inflationInput, inflationRange, {});
   frequencySelect.addEventListener('change', renderAll);
 
   segButtons.forEach((btn) => {
@@ -161,6 +173,7 @@
     setField('contribution', contributionInput, contributionRange, true, false);
     setField('rate', rateInput, rateRange, false, false);
     setField('years', yearsInput, yearsRange, false, true);
+    setField('inflation', inflationInput, inflationRange, false, false);
 
     const frequencyParam = params.get('frequency');
     if (frequencyParam && [...frequencySelect.options].some((o) => o.value === frequencyParam)) {
@@ -174,6 +187,7 @@
     params.set('contribution', Math.round(parseNumber(contributionInput.value)));
     params.set('rate', parseNumber(rateInput.value));
     params.set('years', Math.round(parseNumber(yearsInput.value)));
+    params.set('inflation', parseNumber(inflationInput.value));
     params.set('frequency', frequencySelect.value);
     params.set('timing', contributeAtStart ? 'begin' : 'end');
     params.set('currency', currentCurrency);
@@ -331,10 +345,20 @@
     const multiple = data.totalContributed > 0 ? data.finalBalance / data.totalContributed : 0;
     growthMultipleEl.textContent = multiple.toFixed(2) + 'x';
 
+    // Deflator brings a future nominal figure back to today's purchasing
+    // power — the inverse of how How Much Is Enough inflates a today's
+    // figure forward to a future one
+    const years = Math.max(1, Math.round(parseNumber(yearsInput.value)));
+    const inflation = parseNumber(inflationInput.value) / 100;
+    const deflator = Math.pow(1 + inflation, years);
+
     for (const rate of [3, 4, 5]) {
       const annual = data.finalBalance * (rate / 100);
       incomeEls[rate].annual.textContent = fmtCurrency(annual);
       incomeEls[rate].monthly.textContent = fmtCurrency(annual / 12);
+      const annualReal = annual / deflator;
+      incomeEls[rate].annualReal.textContent = fmtCurrency(annualReal);
+      incomeEls[rate].monthlyReal.textContent = fmtCurrency(annualReal / 12);
     }
 
     drawChart(yearlyData, data.principal);

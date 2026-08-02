@@ -668,6 +668,34 @@ select#frequency:focus {
   font-variant-numeric: tabular-nums;
 }
 
+/* Future income table (Liquid Asset Forecaster) — nominal + today's-value
+   columns side by side. ledger-table normally clips overflow, but 5 columns
+   of currency figures don't comfortably fit a narrow screen, so this
+   variant scrolls horizontally instead of squashing, like the stock watch
+   tables. */
+.ledger-table-scroll {
+  overflow-x: auto;
+}
+.ledger-row.cols-5 {
+  display: grid;
+  /* Rule's own values ("3% rule" etc) are short and left-aligned, so an
+     equal 1fr share left a huge dead gap before the right-aligned income
+     columns start. Give it just enough room and split the rest evenly. */
+  grid-template-columns: 100px repeat(4, 1fr);
+  justify-items: end;
+  text-align: right;
+  min-width: 640px;
+}
+.ledger-row.cols-5 span:first-child {
+  justify-self: start;
+  text-align: left;
+}
+.ledger-row.cols-5 span:nth-child(2),
+.ledger-row.cols-5 span:nth-child(3),
+.ledger-row.cols-5 span:nth-child(4) {
+  font-variant-numeric: tabular-nums;
+}
+
 .ledger-head {
   background: transparent;
   border-bottom-width: 2px;
@@ -867,6 +895,17 @@ select#frequency:focus {
   padding-left: 12px;
   padding-right: 12px;
 }
+
+/* Yearly breakdown tables (Freedom Formula, Liquid Asset Forecaster) —
+   default auto layout sized each column by its content, so "Investment
+   return" (the longest header) ballooned wide while "Balance" stayed
+   narrow. Fix the layout so all three right-hand columns are genuinely
+   equal width. */
+.yearly-table {
+  table-layout: fixed;
+}
+.yearly-table th:first-child, .yearly-table td:first-child { width: 16%; }
+.yearly-table th:not(:first-child), .yearly-table td:not(:first-child) { width: 28%; }
 
 table {
   width: 100%;
