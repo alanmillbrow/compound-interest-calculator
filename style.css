@@ -1247,67 +1247,6 @@ tbody tr:hover { background: var(--accent-soft); }
   margin: 8px 0 0;
 }
 
-/* Vertical numbered roadmap */
-.roadmap {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  position: relative;
-}
-.roadmap::before {
-  content: "";
-  position: absolute;
-  left: 39px;
-  top: 20px;
-  bottom: 20px;
-  width: 2px;
-  background: var(--card-border);
-}
-.stage {
-  display: flex;
-  gap: 28px;
-  align-items: flex-start;
-  position: relative;
-  padding-bottom: 36px;
-}
-.stage:last-child { padding-bottom: 0; }
-.stage-num {
-  flex-shrink: 0;
-  width: 80px;
-  height: 80px;
-  border: 2px solid var(--card-border);
-  background: var(--card-bg-solid);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'shackleton', Georgia, serif;
-  font-size: 2.4rem;
-  line-height: 1;
-  position: relative;
-  z-index: 1;
-}
-.stage-body { padding-top: 6px; }
-.stage-tag {
-  display: inline-block;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.72rem;
-  color: var(--accent-3);
-  margin-bottom: 6px;
-}
-.stage-body h3 {
-  font-family: 'shackleton', Georgia, serif;
-  font-size: 1.7rem;
-  letter-spacing: -0.01em;
-  margin: 0 0 8px;
-}
-.stage-body p {
-  margin: 0;
-  font-size: 1.1rem;
-  line-height: 1.55;
-  color: var(--text-secondary);
-  max-width: 54ch;
-}
 
 /* Calculators index page */
 .cal-intro {
@@ -1512,11 +1451,7 @@ main > .newsletter-signup:last-child { margin-bottom: 0; }
   .story-text-group { width: 100%; }
   .story-photo { width: 200px; margin: 0 auto; }
   .narrow-layout { gap: 40px; }
-  .roadmap::before { left: 29px; }
-  .stage { gap: 18px; }
-  .stage-num { width: 60px; height: 60px; font-size: 1.8rem; }
-  .stage-body h3 { font-size: 1.4rem; }
-  .stage-body p, .rm-lede, .formula-rule { font-size: 1.05rem; }
+  .rm-lede, .formula-rule { font-size: 1.05rem; }
   .formula-abbr { font-size: 1.8rem; }
   .formula-word { font-size: 0.78rem; }
   .formula-term { padding: 16px 8px; }
