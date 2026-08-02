@@ -602,6 +602,12 @@ select#frequency:focus {
   font-size: 0.88rem;
   font-style: italic;
 }
+/* The -12px pulls a single note up toward its header, but stacked notes
+   (e.g. a tagline followed by an explainer) need breathing room between
+   them instead, or the second overlaps the first */
+.section-note + .section-note {
+  margin-top: 8px;
+}
 
 .stock-watch-status {
   margin: -12px 0 0;
