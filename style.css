@@ -971,11 +971,11 @@ tbody tr:hover { background: var(--accent-soft); }
   max-width: 20ch;
 }
 .rm-lede {
-  font-size: 1.15rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
+  font-size: 1.5rem;
+  line-height: 1.5;
+  color: var(--interest);
   max-width: 60ch;
-  margin: 0 auto 28px;
+  margin: 0 auto;
 }
 .rm-lede a {
   color: var(--interest);
@@ -1451,7 +1451,8 @@ main > .newsletter-signup:last-child { margin-bottom: 0; }
   .story-text-group { width: 100%; }
   .story-photo { width: 200px; margin: 0 auto; }
   .narrow-layout { gap: 40px; }
-  .rm-lede, .formula-rule { font-size: 1.05rem; }
+  .rm-lede { font-size: 1.25rem; }
+  .formula-rule { font-size: 1.05rem; }
   .formula-abbr { font-size: 1.8rem; }
   .formula-word { font-size: 0.78rem; }
   .formula-term { padding: 16px 8px; }
