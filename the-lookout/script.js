@@ -156,7 +156,7 @@ async function init() {
   status.textContent = 'Loading…';
 
   try {
-    const res = await fetch('/stock-watch/data.json', { cache: 'no-store' });
+    const res = await fetch('/the-lookout/data.json', { cache: 'no-store' });
     if (!res.ok) throw new Error(`Failed to load data (${res.status})`);
     const data = await res.json();
     STOCKS.forEach((stock) => renderRow(stock, data.stocks?.[stock.symbol]));

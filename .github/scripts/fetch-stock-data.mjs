@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Fetches quote, earnings, and daily history for each stock in STOCKS from
-// Twelve Data and writes the results to stock-watch/data.json. Run hourly by
-// .github/workflows/refresh-stock-data.yml so the stock-watch page can read a
+// Twelve Data and writes the results to the-lookout/data.json. Run hourly by
+// .github/workflows/refresh-stock-data.yml so the-lookout page can read a
 // static file instead of every visitor's browser calling the API directly.
 
 const API_KEY = process.env.TWELVE_DATA_API_KEY;
@@ -224,9 +224,9 @@ async function main() {
 
   const output = { savedAt: new Date().toISOString(), stocks, indices, indicesGbp };
   const fs = await import('node:fs/promises');
-  const outPath = new URL('../../stock-watch/data.json', import.meta.url);
+  const outPath = new URL('../../the-lookout/data.json', import.meta.url);
   await fs.writeFile(outPath, JSON.stringify(output, null, 2) + '\n');
-  console.log('Wrote stock-watch/data.json');
+  console.log('Wrote the-lookout/data.json');
 }
 
 main().catch((err) => {
