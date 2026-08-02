@@ -953,6 +953,9 @@ tbody tr:hover { background: var(--accent-soft); }
   margin: 0;
   font-style: italic;
 }
+.app-footer p + p {
+  margin-top: 6px;
+}
 
 /* ---------- Financial Freedom Roadmap page ---------- */
 .narrow-layout {

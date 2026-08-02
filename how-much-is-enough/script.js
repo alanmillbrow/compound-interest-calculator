@@ -334,10 +334,10 @@
     if (leveraged > 0) {
       sentence = `Using the ${selectedChartRate}% rule, <strong>${fmtCurrency(selected.potRequired)}</strong> is enough to provide <strong>${fmtCurrency(passiveMonthly)}</strong> a month in passive income.`;
       sentence += ` ${savingsSentence}.`;
-      sentence += ` Combined with your expected <strong>${fmtCurrency(leveraged)}</strong> a month leveraged income, that provides your <strong>${fmtCurrency(futureMonthlyIncome)}</strong> desired monthly income`;
+      sentence += ` Combined with your expected <strong>${fmtCurrency(leveraged)}</strong> a month leveraged income, that provides your <strong>${fmtCurrency(futureMonthlyIncome)}</strong> desired monthly income.`;
     } else {
       sentence = `Using the ${selectedChartRate}% rule, <strong>${fmtCurrency(selected.potRequired)}</strong> is enough to provide your <strong>${fmtCurrency(passiveMonthly)}</strong> desired monthly income.`;
-      sentence += ` ${savingsSentence}`;
+      sentence += ` ${savingsSentence}.`;
     }
     chartTargetEl.innerHTML = sentence;
 
