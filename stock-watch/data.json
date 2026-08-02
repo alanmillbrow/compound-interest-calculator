@@ -1,6 +1,16 @@
 {
-  "savedAt": "2026-08-02T16:04:45.860Z",
+  "savedAt": "2026-08-02T18:00:14.804Z",
   "stocks": {
+    "NVDA": {
+      "symbol": "NVDA",
+      "price": 200.75,
+      "marketCap": null,
+      "athPrice": 236.53999,
+      "athDate": "2026-05-14",
+      "daysSinceAth": 81,
+      "vsAth": -15.130629708743959,
+      "pe": 30.14264264264264
+    },
     "AAPL": {
       "symbol": "AAPL",
       "price": 308.91,
@@ -20,16 +30,6 @@
       "daysSinceAth": 77,
       "vsAth": -12.843540609469677,
       "pe": 20.717277486910998
-    },
-    "NVDA": {
-      "symbol": "NVDA",
-      "price": 200.75,
-      "marketCap": null,
-      "athPrice": 236.53999,
-      "athDate": "2026-05-14",
-      "daysSinceAth": 81,
-      "vsAth": -15.130629708743959,
-      "pe": 30.14264264264264
     },
     "MSFT": {
       "symbol": "MSFT",
@@ -73,14 +73,6 @@
     }
   },
   "indices": {
-    "QQQ": {
-      "symbol": "QQQ",
-      "price": 687.98999,
-      "athPrice": 748.65002,
-      "athDate": "2026-06-03",
-      "daysSinceAth": 61,
-      "vsAth": -8.102588443128607
-    },
     "SPY": {
       "symbol": "SPY",
       "price": 747.030029,
@@ -88,6 +80,14 @@
       "athDate": "2026-06-02",
       "daysSinceAth": 62,
       "vsAth": -1.7582838832644991
+    },
+    "QQQ": {
+      "symbol": "QQQ",
+      "price": 687.98999,
+      "athPrice": 748.65002,
+      "athDate": "2026-06-03",
+      "daysSinceAth": 61,
+      "vsAth": -8.102588443128607
     }
   },
   "indicesGbp": {
@@ -107,6 +107,14 @@
       "daysSinceAth": 42,
       "vsAth": -3.5352768290085086
     },
+    "VWRL": {
+      "symbol": "VWRL",
+      "price": 134.83,
+      "athPrice": null,
+      "athDate": null,
+      "daysSinceAth": null,
+      "vsAth": null
+    },
     "VUSA": {
       "symbol": "VUSA",
       "price": 104.6675,
@@ -114,14 +122,6 @@
       "athDate": "2026-06-22",
       "daysSinceAth": 42,
       "vsAth": -2.8337356108429215
-    },
-    "VWRL": {
-      "symbol": "VWRL",
-      "price": 134.83,
-      "athPrice": 140.0099945,
-      "athDate": "2026-06-18",
-      "daysSinceAth": 46,
-      "vsAth": -3.6997319502073065
     }
   }
 }
