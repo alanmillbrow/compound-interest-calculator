@@ -259,7 +259,21 @@ async function loadIndex(symbol, exchange) {
   return { symbol, price, ...stats };
 }
 
+async function debugTickerCheck() {
+  for (const [symbol, exchange] of [['SPCX', undefined], ['SDLF', 'LSE']]) {
+    const exchangeParam = exchange ? `&exchange=${exchange}` : '';
+    try {
+      const res = await rateLimitedFetchJson(`https://api.twelvedata.com/quote?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`);
+      console.log(`[DEBUG ticker ${symbol}]`, JSON.stringify(res));
+    } catch (err) {
+      console.log(`[DEBUG ticker ${symbol}] ERROR: ${err.message}`);
+    }
+  }
+}
+
 async function main() {
+  await debugTickerCheck();
+  return;
   const stocks = {};
   const indices = {};
   const indicesGbp = {};
