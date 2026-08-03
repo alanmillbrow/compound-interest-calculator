@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-03T22:41:38.126Z",
+  "savedAt": "2026-08-03T22:43:06.984Z",
   "stocks": {
     "NVDA": {
       "symbol": "NVDA",
@@ -82,19 +82,23 @@
   "indices": {
     "SPY": {
       "symbol": "SPY",
-      "price": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null
+      "price": 757.66998,
+      "athPrice": 760.40002,
+      "athDate": "2026-06-02",
+      "daysSinceAth": 63,
+      "vsAth": -0.35902681854217083,
+      "change12mo": 21.866759402951143,
+      "dividendYield": 0.9931764750663606
     },
     "QQQ": {
       "symbol": "QQQ",
-      "price": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null
+      "price": 700.070007,
+      "athPrice": 748.65002,
+      "athDate": "2026-06-03",
+      "daysSinceAth": 62,
+      "vsAth": -6.489015120843783,
+      "change12mo": 26.39380497580704,
+      "dividendYield": 0.4334337951432906
     }
   },
   "indicesGbp": {
