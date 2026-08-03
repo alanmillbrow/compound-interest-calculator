@@ -14,7 +14,11 @@ on:
     - cron: '2 * * * *'
     - cron: '3 * * * *'
     - cron: '4 * * * *'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      minute:
+        description: 'Force a specific table by its schedule minute (0-4); leave blank to use the current minute'
+        required: false
 
 # Runs are only ~60 seconds apart, so without this a slow run could still be
 # fetching (or mid git-push) when the next one starts, and both would race
@@ -38,12 +42,12 @@ jobs:
         env:
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
           SCHEDULED_CRON: ${{ github.event.schedule }}
+          FORCE_MINUTE: ${{ inputs.minute }}
         run: node .github/scripts/fetch-stock-data.mjs
       - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase
           git add the-lookout/data.json
           if ! git diff --cached --quiet; then
             git commit -m "Refresh stock watch data"

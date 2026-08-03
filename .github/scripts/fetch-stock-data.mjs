@@ -303,13 +303,17 @@ const REFRESH_SCHEDULE = [
 ];
 
 async function main() {
-  // SCHEDULED_CRON (set by the workflow from github.event.schedule) names
-  // exactly which cron entry fired, e.g. "3 * * * *" — reliable even if
-  // GitHub Actions ran this a few minutes late. Falls back to the wall
-  // clock for manual workflow_dispatch runs, where there's no schedule
-  // event to read.
+  // FORCE_MINUTE lets a manual workflow_dispatch run target a specific
+  // table regardless of the current clock. Otherwise SCHEDULED_CRON (set by
+  // the workflow from github.event.schedule) names exactly which cron entry
+  // fired, e.g. "3 * * * *" — reliable even if GitHub Actions ran this a
+  // few minutes late. Falls back to the wall clock only for a manual run
+  // with no minute specified.
+  const forceMinute = process.env.FORCE_MINUTE;
   const scheduledCron = process.env.SCHEDULED_CRON;
-  const minute = scheduledCron
+  const minute = forceMinute
+    ? parseInt(forceMinute, 10)
+    : scheduledCron
     ? parseInt(scheduledCron.split(' ')[0], 10)
     : new Date().getUTCMinutes();
   const entry = REFRESH_SCHEDULE.find((e) => e.minute === minute);
