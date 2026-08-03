@@ -902,12 +902,13 @@ select#frequency:focus {
   justify-content: center;
   background: var(--card-border);
   color: var(--card-bg-solid);
-  font-size: 0.95rem;
-  line-height: 1;
   pointer-events: none;
   opacity: 0.85;
   transition: opacity 0.2s ease;
   z-index: 2;
+}
+.scroll-hint svg {
+  display: block;
 }
 .scroll-hint.is-hidden {
   opacity: 0;

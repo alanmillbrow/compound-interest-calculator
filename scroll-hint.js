@@ -1,9 +1,15 @@
-// Shows a small "›" hint on horizontally-scrollable tables (stock watch,
+// Shows a small chevron hint on horizontally-scrollable tables (stock watch,
 // yearly breakdown, future income) whenever there's more content off to the
 // right, and fades it out once scrolled to the end. Only appears at all if
 // the table actually overflows its container, so it's invisible on desktop.
 (() => {
   'use strict';
+
+  // An inline SVG rather than a "›" text glyph — Unicode chevrons rarely sit
+  // dead-center within a flex box since their vertical metrics are set by
+  // the font, not the character's visible ink. An SVG centers by its own
+  // exact geometry instead, regardless of font.
+  const CHEVRON_SVG = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>';
 
   function attach(wrap) {
     if (wrap.dataset.scrollHintInit) return;
@@ -12,7 +18,7 @@
     const hint = document.createElement('span');
     hint.className = 'scroll-hint';
     hint.setAttribute('aria-hidden', 'true');
-    hint.textContent = '›';
+    hint.innerHTML = CHEVRON_SVG;
     wrap.appendChild(hint);
 
     function update() {
