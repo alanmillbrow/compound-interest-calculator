@@ -103,6 +103,26 @@ async function rateLimitedFetchJson(url) {
   }
 }
 
+async function debugFundDividendCheck() {
+  const tests = [
+    { sym: 'SPY' },
+    { sym: 'QQQ' },
+    { sym: 'VUSA', exchange: 'LSE' },
+    { sym: 'VWRL', exchange: 'LSE' },
+  ];
+  for (const t of tests) {
+    try {
+      const exch = t.exchange ? `&exchange=${t.exchange}` : '';
+      const res = await fetch(`https://api.twelvedata.com/dividends?symbol=${t.sym}${exch}&range=1Y&apikey=${API_KEY}`);
+      const data = await res.json();
+      const count = Array.isArray(data.dividends) ? data.dividends.length : 'n/a';
+      console.error(`[DEBUG fund-div:${t.sym}] count=${count}`, JSON.stringify(data).slice(0, 600));
+    } catch (err) {
+      console.error(`[DEBUG fund-div:${t.sym}] failed`, err.message);
+    }
+  }
+}
+
 async function loadStock(symbol) {
   const base = 'https://api.twelvedata.com';
   // /statistics — which would hand back a ready-made trailing P/E and market
@@ -195,6 +215,7 @@ async function loadIndex(symbol, exchange) {
 }
 
 async function main() {
+  await debugFundDividendCheck();
   const stocks = {};
   const indices = {};
   const indicesGbp = {};
