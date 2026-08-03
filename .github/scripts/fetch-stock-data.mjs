@@ -259,7 +259,33 @@ async function loadIndex(symbol, exchange) {
   return { symbol, price, ...stats };
 }
 
+async function debugInvestigate() {
+  const base = 'https://api.twelvedata.com';
+  const calls = [
+    ['quote', `${base}/quote?symbol=NWG&exchange=LSE&apikey=${API_KEY}`],
+    ['earnings', `${base}/earnings?symbol=NWG&exchange=LSE&apikey=${API_KEY}`],
+    ['time_series', `${base}/time_series?symbol=NWG&exchange=LSE&interval=1day&outputsize=5000&apikey=${API_KEY}`],
+    ['dividends', `${base}/dividends?symbol=NWG&exchange=LSE&range=1Y&apikey=${API_KEY}`],
+  ];
+  for (const [label, url] of calls) {
+    const res = await fetch(url);
+    const headers = {};
+    for (const [k, v] of res.headers.entries()) {
+      if (k.toLowerCase().includes('credit') || k.toLowerCase().includes('limit') || k.toLowerCase().includes('rate')) {
+        headers[k] = v;
+      }
+    }
+    const body = await res.json();
+    console.log(`[DEBUG ${label}] headers=${JSON.stringify(headers)}`);
+    if (label === 'earnings') {
+      console.log(`[DEBUG ${label}] body=${JSON.stringify(body).slice(0, 1500)}`);
+    }
+  }
+}
+
 async function main() {
+  await debugInvestigate();
+  return;
   const stocks = {};
   const indices = {};
   const indicesGbp = {};
