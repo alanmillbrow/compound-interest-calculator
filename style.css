@@ -922,11 +922,11 @@ select#frequency:focus {
      so .table-wrap's horizontal scroll kicks in instead, matching the
      other data tables on the site (e.g. Freedom Formula, Liquid Asset
      Forecaster) which scroll rather than squash on mobile. */
-  min-width: 980px;
+  min-width: 1080px;
 }
-.stock-table th:first-child, .stock-table td:first-child { width: 28%; }
+.stock-table th:first-child, .stock-table td:first-child { width: 26%; }
 .stock-table th:not(:first-child), .stock-table td:not(:first-child) {
-  width: 12%;
+  width: calc(74% / 7);
   padding-left: 12px;
   padding-right: 12px;
 }

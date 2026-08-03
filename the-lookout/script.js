@@ -39,18 +39,18 @@ function fmtGbp(n) {
   return n.toLocaleString('en-GB', { style: 'currency', currency: 'GBP', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-function fmtMarketCap(n) {
-  if (n === null || n === undefined || Number.isNaN(n)) return '—';
-  if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
-  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  return fmtUsd(n);
-}
-
 function fmtPercent(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return '—';
   const sign = n > 0 ? '+' : '';
   return `${sign}${n.toFixed(1)}%`;
+}
+
+// Dividend yield is never negative, so (unlike fmtPercent) this never
+// prefixes a sign — and uses two decimal places since yields are often
+// under 1%, where one decimal would round away the only meaningful digit.
+function fmtYield(n) {
+  if (n === null || n === undefined || Number.isNaN(n)) return '—';
+  return `${n.toFixed(2)}%`;
 }
 
 function fmtPe(n) {
@@ -85,11 +85,12 @@ function renderRow(stock, result) {
     return;
   }
 
-  row.querySelector('[data-col="marketCap"]').textContent = fmtMarketCap(result.marketCap);
   row.querySelector('[data-col="ath"]').textContent = fmtUsd(result.athPrice);
   row.querySelector('[data-col="price"]').textContent = fmtUsd(result.price);
   row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(result.vsAth);
   row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(result.daysSinceAth);
+  row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(result.change12mo);
+  row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(result.dividendYield);
   row.querySelector('[data-col="pe"]').textContent = fmtPe(result.pe);
 }
 
@@ -107,6 +108,8 @@ function renderIndexRow(index, result, { idPrefix = 'idx', fmt = fmtUsd } = {}) 
   row.querySelector('[data-col="price"]').textContent = fmt(result.price);
   row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(result.vsAth);
   row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(result.daysSinceAth);
+  row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(result.change12mo);
+  row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(result.dividendYield);
 }
 
 function buildRows() {
@@ -114,11 +117,12 @@ function buildRows() {
   tbody.innerHTML = STOCKS.map((stock) => `
     <tr id="row-${stock.symbol}">
       <td>${stock.name} <span class="section-note">(${stock.symbol})</span></td>
-      <td data-col="marketCap">&hellip;</td>
       <td data-col="ath">&hellip;</td>
       <td data-col="price">&hellip;</td>
       <td data-col="vsAth">&hellip;</td>
       <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change12mo">&hellip;</td>
+      <td data-col="dividendYield">&hellip;</td>
       <td data-col="pe">&hellip;</td>
     </tr>
   `).join('');
@@ -127,11 +131,12 @@ function buildRows() {
   indexTbody.innerHTML = INDICES.map((index) => `
     <tr id="idx-${index.symbol}">
       <td>${index.name} <span class="section-note">(${index.symbol})</span></td>
-      <td>&mdash;</td>
       <td data-col="ath">&hellip;</td>
       <td data-col="price">&hellip;</td>
       <td data-col="vsAth">&hellip;</td>
       <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change12mo">&hellip;</td>
+      <td data-col="dividendYield">&hellip;</td>
       <td>&mdash;</td>
     </tr>
   `).join('');
@@ -140,11 +145,12 @@ function buildRows() {
   indexGbpTbody.innerHTML = INDICES_GBP.map((index) => `
     <tr id="idxgbp-${index.symbol}">
       <td>${index.name} <span class="section-note">(${index.symbol})</span></td>
-      <td>&mdash;</td>
       <td data-col="ath">&hellip;</td>
       <td data-col="price">&hellip;</td>
       <td data-col="vsAth">&hellip;</td>
       <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change12mo">&hellip;</td>
+      <td data-col="dividendYield">&hellip;</td>
       <td>&mdash;</td>
     </tr>
   `).join('');
