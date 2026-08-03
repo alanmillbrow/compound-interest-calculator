@@ -260,7 +260,13 @@ async function loadIndex(symbol, exchange) {
 }
 
 async function debugTickerCheck() {
-  for (const [symbol, exchange] of [['SPCX', undefined], ['SDLF', 'LSE']]) {
+  const candidates = [
+    ['RKLB', undefined], ['ASTS', undefined], ['PL', undefined],
+    ['LMT', undefined], ['LHX', undefined], ['NOC', undefined],
+    ['LGEN', 'LSE'], ['MNG', 'LSE'], ['LAND', 'LSE'], ['LMP', 'LSE'],
+    ['AV.', 'LSE'], ['IMB', 'LSE'], ['BATS', 'LSE'], ['NWG', 'LSE'], ['SBRY', 'LSE'],
+  ];
+  for (const [symbol, exchange] of candidates) {
     const exchangeParam = exchange ? `&exchange=${exchange}` : '';
     try {
       const res = await rateLimitedFetchJson(`https://api.twelvedata.com/quote?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`);
