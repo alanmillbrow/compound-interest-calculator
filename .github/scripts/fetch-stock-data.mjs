@@ -261,10 +261,7 @@ async function loadIndex(symbol, exchange) {
 
 async function debugTickerCheck() {
   const candidates = [
-    ['RKLB', undefined], ['ASTS', undefined], ['PL', undefined],
-    ['LMT', undefined], ['LHX', undefined], ['NOC', undefined],
-    ['LGEN', 'LSE'], ['MNG', 'LSE'], ['LAND', 'LSE'], ['LMP', 'LSE'],
-    ['AV.', 'LSE'], ['IMB', 'LSE'], ['BATS', 'LSE'], ['NWG', 'LSE'], ['SBRY', 'LSE'],
+    ['AV', 'LSE'], ['AVV', 'LSE'], ['AVVIY', undefined],
   ];
   for (const [symbol, exchange] of candidates) {
     const exchangeParam = exchange ? `&exchange=${exchange}` : '';
