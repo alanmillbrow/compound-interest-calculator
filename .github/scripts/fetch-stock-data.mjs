@@ -37,6 +37,8 @@ const INDICES_GBP = [
   { symbol: 'VUSA', name: 'S&P 500 (Dist)', exchange: 'LSE' },
   { symbol: 'VWRP', name: 'FTSE All-World (Acc)', exchange: 'LSE' },
   { symbol: 'VWRL', name: 'FTSE All-World (Dist)', exchange: 'LSE' },
+  { symbol: 'VUKG', name: 'FTSE 100 (Acc)', exchange: 'LSE' },
+  { symbol: 'VUKE', name: 'FTSE 100 (Dist)', exchange: 'LSE' },
 ];
 
 // Twelve Data enforces a rolling per-minute credit budget, but different
