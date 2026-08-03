@@ -5,17 +5,15 @@ on:
     # One table refreshed per run, staggered across the top of each hour —
     # see REFRESH_SCHEDULE in fetch-stock-data.mjs for which table maps to
     # which minute. Kept as separate entries (rather than one combined
-    # '0-3,5 * * * *') so github.event.schedule tells the script exactly
+    # '0-4 * * * *') so github.event.schedule tells the script exactly
     # which one fired — GitHub Actions schedule triggers can run a few
     # minutes late under load, so the script can't reliably infer which
     # table to refresh just by reading the wall clock at execution time.
-    # Minute 4 is deliberately left free so a future table can slot in
-    # there before the next used minute (currently 5).
     - cron: '0 * * * *'
     - cron: '1 * * * *'
     - cron: '2 * * * *'
     - cron: '3 * * * *'
-    - cron: '5 * * * *'
+    - cron: '4 * * * *'
   workflow_dispatch: {}
 
 # Runs are only ~60 seconds apart, so without this a slow run could still be

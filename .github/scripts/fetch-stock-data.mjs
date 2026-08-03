@@ -292,14 +292,14 @@ async function loadIndex(symbol, exchange) {
 // refreshes just one table, chosen by which minute triggered it (see
 // SCHEDULED_CRON in main() below), and merges the result into the existing
 // data.json rather than overwriting the whole file. Every table still
-// refreshes once an hour — just staggered. Minute 4 is deliberately free so
-// a new table can slot in there next.
+// refreshes once an hour — just staggered. A future table can slot into
+// minute 5 next.
 const REFRESH_SCHEDULE = [
   { minute: 0, key: 'stocks', list: STOCKS, loader: 'stock' },
   { minute: 1, key: 'spaceForce', list: SPACE_FORCE, loader: 'stock' },
   { minute: 2, key: 'ftseDividends', list: FTSE_DIVIDENDS, loader: 'stock' },
   { minute: 3, key: 'indicesGbp', list: INDICES_GBP, loader: 'index' },
-  { minute: 5, key: 'indices', list: INDICES, loader: 'index' },
+  { minute: 4, key: 'indices', list: INDICES, loader: 'index' },
 ];
 
 async function main() {
