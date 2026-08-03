@@ -1,75 +1,82 @@
 {
-  "savedAt": "2026-08-03T20:25:46.576Z",
+  "savedAt": "2026-08-03T22:31:23.662Z",
   "stocks": {
     "NVDA": {
       "symbol": "NVDA",
       "price": 206.64,
-      "marketCap": null,
+      "pe": 31.027027027027025,
       "athPrice": 236.53999,
       "athDate": "2026-05-14",
       "daysSinceAth": 82,
       "vsAth": -12.640564498205991,
-      "pe": 31.027027027027025
-    },
-    "GOOGL": {
-      "symbol": "GOOGL",
-      "price": 373.465,
-      "marketCap": null,
-      "athPrice": 408.60999,
-      "athDate": "2026-05-18",
-      "daysSinceAth": 78,
-      "vsAth": -8.601108847094025,
-      "pe": 21.725712623618385
-    },
-    "AAPL": {
-      "symbol": "AAPL",
-      "price": 303.41,
-      "marketCap": null,
-      "athPrice": 344.57001,
-      "athDate": "2026-07-29",
-      "daysSinceAth": 6,
-      "vsAth": -11.945325711892336,
-      "pe": 34.79472477064221
+      "change12mo": 18.950034538337547,
+      "dividendYield": 0.13550135501355015
     },
     "MSFT": {
       "symbol": "MSFT",
-      "price": 487.75,
-      "marketCap": null,
+      "price": 487.64999,
+      "pe": 28.220485532407412,
       "athPrice": 555.45001,
       "athDate": "2025-07-31",
       "daysSinceAth": 369,
-      "vsAth": -12.188317360908863,
-      "pe": 28.226273148148152
+      "vsAth": -12.206322581576696,
+      "change12mo": -6.956555054407574,
+      "dividendYield": 0.7300318000621716
     },
-    "META": {
-      "symbol": "META",
-      "price": 590.15,
-      "marketCap": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null,
-      "pe": null
+    "AAPL": {
+      "symbol": "AAPL",
+      "price": 303.42001,
+      "pe": 34.795872706422024,
+      "athPrice": 344.57001,
+      "athDate": "2026-07-29",
+      "daysSinceAth": 6,
+      "vsAth": -11.942420641889303,
+      "change12mo": 49.92588694535033,
+      "dividendYield": 0.34605496189918394
     },
-    "TSLA": {
-      "symbol": "TSLA",
-      "price": null,
-      "marketCap": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null,
-      "pe": null
+    "GOOGL": {
+      "symbol": "GOOGL",
+      "price": 373.51001,
+      "pe": 21.728331006399074,
+      "athPrice": 408.60999,
+      "athDate": "2026-05-18",
+      "daysSinceAth": 78,
+      "vsAth": -8.590093453172782,
+      "change12mo": 97.48850526093165,
+      "dividendYield": 0.22757087554360322
     },
     "AMZN": {
       "symbol": "AMZN",
-      "price": 284.13,
-      "marketCap": null,
-      "athPrice": 287.18,
+      "price": 284.019989,
+      "pe": 32.38540353477765,
+      "athPrice": 287.16,
       "athDate": "2026-08-03",
       "daysSinceAth": 1,
-      "vsAth": -1.0620516749077273,
-      "pe": 32.397947548460664
+      "vsAth": -1.0934708873102157,
+      "change12mo": 32.25610663562282,
+      "dividendYield": null
+    },
+    "META": {
+      "symbol": "META",
+      "price": 590.23999,
+      "pe": 26.105262715612565,
+      "athPrice": 796.25,
+      "athDate": "2025-08-15",
+      "daysSinceAth": 354,
+      "vsAth": -25.87252872841444,
+      "change12mo": -21.30238501750129,
+      "dividendYield": 0.35578748230867924
+    },
+    "TSLA": {
+      "symbol": "TSLA",
+      "price": 322.079987,
+      "pe": 240.35819925373133,
+      "athPrice": 498.82999,
+      "athDate": "2025-12-22",
+      "daysSinceAth": 225,
+      "vsAth": -35.432914328186236,
+      "change12mo": 6.426985758186572,
+      "dividendYield": null
     }
   },
   "indices": {
