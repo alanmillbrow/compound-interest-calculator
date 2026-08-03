@@ -103,19 +103,6 @@ async function rateLimitedFetchJson(url) {
   }
 }
 
-async function debugDividendCheck() {
-  for (const sym of ['AAPL', 'MSFT']) {
-    try {
-      const res = await fetch(`https://api.twelvedata.com/dividends?symbol=${sym}&range=5Y&apikey=${API_KEY}`);
-      const data = await res.json();
-      const count = Array.isArray(data.dividends) ? data.dividends.length : 'n/a';
-      console.error(`[DEBUG dividends-5y:${sym}] count=${count}`, JSON.stringify(data).slice(0, 1500));
-    } catch (err) {
-      console.error(`[DEBUG dividends-5y:${sym}] failed`, err.message);
-    }
-  }
-}
-
 async function loadStock(symbol) {
   const base = 'https://api.twelvedata.com';
   // /statistics — which would hand back a ready-made trailing P/E and market
@@ -208,7 +195,6 @@ async function loadIndex(symbol, exchange) {
 }
 
 async function main() {
-  await debugDividendCheck();
   const stocks = {};
   const indices = {};
   const indicesGbp = {};
