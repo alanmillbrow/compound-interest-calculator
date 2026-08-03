@@ -31,6 +31,29 @@ const INDICES_GBP = [
   { symbol: 'VUKE', name: 'FTSE 100 (Dist)' },
 ];
 
+const SPACE_FORCE = [
+  { symbol: 'SPCX', name: 'SpaceX' },
+  { symbol: 'RKLB', name: 'Rocket Lab' },
+  { symbol: 'ASTS', name: 'AST SpaceMobile' },
+  { symbol: 'PL', name: 'Planet Labs' },
+  { symbol: 'LMT', name: 'Lockheed Martin' },
+  { symbol: 'LHX', name: 'L3Harris' },
+  { symbol: 'NOC', name: 'Northrop Grumman' },
+];
+
+const FTSE_DIVIDENDS = [
+  { symbol: 'LGEN', name: 'Legal & General' },
+  { symbol: 'SDLF', name: 'Standard Life' },
+  { symbol: 'MNG', name: 'M&G' },
+  { symbol: 'LAND', name: 'Landsec' },
+  { symbol: 'LMP', name: 'LondonMetric' },
+  { symbol: 'AV', name: 'Aviva' },
+  { symbol: 'IMB', name: 'Imperial Brands' },
+  { symbol: 'BATS', name: 'British American Tobacco' },
+  { symbol: 'NWG', name: 'NatWest Group' },
+  { symbol: 'SBRY', name: "Sainsbury's" },
+];
+
 function fmtUsd(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return '—';
   return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -77,8 +100,8 @@ function fmtRefreshedAt(date) {
   return `${day} ${month} ${year}, ${hours}:${minutes}`;
 }
 
-function renderRow(stock, result) {
-  const row = document.getElementById(`row-${stock.symbol}`);
+function renderRow(stock, result, { idPrefix = 'row', fmt = fmtUsd } = {}) {
+  const row = document.getElementById(`${idPrefix}-${stock.symbol}`);
   if (!row) return;
 
   if (!result || result.error) {
@@ -87,8 +110,8 @@ function renderRow(stock, result) {
     return;
   }
 
-  row.querySelector('[data-col="ath"]').textContent = fmtUsd(result.athPrice);
-  row.querySelector('[data-col="price"]').textContent = fmtUsd(result.price);
+  row.querySelector('[data-col="ath"]').textContent = fmt(result.athPrice);
+  row.querySelector('[data-col="price"]').textContent = fmt(result.price);
   row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(result.vsAth);
   row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(result.daysSinceAth);
   row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(result.change12mo);
@@ -156,6 +179,34 @@ function buildRows() {
       <td>&mdash;</td>
     </tr>
   `).join('');
+
+  const spaceForceTbody = document.getElementById('spaceForceTableBody');
+  spaceForceTbody.innerHTML = SPACE_FORCE.map((stock) => `
+    <tr id="space-${stock.symbol}">
+      <td>${stock.name} <span class="section-note">(${stock.symbol})</span></td>
+      <td data-col="ath">&hellip;</td>
+      <td data-col="price">&hellip;</td>
+      <td data-col="vsAth">&hellip;</td>
+      <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change12mo">&hellip;</td>
+      <td data-col="dividendYield">&hellip;</td>
+      <td data-col="pe">&hellip;</td>
+    </tr>
+  `).join('');
+
+  const ftseDividendTbody = document.getElementById('ftseDividendTableBody');
+  ftseDividendTbody.innerHTML = FTSE_DIVIDENDS.map((stock) => `
+    <tr id="ftsediv-${stock.symbol}">
+      <td>${stock.name} <span class="section-note">(${stock.symbol})</span></td>
+      <td data-col="ath">&hellip;</td>
+      <td data-col="price">&hellip;</td>
+      <td data-col="vsAth">&hellip;</td>
+      <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change12mo">&hellip;</td>
+      <td data-col="dividendYield">&hellip;</td>
+      <td data-col="pe">&hellip;</td>
+    </tr>
+  `).join('');
 }
 
 async function init() {
@@ -170,6 +221,8 @@ async function init() {
     STOCKS.forEach((stock) => renderRow(stock, data.stocks?.[stock.symbol]));
     INDICES.forEach((index) => renderIndexRow(index, data.indices?.[index.symbol]));
     INDICES_GBP.forEach((index) => renderIndexRow(index, data.indicesGbp?.[index.symbol], { idPrefix: 'idxgbp', fmt: fmtGbp }));
+    SPACE_FORCE.forEach((stock) => renderRow(stock, data.spaceForce?.[stock.symbol], { idPrefix: 'space', fmt: fmtUsd }));
+    FTSE_DIVIDENDS.forEach((stock) => renderRow(stock, data.ftseDividends?.[stock.symbol], { idPrefix: 'ftsediv', fmt: fmtGbp }));
     status.textContent = `Last refreshed ${fmtRefreshedAt(new Date(data.savedAt))}`;
   } catch (err) {
     status.textContent = `Couldn't load stock data: ${err.message}`;

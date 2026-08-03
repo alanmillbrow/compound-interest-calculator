@@ -41,6 +41,31 @@ const INDICES_GBP = [
   { symbol: 'VUKE', name: 'FTSE 100 (Dist)', exchange: 'LSE' },
 ];
 
+const SPACE_FORCE = [
+  { symbol: 'SPCX', name: 'SpaceX' },
+  { symbol: 'RKLB', name: 'Rocket Lab' },
+  { symbol: 'ASTS', name: 'AST SpaceMobile' },
+  { symbol: 'PL', name: 'Planet Labs' },
+  { symbol: 'LMT', name: 'Lockheed Martin' },
+  { symbol: 'LHX', name: 'L3Harris' },
+  { symbol: 'NOC', name: 'Northrop Grumman' },
+];
+
+// LSE-listed. Aviva resolves as "AV" — Twelve Data doesn't accept its
+// official "AV." ticker (the trailing dot breaks the query parameter).
+const FTSE_DIVIDENDS = [
+  { symbol: 'LGEN', name: 'Legal & General', exchange: 'LSE' },
+  { symbol: 'SDLF', name: 'Standard Life', exchange: 'LSE' },
+  { symbol: 'MNG', name: 'M&G', exchange: 'LSE' },
+  { symbol: 'LAND', name: 'Landsec', exchange: 'LSE' },
+  { symbol: 'LMP', name: 'LondonMetric', exchange: 'LSE' },
+  { symbol: 'AV', name: 'Aviva', exchange: 'LSE' },
+  { symbol: 'IMB', name: 'Imperial Brands', exchange: 'LSE' },
+  { symbol: 'BATS', name: 'British American Tobacco', exchange: 'LSE' },
+  { symbol: 'NWG', name: 'NatWest Group', exchange: 'LSE' },
+  { symbol: 'SBRY', name: "Sainsbury's", exchange: 'LSE' },
+];
+
 // Twelve Data enforces a rolling per-minute credit budget, but different
 // endpoints cost different (undocumented) amounts of it — quote, earnings,
 // dividends and time_series don't all cost the same, and time_series' cost
@@ -188,7 +213,20 @@ function computeHistoryStats(price, historyResult, dividendResult) {
   return { athPrice, athDate, daysSinceAth, vsAth, change12mo, dividendYield };
 }
 
-async function loadStock(symbol) {
+// Promise.allSettled swallows individual endpoint failures so one bad call
+// doesn't null out the whole row — but that also means a failure would
+// otherwise vanish with zero trace. Logs a warning with the actual reason so
+// intermittent per-endpoint failures (rate limits, timeouts) are visible in
+// the workflow run instead of just showing up as an unexplained null field.
+function logRejections(symbol, labels, results) {
+  results.forEach((result, i) => {
+    if (result.status === 'rejected') {
+      console.warn(`[WARN] ${symbol} ${labels[i]} failed: ${result.reason?.message || result.reason}`);
+    }
+  });
+}
+
+async function loadStock(symbol, exchange) {
   const base = 'https://api.twelvedata.com';
   // /statistics — which would hand back a ready-made trailing P/E and market
   // cap in one call — requires Twelve Data's Pro tier or above, out of reach
@@ -198,12 +236,14 @@ async function loadStock(symbol) {
   // Grow-tier endpoint exposes) and stays unavailable until upgrading further.
   // Each call is fetched independently (allSettled, not all) so a failure on
   // one doesn't stop the rest of the row from rendering.
+  const exchangeParam = exchange ? `&exchange=${exchange}` : '';
   const [quoteResult, earningsResult, historyResult, dividendResult] = await Promise.allSettled([
-    rateLimitedFetchJson(`${base}/quote?symbol=${symbol}&apikey=${API_KEY}`),
-    rateLimitedFetchJson(`${base}/earnings?symbol=${symbol}&apikey=${API_KEY}`),
-    rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
-    rateLimitedFetchJson(`${base}/dividends?symbol=${symbol}&range=1Y&apikey=${API_KEY}`),
+    rateLimitedFetchJson(`${base}/quote?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`),
+    rateLimitedFetchJson(`${base}/earnings?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`),
+    rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}${exchangeParam}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
+    rateLimitedFetchJson(`${base}/dividends?symbol=${symbol}${exchangeParam}&range=1Y&apikey=${API_KEY}`),
   ]);
+  logRejections(symbol, ['quote', 'earnings', 'time_series', 'dividends'], [quoteResult, earningsResult, historyResult, dividendResult]);
 
   const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
 
@@ -238,6 +278,7 @@ async function loadIndex(symbol, exchange) {
     rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}${exchangeParam}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
     rateLimitedFetchJson(`${base}/dividends?symbol=${symbol}${exchangeParam}&range=1Y&apikey=${API_KEY}`),
   ]);
+  logRejections(symbol, ['quote', 'time_series', 'dividends'], [quoteResult, historyResult, dividendResult]);
 
   const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
   const stats = computeHistoryStats(price, historyResult, dividendResult);
@@ -248,6 +289,8 @@ async function main() {
   const stocks = {};
   const indices = {};
   const indicesGbp = {};
+  const spaceForce = {};
+  const ftseDividends = {};
   await Promise.all([
     ...STOCKS.map(async (stock) => {
       try {
@@ -270,9 +313,23 @@ async function main() {
         indicesGbp[index.symbol] = { symbol: index.symbol, error: err.message };
       }
     }),
+    ...SPACE_FORCE.map(async (stock) => {
+      try {
+        spaceForce[stock.symbol] = await loadStock(stock.symbol);
+      } catch (err) {
+        spaceForce[stock.symbol] = { symbol: stock.symbol, error: err.message };
+      }
+    }),
+    ...FTSE_DIVIDENDS.map(async (stock) => {
+      try {
+        ftseDividends[stock.symbol] = await loadStock(stock.symbol, stock.exchange);
+      } catch (err) {
+        ftseDividends[stock.symbol] = { symbol: stock.symbol, error: err.message };
+      }
+    }),
   ]);
 
-  const output = { savedAt: new Date().toISOString(), stocks, indices, indicesGbp };
+  const output = { savedAt: new Date().toISOString(), stocks, indices, indicesGbp, spaceForce, ftseDividends };
   const fs = await import('node:fs/promises');
   const outPath = new URL('../../the-lookout/data.json', import.meta.url);
   await fs.writeFile(outPath, JSON.stringify(output, null, 2) + '\n');
