@@ -244,7 +244,13 @@ async function loadIndex(symbol, exchange) {
   return { symbol, price, ...stats };
 }
 
+async function debugDividendCheck() {
+  const res = await rateLimitedFetchJson(`https://api.twelvedata.com/dividends?symbol=VUKE&exchange=LSE&range=1Y&apikey=${API_KEY}`);
+  console.log('[DEBUG dividends VUKE]', JSON.stringify(res));
+}
+
 async function main() {
+  await debugDividendCheck();
   const stocks = {};
   const indices = {};
   const indicesGbp = {};
