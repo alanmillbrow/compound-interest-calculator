@@ -27,6 +27,8 @@ const INDICES_GBP = [
   { symbol: 'VUSA', name: 'S&P 500 (Dist)' },
   { symbol: 'VWRP', name: 'FTSE All-World (Acc)' },
   { symbol: 'VWRL', name: 'FTSE All-World (Dist)' },
+  { symbol: 'VUKG', name: 'FTSE 100 (Acc)' },
+  { symbol: 'VUKE', name: 'FTSE 100 (Dist)' },
 ];
 
 function fmtUsd(n) {
