@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-03T22:31:23.662Z",
+  "savedAt": "2026-08-03T22:36:27.238Z",
   "stocks": {
     "NVDA": {
       "symbol": "NVDA",
@@ -129,6 +129,85 @@
       "athDate": null,
       "daysSinceAth": null,
       "vsAth": null
+    }
+  },
+  "spaceForce": {
+    "SPCX": {
+      "symbol": "SPCX",
+      "price": 114.44,
+      "pe": null,
+      "athPrice": 225.64,
+      "athDate": "2026-06-16",
+      "daysSinceAth": 49,
+      "vsAth": -49.282042191100864,
+      "change12mo": null,
+      "dividendYield": null
+    },
+    "RKLB": {
+      "symbol": "RKLB",
+      "price": 70.44,
+      "pe": 76.56521739130434,
+      "athPrice": 151,
+      "athDate": "2026-05-27",
+      "daysSinceAth": 69,
+      "vsAth": -53.35099337748345,
+      "change12mo": 57.197054228966735,
+      "dividendYield": null
+    },
+    "ASTS": {
+      "symbol": "ASTS",
+      "price": 63.52,
+      "pe": 78.41975308641975,
+      "athPrice": 133.86,
+      "athDate": "2026-05-28",
+      "daysSinceAth": 68,
+      "vsAth": -52.54743762139549,
+      "change12mo": 21.082729698818152,
+      "dividendYield": null
+    },
+    "PL": {
+      "symbol": "PL",
+      "price": 21.53,
+      "pe": 27.602564102564102,
+      "athPrice": 51.76,
+      "athDate": "2026-05-28",
+      "daysSinceAth": 68,
+      "vsAth": -58.40417310664605,
+      "change12mo": 248.38187702265375,
+      "dividendYield": null
+    },
+    "LMT": {
+      "symbol": "LMT",
+      "price": 586.28998,
+      "pe": 37.75209143593045,
+      "athPrice": 692,
+      "athDate": "2026-03-02",
+      "daysSinceAth": 155,
+      "vsAth": -15.27601445086705,
+      "change12mo": 39.25796681176298,
+      "dividendYield": 2.3281994346892985
+    },
+    "LHX": {
+      "symbol": "LHX",
+      "price": 277.85999,
+      "pe": 22.96363553719008,
+      "athPrice": 379.23001,
+      "athDate": "2026-03-02",
+      "daysSinceAth": 155,
+      "vsAth": -26.730484752512073,
+      "change12mo": -0.14375763157632332,
+      "dividendYield": 1.7634780739753144
+    },
+    "NOC": {
+      "symbol": "NOC",
+      "price": 548.46997,
+      "pe": 26.457789194404246,
+      "athPrice": 774,
+      "athDate": "2026-03-03",
+      "daysSinceAth": 154,
+      "vsAth": -29.138246770025837,
+      "change12mo": -6.474665779960449,
+      "dividendYield": 1.7138586457158267
     }
   }
 }
