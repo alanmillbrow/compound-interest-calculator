@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-03T20:30:47.391Z",
+  "savedAt": "2026-08-03T20:34:51.004Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -11,6 +11,17 @@
       "vsAth": -11.945325711892336,
       "change12mo": 49.92094080442733,
       "dividendYield": 0.3460663788273294
+    },
+    "GOOGL": {
+      "symbol": "GOOGL",
+      "price": 373.465,
+      "pe": 21.725712623618385,
+      "athPrice": 408.60999,
+      "athDate": "2026-05-18",
+      "daysSinceAth": 78,
+      "vsAth": -8.601108847094025,
+      "change12mo": 97.46470681541795,
+      "dividendYield": 0.2275983023844269
     },
     "NVDA": {
       "symbol": "NVDA",
@@ -34,16 +45,16 @@
       "change12mo": -6.9374731819174125,
       "dividendYield": 0.7298821117375706
     },
-    "GOOGL": {
-      "symbol": "GOOGL",
-      "price": 373.465,
-      "pe": 21.725712623618385,
-      "athPrice": 408.60999,
-      "athDate": "2026-05-18",
-      "daysSinceAth": 78,
-      "vsAth": -8.601108847094025,
-      "change12mo": 97.46470681541795,
-      "dividendYield": 0.2275983023844269
+    "AMZN": {
+      "symbol": "AMZN",
+      "price": 284.13,
+      "pe": 32.397947548460664,
+      "athPrice": 287.18,
+      "athDate": "2026-08-03",
+      "daysSinceAth": 1,
+      "vsAth": -1.0620516749077273,
+      "change12mo": 32.30733410942957,
+      "dividendYield": null
     },
     "META": {
       "symbol": "META",
@@ -66,30 +77,9 @@
       "vsAth": -35.43090703107085,
       "change12mo": 6.430294418927396,
       "dividendYield": null
-    },
-    "AMZN": {
-      "symbol": "AMZN",
-      "price": 284.13,
-      "pe": 32.397947548460664,
-      "athPrice": 287.18,
-      "athDate": "2026-08-03",
-      "daysSinceAth": 1,
-      "vsAth": -1.0620516749077273,
-      "change12mo": 32.30733410942957,
-      "dividendYield": null
     }
   },
   "indices": {
-    "SPY": {
-      "symbol": "SPY",
-      "price": 757.63,
-      "athPrice": 760.40002,
-      "athDate": "2026-06-02",
-      "daysSinceAth": 63,
-      "vsAth": -0.36428457747805487,
-      "change12mo": 21.860328855127495,
-      "dividendYield": 0.9932288848118476
-    },
     "QQQ": {
       "symbol": "QQQ",
       "price": 699.975,
@@ -99,6 +89,16 @@
       "vsAth": -6.5017055633017975,
       "change12mo": 26.376651982378856,
       "dividendYield": 0.4334926247365978
+    },
+    "SPY": {
+      "symbol": "SPY",
+      "price": 757.63,
+      "athPrice": 760.40002,
+      "athDate": "2026-06-02",
+      "daysSinceAth": 63,
+      "vsAth": -0.36428457747805487,
+      "change12mo": 21.860328855127495,
+      "dividendYield": 0.9932288848118476
     }
   },
   "indicesGbp": {
@@ -122,16 +122,6 @@
       "change12mo": 22.90580252162318,
       "dividendYield": null
     },
-    "VWRL": {
-      "symbol": "VWRL",
-      "price": 136.98,
-      "athPrice": 140.0099945,
-      "athDate": "2026-06-18",
-      "daysSinceAth": 47,
-      "vsAth": -2.164127290212853,
-      "change12mo": 21.264164305949006,
-      "dividendYield": 1.2741801722879251
-    },
     "VUSA": {
       "symbol": "VUSA",
       "price": 106.94,
@@ -141,6 +131,16 @@
       "vsAth": -0.7240995172669896,
       "change12mo": 19.921502663302494,
       "dividendYield": 0.8756442865158034
+    },
+    "VWRL": {
+      "symbol": "VWRL",
+      "price": 136.98,
+      "athPrice": 140.0099945,
+      "athDate": "2026-06-18",
+      "daysSinceAth": 47,
+      "vsAth": -2.164127290212853,
+      "change12mo": 21.264164305949006,
+      "dividendYield": 1.2741801722879251
     }
   }
 }
