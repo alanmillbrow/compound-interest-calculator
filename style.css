@@ -921,14 +921,17 @@ select#frequency:focus {
      everything instead of scrolling. A min-width forces genuine overflow
      so .table-wrap's horizontal scroll kicks in instead, matching the
      other data tables on the site (e.g. Freedom Formula, Liquid Asset
-     Forecaster) which scroll rather than squash on mobile. */
-  min-width: 1080px;
+     Forecaster) which scroll rather than squash on mobile. Kept under the
+     card's ~1076px content width (.app's 1180px max-width minus its 48px
+     padding minus .card's 56px padding) so desktop viewports fit without
+     triggering the scroll fallback at all. */
+  min-width: 1040px;
 }
 .stock-table th:first-child, .stock-table td:first-child { width: 26%; }
 .stock-table th:not(:first-child), .stock-table td:not(:first-child) {
   width: calc(74% / 7);
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 /* Yearly breakdown tables (Freedom Formula, Liquid Asset Forecaster) —
