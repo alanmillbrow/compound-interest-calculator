@@ -1,112 +1,96 @@
 {
-  "savedAt": "2026-08-03T16:21:08.994Z",
+  "savedAt": "2026-08-03T18:49:00.626Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
-      "price": 304.32,
+      "price": 304.95,
       "marketCap": null,
       "athPrice": 344.57001,
       "athDate": "2026-07-29",
       "daysSinceAth": 6,
-      "vsAth": -11.681228438888233,
-      "pe": 34.899082568807344
+      "vsAth": -11.498391865270003,
+      "pe": 34.97133027522936
     },
     "NVDA": {
       "symbol": "NVDA",
-      "price": 207.315,
+      "price": 208.05,
       "marketCap": null,
       "athPrice": 236.53999,
       "athDate": "2026-05-14",
       "daysSinceAth": 82,
-      "vsAth": -12.355200488509361,
-      "pe": 31.12837837837838
+      "vsAth": -12.044470789061917,
+      "pe": 31.23873873873874
     },
     "GOOGL": {
       "symbol": "GOOGL",
-      "price": 375.31,
+      "price": 375.32,
       "marketCap": null,
       "athPrice": 408.60999,
       "athDate": "2026-05-18",
       "daysSinceAth": 78,
-      "vsAth": -8.149578036503705,
-      "pe": 21.833042466550324
+      "vsAth": -8.147130715037092,
+      "pe": 21.83362420011635
     },
     "MSFT": {
       "symbol": "MSFT",
-      "price": 487.22,
+      "price": 491.085,
       "marketCap": null,
       "athPrice": 555.45001,
       "athDate": "2025-07-31",
       "daysSinceAth": 369,
-      "vsAth": -12.2837354886356,
-      "pe": 28.19560185185186
+      "vsAth": -11.587903293043427,
+      "pe": 28.419270833333336
     },
     "AMZN": {
       "symbol": "AMZN",
-      "price": 284.32,
+      "price": 283.79,
       "marketCap": null,
       "athPrice": 287.18,
       "athDate": "2026-08-03",
       "daysSinceAth": 1,
-      "vsAth": -0.9958910787659356,
-      "pe": 32.419612314709234
-    },
-    "TSLA": {
-      "symbol": "TSLA",
-      "price": 323.27,
-      "marketCap": null,
-      "athPrice": 498.82999,
-      "athDate": "2025-12-22",
-      "daysSinceAth": 225,
-      "vsAth": -35.19435349105615,
-      "pe": 241.24626865671638
+      "vsAth": -1.180444320635137,
+      "pe": 32.35917901938427
     },
     "META": {
       "symbol": "META",
-      "price": 593.905,
+      "price": 593.24,
       "marketCap": null,
       "athPrice": 796.25,
       "athDate": "2025-08-15",
       "daysSinceAth": 354,
-      "vsAth": -25.412244897959184,
-      "pe": 26.26735957540911
+      "vsAth": -25.495761381475667,
+      "pe": 26.23794781070323
+    },
+    "TSLA": {
+      "symbol": "TSLA",
+      "price": 322.61,
+      "marketCap": null,
+      "athPrice": 498.82999,
+      "athDate": "2025-12-22",
+      "daysSinceAth": 225,
+      "vsAth": -35.32666309818301,
+      "pe": 240.7537313432836
     }
   },
   "indices": {
     "QQQ": {
       "symbol": "QQQ",
-      "price": 698.64,
+      "price": 700,
       "athPrice": 748.65002,
       "athDate": "2026-06-03",
       "daysSinceAth": 62,
-      "vsAth": -6.6800265362979685
+      "vsAth": -6.498366219238201
     },
     "SPY": {
       "symbol": "SPY",
-      "price": 756.235,
+      "price": 757.88,
       "athPrice": 760.40002,
       "athDate": "2026-06-02",
       "daysSinceAth": 63,
-      "vsAth": -0.5477406484024062
+      "vsAth": -0.33140714541275856
     }
   },
   "indicesGbp": {
-    "VWRP": {
-      "symbol": "VWRP",
-      "price": 141.44,
-      "athPrice": 144.25999,
-      "athDate": "2026-06-22",
-      "daysSinceAth": 43,
-      "vsAth": -1.9547970300011739
-    },
-    "VWRL": {
-      "symbol": "VWRL",
-      "price": 137.080002,
-      "athPrice": 140.0099945,
-      "athDate": "2026-06-18",
-      "daysSinceAth": 47,
-      "vsAth": -2.092702389185507
-    },
     "VUAG": {
       "symbol": "VUAG",
       "price": 109,
@@ -115,13 +99,29 @@
       "daysSinceAth": 43,
       "vsAth": -0.7466763795301341
     },
+    "VWRP": {
+      "symbol": "VWRP",
+      "price": 141.44,
+      "athPrice": 144.25999,
+      "athDate": "2026-06-22",
+      "daysSinceAth": 43,
+      "vsAth": -1.9547970300011739
+    },
     "VUSA": {
       "symbol": "VUSA",
-      "price": 106.96001,
+      "price": 106.94,
       "athPrice": 107.72,
       "athDate": "2026-06-22",
       "daysSinceAth": 43,
-      "vsAth": -0.7055235796509487
+      "vsAth": -0.7240995172669896
+    },
+    "VWRL": {
+      "symbol": "VWRL",
+      "price": 136.98,
+      "athPrice": 140.0099945,
+      "athDate": "2026-06-18",
+      "daysSinceAth": 47,
+      "vsAth": -2.164127290212853
     }
   }
 }
