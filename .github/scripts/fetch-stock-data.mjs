@@ -40,19 +40,47 @@ const INDICES_GBP = [
 ];
 
 // Twelve Data enforces a rolling per-minute credit budget, but different
-// endpoints cost different (undocumented) amounts of it — quote, earnings
-// and time_series don't all cost the same, and time_series' cost scales
-// with outputsize — so pre-calculating how many calls fit isn't reliable.
-// Instead: cap how many requests are in flight at once to avoid bursting,
-// and when the server does return 429 ("out of credits for the current
-// minute"), wait out the window and retry rather than giving up on that
-// field.
+// endpoints cost different (undocumented) amounts of it — quote, earnings,
+// dividends and time_series don't all cost the same, and time_series' cost
+// scales with outputsize. A concurrency cap alone only limits how many
+// requests are in flight at once, not how many get dispatched per minute —
+// with fast responses, a full run's calls can still fire in a matter of
+// seconds and blow well past the per-minute credit ceiling before any
+// single request even has a chance to return 429. So dispatch is paced by
+// a conservative request-count budget instead (assuming an average cost
+// noticeably above 1 credit, based on real observed usage), and the 429
+// retry stays on as a backstop for whatever that estimate still misses.
+// Current plan: Grow, upgraded to 144 credits/minute.
+const REQUESTS_PER_MINUTE = 100;
+const RATE_WINDOW_MS = 60 * 1000;
+const dispatchTimestamps = [];
+
 const MAX_CONCURRENT = 4;
 const RETRY_WAIT_MS = 65 * 1000;
 const MAX_ATTEMPTS = 3;
 
 let activeCount = 0;
 const waitQueue = [];
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Blocks until fewer than REQUESTS_PER_MINUTE dispatches have happened in
+// the trailing 60 seconds, then reserves this one.
+async function waitForDispatchSlot() {
+  for (;;) {
+    const now = Date.now();
+    while (dispatchTimestamps.length && now - dispatchTimestamps[0] >= RATE_WINDOW_MS) {
+      dispatchTimestamps.shift();
+    }
+    if (dispatchTimestamps.length < REQUESTS_PER_MINUTE) {
+      dispatchTimestamps.push(now);
+      return;
+    }
+    await sleep(RATE_WINDOW_MS - (now - dispatchTimestamps[0]) + 250);
+  }
+}
 
 function acquireSlot() {
   return new Promise((resolve) => {
@@ -74,12 +102,9 @@ function releaseSlot() {
   if (next) next();
 }
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 async function rateLimitedFetchJson(url) {
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    await waitForDispatchSlot();
     await acquireSlot();
     let res, data;
     try {
@@ -103,24 +128,62 @@ async function rateLimitedFetchJson(url) {
   }
 }
 
-async function debugFundDividendCheck() {
-  const tests = [
-    { sym: 'SPY' },
-    { sym: 'QQQ' },
-    { sym: 'VUSA', exchange: 'LSE' },
-    { sym: 'VWRL', exchange: 'LSE' },
-  ];
-  for (const t of tests) {
-    try {
-      const exch = t.exchange ? `&exchange=${t.exchange}` : '';
-      const res = await fetch(`https://api.twelvedata.com/dividends?symbol=${t.sym}${exch}&range=1Y&apikey=${API_KEY}`);
-      const data = await res.json();
-      const count = Array.isArray(data.dividends) ? data.dividends.length : 'n/a';
-      console.error(`[DEBUG fund-div:${t.sym}] count=${count}`, JSON.stringify(data).slice(0, 600));
-    } catch (err) {
-      console.error(`[DEBUG fund-div:${t.sym}] failed`, err.message);
+// Walks a daily-bar history (most-recent-first, as Twelve Data returns it)
+// to find the closing price from approximately `days` ago — the newest bar
+// that's still at or before that point in time. Returns null if the history
+// doesn't reach back far enough (e.g. a recent IPO).
+function findPriceDaysAgo(bars, days) {
+  const targetTime = Date.now() - days * 86400000;
+  for (const bar of bars) {
+    if (new Date(`${bar.datetime}T00:00:00Z`).getTime() <= targetTime) {
+      return parseFloat(bar.close);
     }
   }
+  return null;
+}
+
+function sumTrailingDividends(dividends, days) {
+  const cutoff = Date.now() - days * 86400000;
+  return dividends
+    .filter((d) => new Date(`${d.ex_date}T00:00:00Z`).getTime() >= cutoff)
+    .reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
+}
+
+// Shared by loadStock and loadIndex: all-time high, days since it, drawdown
+// from it, trailing 12-month price change, and trailing 12-month dividend
+// yield. All derived from the same two allSettled results so a failure on
+// either just leaves those specific fields null rather than the whole row.
+function computeHistoryStats(price, historyResult, dividendResult) {
+  const bars = historyResult.status === 'fulfilled' ? (historyResult.value.values || []) : [];
+
+  let athPrice = null;
+  let athDate = null;
+  for (const bar of bars) {
+    const high = parseFloat(bar.high);
+    if (athPrice === null || high > athPrice) {
+      athPrice = high;
+      athDate = bar.datetime;
+    }
+  }
+
+  const daysSinceAth = athDate
+    ? Math.round((Date.now() - new Date(`${athDate}T00:00:00Z`).getTime()) / 86400000)
+    : null;
+  const vsAth = (price !== null && athPrice) ? ((price - athPrice) / athPrice) * 100 : null;
+
+  let change12mo = null;
+  if (price !== null && bars.length) {
+    const priceYearAgo = findPriceDaysAgo(bars, 365);
+    if (priceYearAgo) change12mo = ((price - priceYearAgo) / priceYearAgo) * 100;
+  }
+
+  let dividendYield = null;
+  if (price !== null && price > 0 && dividendResult.status === 'fulfilled') {
+    const total = sumTrailingDividends(dividendResult.value.dividends || [], 365);
+    if (total > 0) dividendYield = (total / price) * 100;
+  }
+
+  return { athPrice, athDate, daysSinceAth, vsAth, change12mo, dividendYield };
 }
 
 async function loadStock(symbol) {
@@ -132,11 +195,12 @@ async function loadStock(symbol) {
   // Market cap has no such workaround (it needs shares outstanding, which no
   // Grow-tier endpoint exposes) and stays unavailable until upgrading further.
   // Each call is fetched independently (allSettled, not all) so a failure on
-  // one doesn't stop price/all-time-high (quote + time_series) from rendering.
-  const [quoteResult, earningsResult, historyResult] = await Promise.allSettled([
+  // one doesn't stop the rest of the row from rendering.
+  const [quoteResult, earningsResult, historyResult, dividendResult] = await Promise.allSettled([
     rateLimitedFetchJson(`${base}/quote?symbol=${symbol}&apikey=${API_KEY}`),
     rateLimitedFetchJson(`${base}/earnings?symbol=${symbol}&apikey=${API_KEY}`),
     rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
+    rateLimitedFetchJson(`${base}/dividends?symbol=${symbol}&range=1Y&apikey=${API_KEY}`),
   ]);
 
   const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
@@ -157,28 +221,8 @@ async function loadStock(symbol) {
     }
   }
 
-  // Requires shares outstanding, which isn't exposed by any endpoint
-  // available on the current plan
-  const marketCap = null;
-
-  let athPrice = null;
-  let athDate = null;
-  if (historyResult.status === 'fulfilled') {
-    for (const bar of historyResult.value.values || []) {
-      const high = parseFloat(bar.high);
-      if (athPrice === null || high > athPrice) {
-        athPrice = high;
-        athDate = bar.datetime;
-      }
-    }
-  }
-
-  const daysSinceAth = athDate
-    ? Math.round((Date.now() - new Date(`${athDate}T00:00:00Z`).getTime()) / 86400000)
-    : null;
-  const vsAth = (price !== null && athPrice) ? ((price - athPrice) / athPrice) * 100 : null;
-
-  return { symbol, price, marketCap, athPrice, athDate, daysSinceAth, vsAth, pe };
+  const stats = computeHistoryStats(price, historyResult, dividendResult);
+  return { symbol, price, pe, ...stats };
 }
 
 async function loadIndex(symbol, exchange) {
@@ -187,35 +231,18 @@ async function loadIndex(symbol, exchange) {
   // instrument — without it, some symbols resolve to an unrelated company
   // that happens to share the same ticker on a different exchange.
   const exchangeParam = exchange ? `&exchange=${exchange}` : '';
-  const [quoteResult, historyResult] = await Promise.allSettled([
+  const [quoteResult, historyResult, dividendResult] = await Promise.allSettled([
     rateLimitedFetchJson(`${base}/quote?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`),
     rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}${exchangeParam}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
+    rateLimitedFetchJson(`${base}/dividends?symbol=${symbol}${exchangeParam}&range=1Y&apikey=${API_KEY}`),
   ]);
 
   const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
-
-  let athPrice = null;
-  let athDate = null;
-  if (historyResult.status === 'fulfilled') {
-    for (const bar of historyResult.value.values || []) {
-      const high = parseFloat(bar.high);
-      if (athPrice === null || high > athPrice) {
-        athPrice = high;
-        athDate = bar.datetime;
-      }
-    }
-  }
-
-  const daysSinceAth = athDate
-    ? Math.round((Date.now() - new Date(`${athDate}T00:00:00Z`).getTime()) / 86400000)
-    : null;
-  const vsAth = (price !== null && athPrice) ? ((price - athPrice) / athPrice) * 100 : null;
-
-  return { symbol, price, athPrice, athDate, daysSinceAth, vsAth };
+  const stats = computeHistoryStats(price, historyResult, dividendResult);
+  return { symbol, price, ...stats };
 }
 
 async function main() {
-  await debugFundDividendCheck();
   const stocks = {};
   const indices = {};
   const indicesGbp = {};
