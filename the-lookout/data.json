@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-03T22:43:06.984Z",
+  "savedAt": "2026-08-03T23:06:00.412Z",
   "stocks": {
     "NVDA": {
       "symbol": "NVDA",
@@ -166,24 +166,24 @@
   "spaceForce": {
     "SPCX": {
       "symbol": "SPCX",
-      "price": 114.44,
+      "price": 114.53,
       "pe": null,
       "athPrice": 225.64,
       "athDate": "2026-06-16",
       "daysSinceAth": 49,
-      "vsAth": -49.282042191100864,
+      "vsAth": -49.242155646162026,
       "change12mo": null,
       "dividendYield": null
     },
     "RKLB": {
       "symbol": "RKLB",
-      "price": 70.44,
-      "pe": 76.56521739130434,
+      "price": 70.43,
+      "pe": 76.55434782608697,
       "athPrice": 151,
       "athDate": "2026-05-27",
       "daysSinceAth": 69,
-      "vsAth": -53.35099337748345,
-      "change12mo": 57.197054228966735,
+      "vsAth": -53.35761589403973,
+      "change12mo": 57.17473778174516,
       "dividendYield": null
     },
     "ASTS": {
