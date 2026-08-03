@@ -1,93 +1,93 @@
 {
-  "savedAt": "2026-08-03T18:49:00.626Z",
+  "savedAt": "2026-08-03T19:56:42.049Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
-      "price": 304.95,
+      "price": 303.215,
       "marketCap": null,
       "athPrice": 344.57001,
       "athDate": "2026-07-29",
       "daysSinceAth": 6,
-      "vsAth": -11.498391865270003,
-      "pe": 34.97133027522936
+      "vsAth": -12.001917984678947,
+      "pe": 34.7723623853211
     },
     "NVDA": {
       "symbol": "NVDA",
-      "price": 208.05,
+      "price": 206.425,
       "marketCap": null,
       "athPrice": 236.53999,
       "athDate": "2026-05-14",
       "daysSinceAth": 82,
-      "vsAth": -12.044470789061917,
-      "pe": 31.23873873873874
+      "vsAth": -12.731458219813055,
+      "pe": 30.994744744744747
     },
     "GOOGL": {
       "symbol": "GOOGL",
-      "price": 375.32,
+      "price": 374.5,
       "marketCap": null,
       "athPrice": 408.60999,
       "athDate": "2026-05-18",
       "daysSinceAth": 78,
-      "vsAth": -8.147130715037092,
-      "pe": 21.83362420011635
+      "vsAth": -8.347811075299452,
+      "pe": 21.785922047702154
     },
     "MSFT": {
       "symbol": "MSFT",
-      "price": 491.085,
+      "price": 488.07,
       "marketCap": null,
       "athPrice": 555.45001,
       "athDate": "2025-07-31",
       "daysSinceAth": 369,
-      "vsAth": -11.587903293043427,
-      "pe": 28.419270833333336
-    },
-    "AMZN": {
-      "symbol": "AMZN",
-      "price": 283.79,
-      "marketCap": null,
-      "athPrice": 287.18,
-      "athDate": "2026-08-03",
-      "daysSinceAth": 1,
-      "vsAth": -1.180444320635137,
-      "pe": 32.35917901938427
-    },
-    "META": {
-      "symbol": "META",
-      "price": 593.24,
-      "marketCap": null,
-      "athPrice": 796.25,
-      "athDate": "2025-08-15",
-      "daysSinceAth": 354,
-      "vsAth": -25.495761381475667,
-      "pe": 26.23794781070323
+      "vsAth": -12.130706415866303,
+      "pe": 28.24479166666667
     },
     "TSLA": {
       "symbol": "TSLA",
-      "price": 322.61,
+      "price": 321.61,
       "marketCap": null,
       "athPrice": 498.82999,
       "athDate": "2025-12-22",
       "daysSinceAth": 225,
-      "vsAth": -35.32666309818301,
-      "pe": 240.7537313432836
+      "vsAth": -35.52713219989039,
+      "pe": 240.00746268656715
+    },
+    "AMZN": {
+      "symbol": "AMZN",
+      "price": null,
+      "marketCap": null,
+      "athPrice": 287.18,
+      "athDate": "2026-08-03",
+      "daysSinceAth": 1,
+      "vsAth": null,
+      "pe": null
+    },
+    "META": {
+      "symbol": "META",
+      "price": 591.48,
+      "marketCap": null,
+      "athPrice": 796.25,
+      "athDate": "2025-08-15",
+      "daysSinceAth": 354,
+      "vsAth": -25.716797488226057,
+      "pe": null
     }
   },
   "indices": {
-    "QQQ": {
-      "symbol": "QQQ",
-      "price": 700,
-      "athPrice": 748.65002,
-      "athDate": "2026-06-03",
-      "daysSinceAth": 62,
-      "vsAth": -6.498366219238201
-    },
     "SPY": {
       "symbol": "SPY",
-      "price": 757.88,
+      "price": 757.66,
       "athPrice": 760.40002,
       "athDate": "2026-06-02",
       "daysSinceAth": 63,
-      "vsAth": -0.33140714541275856
+      "vsAth": -0.36033928563022294
+    },
+    "QQQ": {
+      "symbol": "QQQ",
+      "price": 699.61,
+      "athPrice": 748.65002,
+      "athDate": "2026-06-03",
+      "daysSinceAth": 62,
+      "vsAth": -6.550459986630338
     }
   },
   "indicesGbp": {
@@ -98,6 +98,14 @@
       "athDate": "2026-06-22",
       "daysSinceAth": 43,
       "vsAth": -0.7466763795301341
+    },
+    "VWRL": {
+      "symbol": "VWRL",
+      "price": null,
+      "athPrice": null,
+      "athDate": null,
+      "daysSinceAth": null,
+      "vsAth": null
     },
     "VWRP": {
       "symbol": "VWRP",
@@ -114,14 +122,6 @@
       "athDate": "2026-06-22",
       "daysSinceAth": 43,
       "vsAth": -0.7240995172669896
-    },
-    "VWRL": {
-      "symbol": "VWRL",
-      "price": 136.98,
-      "athPrice": 140.0099945,
-      "athDate": "2026-06-18",
-      "daysSinceAth": 47,
-      "vsAth": -2.164127290212853
     }
   }
 }
