@@ -680,6 +680,7 @@ select#frequency:focus {
    variant scrolls horizontally instead of squashing, like the stock watch
    tables. */
 .ledger-table-scroll {
+  position: relative;
   overflow-x: auto;
 }
 .ledger-row.cols-5 {
@@ -879,11 +880,38 @@ select#frequency:focus {
 .share-status:empty { margin: 0; }
 
 .table-wrap {
+  position: relative;
   border-radius: var(--radius-sm);
   border: 2px solid var(--card-border);
   overflow-x: auto;
 }
 .table-wrap.hidden { display: none; }
+
+/* Floating "more content" hint for horizontally-scrollable tables — see
+   scroll-hint.js. Only ever appears when the table genuinely overflows. */
+.scroll-hint {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-border);
+  color: var(--card-bg-solid);
+  font-size: 0.95rem;
+  line-height: 1;
+  pointer-events: none;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+}
+.scroll-hint.is-hidden {
+  opacity: 0;
+}
 
 .stock-table {
   table-layout: fixed;
