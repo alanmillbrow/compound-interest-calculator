@@ -44,13 +44,14 @@ const INDICES_GBP = [
 // dividends and time_series don't all cost the same, and time_series' cost
 // scales with outputsize. A concurrency cap alone only limits how many
 // requests are in flight at once, not how many get dispatched per minute —
-// with fast responses, a full run's ~46 calls can still fire in a matter of
-// seconds and blow well past the 55-credit ceiling before any single
-// request even has a chance to return 429. So dispatch is paced by a
-// conservative request-count budget instead (assuming an average cost
+// with fast responses, a full run's calls can still fire in a matter of
+// seconds and blow well past the per-minute credit ceiling before any
+// single request even has a chance to return 429. So dispatch is paced by
+// a conservative request-count budget instead (assuming an average cost
 // noticeably above 1 credit, based on real observed usage), and the 429
 // retry stays on as a backstop for whatever that estimate still misses.
-const REQUESTS_PER_MINUTE = 18;
+// Current plan: Grow, upgraded to 144 credits/minute.
+const REQUESTS_PER_MINUTE = 100;
 const RATE_WINDOW_MS = 60 * 1000;
 const dispatchTimestamps = [];
 
@@ -241,18 +242,7 @@ async function loadIndex(symbol, exchange) {
   return { symbol, price, ...stats };
 }
 
-async function debugPlanCheck() {
-  try {
-    const res = await fetch(`https://api.twelvedata.com/api_usage?apikey=${API_KEY}`);
-    const data = await res.json();
-    console.error('[DEBUG plan]', JSON.stringify(data));
-  } catch (err) {
-    console.error('[DEBUG plan] failed', err.message);
-  }
-}
-
 async function main() {
-  await debugPlanCheck();
   const stocks = {};
   const indices = {};
   const indicesGbp = {};
