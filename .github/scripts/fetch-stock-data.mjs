@@ -1,8 +1,10 @@
 #!/usr/bin/env node
-// Fetches quote, earnings, and daily history for each stock in STOCKS from
-// Twelve Data and writes the results to the-lookout/data.json. Run hourly by
-// .github/workflows/refresh-stock-data.yml so the-lookout page can read a
-// static file instead of every visitor's browser calling the API directly.
+// Fetches quote, earnings, and daily history for the lookout's tables from
+// Twelve Data and writes the results to the-lookout/data.json, so the page
+// can read a static file instead of every visitor's browser calling the API
+// directly. Triggered every minute by .github/workflows/refresh-stock-data.yml
+// at a handful of specific offsets — see REFRESH_SCHEDULE below for which
+// table refreshes at which minute (each one still refreshes once an hour).
 
 const API_KEY = process.env.TWELVE_DATA_API_KEY;
 if (!API_KEY) {
@@ -285,55 +287,61 @@ async function loadIndex(symbol, exchange) {
   return { symbol, price, ...stats };
 }
 
-async function main() {
-  const stocks = {};
-  const indices = {};
-  const indicesGbp = {};
-  const spaceForce = {};
-  const ftseDividends = {};
-  await Promise.all([
-    ...STOCKS.map(async (stock) => {
-      try {
-        stocks[stock.symbol] = await loadStock(stock.symbol);
-      } catch (err) {
-        stocks[stock.symbol] = { symbol: stock.symbol, error: err.message };
-      }
-    }),
-    ...INDICES.map(async (index) => {
-      try {
-        indices[index.symbol] = await loadIndex(index.symbol);
-      } catch (err) {
-        indices[index.symbol] = { symbol: index.symbol, error: err.message };
-      }
-    }),
-    ...INDICES_GBP.map(async (index) => {
-      try {
-        indicesGbp[index.symbol] = await loadIndex(index.symbol, index.exchange);
-      } catch (err) {
-        indicesGbp[index.symbol] = { symbol: index.symbol, error: err.message };
-      }
-    }),
-    ...SPACE_FORCE.map(async (stock) => {
-      try {
-        spaceForce[stock.symbol] = await loadStock(stock.symbol);
-      } catch (err) {
-        spaceForce[stock.symbol] = { symbol: stock.symbol, error: err.message };
-      }
-    }),
-    ...FTSE_DIVIDENDS.map(async (stock) => {
-      try {
-        ftseDividends[stock.symbol] = await loadStock(stock.symbol, stock.exchange);
-      } catch (err) {
-        ftseDividends[stock.symbol] = { symbol: stock.symbol, error: err.message };
-      }
-    }),
-  ]);
+// Fetching all five tables in one run means ~120 API calls in a single
+// burst, which is what pushed the account into the red. Instead each run
+// refreshes just one table, chosen by which minute triggered it (see
+// SCHEDULED_CRON in main() below), and merges the result into the existing
+// data.json rather than overwriting the whole file. Every table still
+// refreshes once an hour — just staggered. Minute 4 is deliberately free so
+// a new table can slot in there next.
+const REFRESH_SCHEDULE = [
+  { minute: 0, key: 'stocks', list: STOCKS, loader: 'stock' },
+  { minute: 1, key: 'spaceForce', list: SPACE_FORCE, loader: 'stock' },
+  { minute: 2, key: 'ftseDividends', list: FTSE_DIVIDENDS, loader: 'stock' },
+  { minute: 3, key: 'indicesGbp', list: INDICES_GBP, loader: 'index' },
+  { minute: 5, key: 'indices', list: INDICES, loader: 'index' },
+];
 
-  const output = { savedAt: new Date().toISOString(), stocks, indices, indicesGbp, spaceForce, ftseDividends };
+async function main() {
+  // SCHEDULED_CRON (set by the workflow from github.event.schedule) names
+  // exactly which cron entry fired, e.g. "3 * * * *" — reliable even if
+  // GitHub Actions ran this a few minutes late. Falls back to the wall
+  // clock for manual workflow_dispatch runs, where there's no schedule
+  // event to read.
+  const scheduledCron = process.env.SCHEDULED_CRON;
+  const minute = scheduledCron
+    ? parseInt(scheduledCron.split(' ')[0], 10)
+    : new Date().getUTCMinutes();
+  const entry = REFRESH_SCHEDULE.find((e) => e.minute === minute);
+  if (!entry) {
+    console.log(`No table scheduled for minute ${minute} — nothing to do.`);
+    return;
+  }
+
+  console.log(`Refreshing ${entry.key} (minute ${minute})`);
+  const results = {};
+  await Promise.all(entry.list.map(async (item) => {
+    try {
+      results[item.symbol] = entry.loader === 'stock'
+        ? await loadStock(item.symbol, item.exchange)
+        : await loadIndex(item.symbol, item.exchange);
+    } catch (err) {
+      results[item.symbol] = { symbol: item.symbol, error: err.message };
+    }
+  }));
+
   const fs = await import('node:fs/promises');
   const outPath = new URL('../../the-lookout/data.json', import.meta.url);
+  let existing = {};
+  try {
+    existing = JSON.parse(await fs.readFile(outPath, 'utf8'));
+  } catch {
+    // First run, or the file doesn't exist yet — start from an empty object.
+  }
+
+  const output = { ...existing, savedAt: new Date().toISOString(), [entry.key]: results };
   await fs.writeFile(outPath, JSON.stringify(output, null, 2) + '\n');
-  console.log('Wrote the-lookout/data.json');
+  console.log(`Wrote the-lookout/data.json (${entry.key})`);
 }
 
 main().catch((err) => {
