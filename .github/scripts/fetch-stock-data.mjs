@@ -106,11 +106,12 @@ async function rateLimitedFetchJson(url) {
 async function debugDividendCheck() {
   for (const sym of ['AAPL', 'MSFT']) {
     try {
-      const res = await fetch(`https://api.twelvedata.com/dividends?symbol=${sym}&apikey=${API_KEY}`);
+      const res = await fetch(`https://api.twelvedata.com/dividends?symbol=${sym}&range=5Y&apikey=${API_KEY}`);
       const data = await res.json();
-      console.error(`[DEBUG dividends:${sym}]`, JSON.stringify(data).slice(0, 800));
+      const count = Array.isArray(data.dividends) ? data.dividends.length : 'n/a';
+      console.error(`[DEBUG dividends-5y:${sym}] count=${count}`, JSON.stringify(data).slice(0, 1500));
     } catch (err) {
-      console.error(`[DEBUG dividends:${sym}] failed`, err.message);
+      console.error(`[DEBUG dividends-5y:${sym}] failed`, err.message);
     }
   }
 }
