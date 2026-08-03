@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-03T20:34:51.004Z",
+  "savedAt": "2026-08-03T20:54:31.062Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -12,17 +12,6 @@
       "change12mo": 49.92094080442733,
       "dividendYield": 0.3460663788273294
     },
-    "GOOGL": {
-      "symbol": "GOOGL",
-      "price": 373.465,
-      "pe": 21.725712623618385,
-      "athPrice": 408.60999,
-      "athDate": "2026-05-18",
-      "daysSinceAth": 78,
-      "vsAth": -8.601108847094025,
-      "change12mo": 97.46470681541795,
-      "dividendYield": 0.2275983023844269
-    },
     "NVDA": {
       "symbol": "NVDA",
       "price": 206.64,
@@ -33,6 +22,17 @@
       "vsAth": -12.640564498205991,
       "change12mo": 18.950034538337547,
       "dividendYield": 0.13550135501355015
+    },
+    "GOOGL": {
+      "symbol": "GOOGL",
+      "price": 373.465,
+      "pe": 21.725712623618385,
+      "athPrice": 408.60999,
+      "athDate": "2026-05-18",
+      "daysSinceAth": 78,
+      "vsAth": -8.601108847094025,
+      "change12mo": 97.46470681541795,
+      "dividendYield": 0.2275983023844269
     },
     "MSFT": {
       "symbol": "MSFT",
@@ -131,6 +131,26 @@
       "vsAth": -0.7240995172669896,
       "change12mo": 19.921502663302494,
       "dividendYield": 0.8756442865158034
+    },
+    "VUKG": {
+      "symbol": "VUKG",
+      "price": 57.99,
+      "athPrice": 58.75,
+      "athDate": "2026-07-31",
+      "daysSinceAth": 4,
+      "vsAth": -1.2936170212765923,
+      "change12mo": 23.029595841731208,
+      "dividendYield": null
+    },
+    "VUKE": {
+      "symbol": "VUKE",
+      "price": 47.029999,
+      "athPrice": 47.73,
+      "athDate": "2026-02-27",
+      "daysSinceAth": 158,
+      "vsAth": -1.466584957050074,
+      "change12mo": 19.093438845277273,
+      "dividendYield": null
     },
     "VWRL": {
       "symbol": "VWRL",
