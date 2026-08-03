@@ -188,6 +188,19 @@ function computeHistoryStats(price, historyResult, dividendResult) {
   return { athPrice, athDate, daysSinceAth, vsAth, change12mo, dividendYield };
 }
 
+// Promise.allSettled swallows individual endpoint failures so one bad call
+// doesn't null out the whole row — but that also means a failure would
+// otherwise vanish with zero trace. Logs a warning with the actual reason so
+// intermittent per-endpoint failures (rate limits, timeouts) are visible in
+// the workflow run instead of just showing up as an unexplained null field.
+function logRejections(symbol, labels, results) {
+  results.forEach((result, i) => {
+    if (result.status === 'rejected') {
+      console.warn(`[WARN] ${symbol} ${labels[i]} failed: ${result.reason?.message || result.reason}`);
+    }
+  });
+}
+
 async function loadStock(symbol) {
   const base = 'https://api.twelvedata.com';
   // /statistics — which would hand back a ready-made trailing P/E and market
@@ -204,6 +217,7 @@ async function loadStock(symbol) {
     rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
     rateLimitedFetchJson(`${base}/dividends?symbol=${symbol}&range=1Y&apikey=${API_KEY}`),
   ]);
+  logRejections(symbol, ['quote', 'earnings', 'time_series', 'dividends'], [quoteResult, earningsResult, historyResult, dividendResult]);
 
   const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
 
@@ -238,6 +252,7 @@ async function loadIndex(symbol, exchange) {
     rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}${exchangeParam}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
     rateLimitedFetchJson(`${base}/dividends?symbol=${symbol}${exchangeParam}&range=1Y&apikey=${API_KEY}`),
   ]);
+  logRejections(symbol, ['quote', 'time_series', 'dividends'], [quoteResult, historyResult, dividendResult]);
 
   const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
   const stats = computeHistoryStats(price, historyResult, dividendResult);
