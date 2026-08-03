@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-03T22:40:11.765Z",
+  "savedAt": "2026-08-03T22:41:38.126Z",
   "stocks": {
     "NVDA": {
       "symbol": "NVDA",
@@ -100,35 +100,63 @@
   "indicesGbp": {
     "VUAG": {
       "symbol": "VUAG",
-      "price": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null
+      "price": 109,
+      "athPrice": 109.82,
+      "athDate": "2026-06-22",
+      "daysSinceAth": 43,
+      "vsAth": -0.7466763795301341,
+      "change12mo": 21.13803067348299,
+      "dividendYield": null
     },
     "VUSA": {
       "symbol": "VUSA",
-      "price": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null
+      "price": 106.94,
+      "athPrice": 107.72,
+      "athDate": "2026-06-22",
+      "daysSinceAth": 43,
+      "vsAth": -0.7240995172669896,
+      "change12mo": 19.921502663302494,
+      "dividendYield": 0.8756442865158034
     },
     "VWRP": {
       "symbol": "VWRP",
-      "price": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null
+      "price": 141.44,
+      "athPrice": 144.25999,
+      "athDate": "2026-06-22",
+      "daysSinceAth": 43,
+      "vsAth": -1.9547970300011739,
+      "change12mo": 22.90580252162318,
+      "dividendYield": null
+    },
+    "VUKG": {
+      "symbol": "VUKG",
+      "price": 57.99,
+      "athPrice": 58.75,
+      "athDate": "2026-07-31",
+      "daysSinceAth": 4,
+      "vsAth": -1.2936170212765923,
+      "change12mo": 23.029595841731208,
+      "dividendYield": null
     },
     "VWRL": {
       "symbol": "VWRL",
-      "price": null,
-      "athPrice": null,
-      "athDate": null,
-      "daysSinceAth": null,
-      "vsAth": null
+      "price": 136.98,
+      "athPrice": 140.0099945,
+      "athDate": "2026-06-18",
+      "daysSinceAth": 47,
+      "vsAth": -2.164127290212853,
+      "change12mo": 21.264164305949006,
+      "dividendYield": 1.2741801722879251
+    },
+    "VUKE": {
+      "symbol": "VUKE",
+      "price": 47.029999,
+      "athPrice": 47.73,
+      "athDate": "2026-02-27",
+      "daysSinceAth": 158,
+      "vsAth": -1.466584957050074,
+      "change12mo": 19.093438845277273,
+      "dividendYield": 2.9959409524971496
     }
   },
   "spaceForce": {
