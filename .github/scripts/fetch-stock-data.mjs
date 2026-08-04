@@ -420,7 +420,20 @@ async function runFundamentalsRefresh() {
   await commitMergedResults(resultsBySection);
 }
 
+async function debugEarningsCheck() {
+  const res = await fetch(`https://api.twelvedata.com/earnings?symbol=AV&exchange=LSE&apikey=${API_KEY}`);
+  const body = await res.json();
+  console.log('[DEBUG earnings AV]', JSON.stringify(body));
+  const quoteRes = await fetch(`https://api.twelvedata.com/quote?symbol=AV&exchange=LSE&apikey=${API_KEY}`);
+  const quoteBody = await quoteRes.json();
+  console.log('[DEBUG quote AV]', JSON.stringify({ close: quoteBody.close, currency: quoteBody.currency, name: quoteBody.name }));
+}
+
 async function main() {
+  if (process.env.REFRESH_MODE === 'debug') {
+    await debugEarningsCheck();
+    return;
+  }
   const mode = process.env.REFRESH_MODE;
   if (mode === 'price') {
     await runPriceRefresh();
