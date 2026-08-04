@@ -1,0 +1,41 @@
+name: Refresh stock watch data
+
+# TEMPORARY test-branch-only harness for the redesigned fetch-stock-data.mjs
+# (REFRESH_MODE-based). This workflow ID is already registered on the
+# default branch, which is required before GitHub will let a *new*
+# workflow file be dispatched at all — refresh-prices.yml and
+# refresh-fundamentals.yml aren't registered yet, so this repurposes the
+# already-known one to test the new script logic before deploying for real.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'price or fundamentals'
+        required: true
+      test_limit_symbols:
+        description: 'comma-separated symbols to limit to (fundamentals only)'
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Refresh
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+          REFRESH_MODE: ${{ inputs.mode }}
+          TEST_LIMIT_SYMBOLS: ${{ inputs.test_limit_symbols }}
+        run: node .github/scripts/fetch-stock-data.mjs
