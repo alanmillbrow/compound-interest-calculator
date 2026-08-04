@@ -73,11 +73,10 @@ function fmtPercent(n) {
 }
 
 // Dividend yield is never negative, so (unlike fmtPercent) this never
-// prefixes a sign — and uses two decimal places since yields are often
-// under 1%, where one decimal would round away the only meaningful digit.
+// prefixes a sign.
 function fmtYield(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return '—';
-  return `${n.toFixed(2)}%`;
+  return `${n.toFixed(1)}%`;
 }
 
 function fmtPe(n) {
@@ -87,7 +86,7 @@ function fmtPe(n) {
 
 function fmtDays(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return '—';
-  return n === 0 ? 'Today' : String(n);
+  return n === 0 ? 'Today' : n.toLocaleString('en-US');
 }
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
