@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-04T08:43:38.082Z",
+  "savedAt": "2026-08-04T09:44:57.515Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -80,16 +80,6 @@
     }
   },
   "indices": {
-    "SPY": {
-      "symbol": "SPY",
-      "price": 757.66998,
-      "athPrice": 760.40002,
-      "athDate": "2026-06-02",
-      "daysSinceAth": 63,
-      "vsAth": -0.35902681854217083,
-      "change12mo": 20.042144589956575,
-      "dividendYield": 0.9931764750663606
-    },
     "QQQ": {
       "symbol": "QQQ",
       "price": 700.070007,
@@ -99,6 +89,16 @@
       "vsAth": -6.489015120843783,
       "change12mo": 24.10388881136915,
       "dividendYield": 0.4334337951432906
+    },
+    "SPY": {
+      "symbol": "SPY",
+      "price": 757.66998,
+      "athPrice": 760.40002,
+      "athDate": "2026-06-02",
+      "daysSinceAth": 63,
+      "vsAth": -0.35902681854217083,
+      "change12mo": 20.042144589956575,
+      "dividendYield": 0.9931764750663606
     }
   },
   "indicesGbp": {
