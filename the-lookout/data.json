@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-04T06:36:30.859Z",
+  "savedAt": "2026-08-04T07:35:01.035Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -23,17 +23,6 @@
       "change12mo": 14.799999999999994,
       "dividendYield": 0.13550135501355015
     },
-    "MSFT": {
-      "symbol": "MSFT",
-      "price": 487.64999,
-      "pe": 28.220485532407412,
-      "athPrice": 555.45001,
-      "athDate": "2025-07-31",
-      "daysSinceAth": 369,
-      "vsAth": -12.206322581576696,
-      "change12mo": -8.959379266683227,
-      "dividendYield": 0.7300318000621716
-    },
     "GOOGL": {
       "symbol": "GOOGL",
       "price": 373.51001,
@@ -45,16 +34,16 @@
       "change12mo": 91.50431880911727,
       "dividendYield": 0.22757087554360322
     },
-    "AMZN": {
-      "symbol": "AMZN",
-      "price": 284.019989,
-      "pe": 32.38540353477765,
-      "athPrice": 287.16,
-      "athDate": "2026-08-03",
-      "daysSinceAth": 1,
-      "vsAth": -1.0934708873102157,
-      "change12mo": 34.19324470556318,
-      "dividendYield": null
+    "MSFT": {
+      "symbol": "MSFT",
+      "price": 487.64999,
+      "pe": 28.220485532407412,
+      "athPrice": 555.45001,
+      "athDate": "2025-07-31",
+      "daysSinceAth": 369,
+      "vsAth": -12.206322581576696,
+      "change12mo": -8.959379266683227,
+      "dividendYield": 0.7300318000621716
     },
     "META": {
       "symbol": "META",
@@ -76,6 +65,17 @@
       "daysSinceAth": 225,
       "vsAth": -35.432914328186236,
       "change12mo": 4.145371721355113,
+      "dividendYield": null
+    },
+    "AMZN": {
+      "symbol": "AMZN",
+      "price": 284.019989,
+      "pe": 32.38540353477765,
+      "athPrice": 287.16,
+      "athDate": "2026-08-03",
+      "daysSinceAth": 1,
+      "vsAth": -1.0934708873102157,
+      "change12mo": 34.19324470556318,
       "dividendYield": null
     }
   },
