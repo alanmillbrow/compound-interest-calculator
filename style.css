@@ -1027,6 +1027,53 @@ tbody tr:hover { background: var(--accent-soft); }
   text-decoration: underline;
 }
 
+/* Four Stages of Financial Health */
+.stages-intro { margin-bottom: 24px; }
+.stages-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: end;
+  gap: 20px;
+  margin: 0 0 28px;
+}
+.stage-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border: 2px solid var(--card-border);
+  background: var(--card-bg-solid);
+}
+/* Each stage sits a little higher than the last, echoing the climb from
+   dependency up to freedom that the section is describing. */
+.stage-card:nth-child(1) { margin-top: 48px; }
+.stage-card:nth-child(2) { margin-top: 32px; }
+.stage-card:nth-child(3) { margin-top: 16px; }
+.stage-card:nth-child(4) { margin-top: 0; }
+.stage-num {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--card-border);
+  border-radius: 50%;
+  font-family: 'shackleton', Georgia, serif;
+  font-size: 1rem;
+  color: var(--interest);
+}
+.stage-card h3 {
+  font-family: 'shackleton', Georgia, serif;
+  font-size: 1.1rem;
+  margin: 0;
+}
+.stage-card p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
 /* M.O.B. Method */
 .mob-card { text-align: center; }
 .mob-card h2 {
@@ -1466,6 +1513,8 @@ main > .newsletter-signup:last-child { margin-bottom: 0; }
   .freedoms { grid-template-columns: 1fr; }
   .mob-grid { grid-template-columns: 1fr; }
   .rf-income-grid { grid-template-columns: 1fr; }
+  .stages-grid { grid-template-columns: 1fr; }
+  .stage-card { margin-top: 0 !important; }
   .sankey-controls { grid-template-columns: 1fr; gap: 8px; }
   .sankey-col-label:not(:first-child) { margin-top: 24px; }
   .sankey-footer-row { flex-direction: column; gap: 24px; }
