@@ -41,6 +41,7 @@ const SPACE_FORCE = [
   { symbol: 'LMT', name: 'Lockheed Martin' },
   { symbol: 'LHX', name: 'L3Harris' },
   { symbol: 'NOC', name: 'Northrop Grumman' },
+  { symbol: 'BA', name: 'Boeing' },
 ];
 
 const FTSE_DIVIDENDS = [
