@@ -1,0 +1,42 @@
+name: Refresh lookout fundamentals
+
+on:
+  schedule:
+    # Earnings + dividends cost 20 credits each (confirmed via Twelve
+    # Data's response headers) — refreshing P/E and dividend yield for all
+    # 32 symbols needs ~1100 credits, which the script's credit-aware pacer
+    # legitimately spreads across several real minutes to respect the
+    # 144-credit/minute budget. P/E and yield barely change hour to hour,
+    # so weekly is plenty; Sunday 03:00 UTC is a quiet time for the site.
+    - cron: '0 3 * * 0'
+  workflow_dispatch: {}
+
+# Shares a concurrency group with refresh-prices.yml since both write to
+# the same data.json — never run simultaneously with each other.
+concurrency:
+  group: refresh-lookout-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    # A full run can take several minutes since it has to pace ~1100
+    # credits' worth of calls against a 144-credit/minute budget.
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Refresh fundamentals
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+          REFRESH_MODE: fundamentals
+        run: node .github/scripts/fetch-stock-data.mjs

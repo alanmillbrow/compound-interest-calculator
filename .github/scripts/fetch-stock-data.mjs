@@ -1,10 +1,27 @@
 #!/usr/bin/env node
-// Fetches quote, earnings, and daily history for the lookout's tables from
-// Twelve Data and writes the results to the-lookout/data.json, so the page
-// can read a static file instead of every visitor's browser calling the API
-// directly. Triggered every minute by .github/workflows/refresh-stock-data.yml
-// at a handful of specific offsets — see REFRESH_SCHEDULE below for which
-// table refreshes at which minute (each one still refreshes once an hour).
+// Fetches data for the lookout's tables from Twelve Data and writes the
+// results to the-lookout/data.json, so the page can read a static file
+// instead of every visitor's browser calling the API directly.
+//
+// Split into two modes (REFRESH_MODE env var, set by two separate workflow
+// files) because Twelve Data's real per-call credit cost is wildly uneven:
+// quote and time_series cost 1 credit each, but earnings and dividends cost
+// 20 credits each (confirmed via the api-credits-used response header).
+// Fetching everything for every symbol every run blew well past the
+// 144-credit/minute budget — a single 10-company table needed 420 credits.
+//   - REFRESH_MODE=price: quote + time_series for every symbol, every run.
+//     Cheap (~64 credits total for all 32 symbols), so it just runs hourly
+//     covering everything in one go — no staggering needed.
+//   - REFRESH_MODE=fundamentals: earnings + dividends, on a much slower
+//     weekly cadence, since P/E and dividend yield barely change hour to
+//     hour. Paced by real credit cost (see waitForCreditBudget) since even
+//     one run needs ~1100 credits total and has to legitimately spread
+//     across several real minutes to respect the budget.
+// Both modes merge their results into the existing data.json rather than
+// overwriting it, via commitMergedResults' fetch-latest-and-retry loop —
+// necessary because GitHub Actions resolves which commit a scheduled run
+// checks out at trigger time, not at actual execution time, so a run that
+// sits queued for a bit can otherwise push based on a stale base.
 
 const API_KEY = process.env.TWELVE_DATA_API_KEY;
 if (!API_KEY) {
@@ -68,21 +85,24 @@ const FTSE_DIVIDENDS = [
   { symbol: 'SBRY', name: "Sainsbury's", exchange: 'LSE' },
 ];
 
-// Twelve Data enforces a rolling per-minute credit budget, but different
-// endpoints cost different (undocumented) amounts of it — quote, earnings,
-// dividends and time_series don't all cost the same, and time_series' cost
-// scales with outputsize. A concurrency cap alone only limits how many
-// requests are in flight at once, not how many get dispatched per minute —
-// with fast responses, a full run's calls can still fire in a matter of
-// seconds and blow well past the per-minute credit ceiling before any
-// single request even has a chance to return 429. So dispatch is paced by
-// a conservative request-count budget instead (assuming an average cost
-// noticeably above 1 credit, based on real observed usage), and the 429
-// retry stays on as a backstop for whatever that estimate still misses.
-// Current plan: Grow, upgraded to 144 credits/minute.
-const REQUESTS_PER_MINUTE = 100;
+// Flat registry combining every table. `isIndex` marks the ETF-tracker
+// tables (no per-company earnings, so no P/E) vs. individual companies.
+const ALL_SYMBOLS = [
+  ...STOCKS.map((s) => ({ ...s, section: 'stocks', isIndex: false })),
+  ...INDICES.map((s) => ({ ...s, section: 'indices', isIndex: true })),
+  ...INDICES_GBP.map((s) => ({ ...s, section: 'indicesGbp', isIndex: true })),
+  ...SPACE_FORCE.map((s) => ({ ...s, section: 'spaceForce', isIndex: false })),
+  ...FTSE_DIVIDENDS.map((s) => ({ ...s, section: 'ftseDividends', isIndex: false })),
+];
+
+// Real per-call cost, confirmed via Twelve Data's api-credits-used response
+// header — quote and time_series are cheap; earnings and dividends are not.
+const CREDIT_COST = { quote: 1, time_series: 1, earnings: 20, dividends: 20 };
+// Kept under the real 144/minute ceiling for some margin (concurrent
+// in-flight calls can land a little past the threshold before it bites).
+const CREDIT_BUDGET_PER_MINUTE = 120;
 const RATE_WINDOW_MS = 60 * 1000;
-const dispatchTimestamps = [];
+const creditLog = []; // [{ ts, cost }, ...]
 
 const MAX_CONCURRENT = 4;
 const RETRY_WAIT_MS = 65 * 1000;
@@ -95,19 +115,20 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Blocks until fewer than REQUESTS_PER_MINUTE dispatches have happened in
-// the trailing 60 seconds, then reserves this one.
-async function waitForDispatchSlot() {
+// Blocks until dispatching `cost` more credits would stay within
+// CREDIT_BUDGET_PER_MINUTE for the trailing 60 seconds, then reserves it.
+async function waitForCreditBudget(cost) {
   for (;;) {
     const now = Date.now();
-    while (dispatchTimestamps.length && now - dispatchTimestamps[0] >= RATE_WINDOW_MS) {
-      dispatchTimestamps.shift();
+    while (creditLog.length && now - creditLog[0].ts >= RATE_WINDOW_MS) {
+      creditLog.shift();
     }
-    if (dispatchTimestamps.length < REQUESTS_PER_MINUTE) {
-      dispatchTimestamps.push(now);
+    const used = creditLog.reduce((sum, e) => sum + e.cost, 0);
+    if (used + cost <= CREDIT_BUDGET_PER_MINUTE) {
+      creditLog.push({ ts: now, cost });
       return;
     }
-    await sleep(RATE_WINDOW_MS - (now - dispatchTimestamps[0]) + 250);
+    await sleep(RATE_WINDOW_MS - (now - creditLog[0].ts) + 250);
   }
 }
 
@@ -131,9 +152,10 @@ function releaseSlot() {
   if (next) next();
 }
 
-async function rateLimitedFetchJson(url) {
+async function rateLimitedFetchJson(url, endpointType) {
+  const cost = CREDIT_COST[endpointType];
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    await waitForDispatchSlot();
+    await waitForCreditBudget(cost);
     await acquireSlot();
     let res, data;
     try {
@@ -178,11 +200,31 @@ function sumTrailingDividends(dividends, days) {
     .reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
 }
 
-// Shared by loadStock and loadIndex: all-time high, days since it, drawdown
-// from it, trailing 12-month price change, and trailing 12-month dividend
-// yield. All derived from the same two allSettled results so a failure on
-// either just leaves those specific fields null rather than the whole row.
-function computeHistoryStats(price, historyResult, dividendResult) {
+// Promise.allSettled swallows individual endpoint failures so one bad call
+// doesn't wipe out the rest — but that also means a failure would otherwise
+// vanish with zero trace. Logs a warning with the actual reason so
+// intermittent per-endpoint failures (rate limits, timeouts) are visible in
+// the workflow run instead of just showing up as an unexplained null field.
+function logRejections(symbol, labels, results) {
+  results.forEach((result, i) => {
+    if (result.status === 'rejected') {
+      console.warn(`[WARN] ${symbol} ${labels[i]} failed: ${result.reason?.message || result.reason}`);
+    }
+  });
+}
+
+// Cheap half: current price, all-time high, drawdown, and 12-month change —
+// quote + time_series only (1 credit each).
+async function loadPrice(symbol, exchange) {
+  const base = 'https://api.twelvedata.com';
+  const exchangeParam = exchange ? `&exchange=${exchange}` : '';
+  const [quoteResult, historyResult] = await Promise.allSettled([
+    rateLimitedFetchJson(`${base}/quote?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`, 'quote'),
+    rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}${exchangeParam}&interval=1day&outputsize=5000&apikey=${API_KEY}`, 'time_series'),
+  ]);
+  logRejections(symbol, ['quote', 'time_series'], [quoteResult, historyResult]);
+
+  const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
   const bars = historyResult.status === 'fulfilled' ? (historyResult.value.values || []) : [];
 
   let athPrice = null;
@@ -206,146 +248,167 @@ function computeHistoryStats(price, historyResult, dividendResult) {
     if (priceYearAgo) change12mo = ((price - priceYearAgo) / priceYearAgo) * 100;
   }
 
+  return { price, athPrice, athDate, daysSinceAth, vsAth, change12mo };
+}
+
+// Expensive half: trailing P/E and dividend yield — earnings + dividends
+// (20 credits each). Needs the current price (read from the existing
+// data.json by the caller) rather than re-fetching quote, to avoid paying
+// for a third call.
+async function loadFundamentals(symbol, exchange, currentPrice, isIndex) {
+  const base = 'https://api.twelvedata.com';
+  const exchangeParam = exchange ? `&exchange=${exchange}` : '';
+  const calls = [rateLimitedFetchJson(`${base}/dividends?symbol=${symbol}${exchangeParam}&range=1Y&apikey=${API_KEY}`, 'dividends')];
+  // Indices are ETFs, not companies — there's no per-share earnings to
+  // compute a P/E from, so skip that (expensive) call entirely for them.
+  if (!isIndex) {
+    calls.push(rateLimitedFetchJson(`${base}/earnings?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`, 'earnings'));
+  }
+  const results = await Promise.allSettled(calls);
+  const [dividendResult, earningsResult] = results;
+  logRejections(symbol, isIndex ? ['dividends'] : ['dividends', 'earnings'], results);
+
   let dividendYield = null;
-  if (price !== null && price > 0 && dividendResult.status === 'fulfilled') {
+  if (currentPrice !== null && currentPrice > 0 && dividendResult.status === 'fulfilled') {
     const total = sumTrailingDividends(dividendResult.value.dividends || [], 365);
-    if (total > 0) dividendYield = (total / price) * 100;
+    if (total > 0) dividendYield = (total / currentPrice) * 100;
   }
 
-  return { athPrice, athDate, daysSinceAth, vsAth, change12mo, dividendYield };
-}
-
-// Promise.allSettled swallows individual endpoint failures so one bad call
-// doesn't null out the whole row — but that also means a failure would
-// otherwise vanish with zero trace. Logs a warning with the actual reason so
-// intermittent per-endpoint failures (rate limits, timeouts) are visible in
-// the workflow run instead of just showing up as an unexplained null field.
-function logRejections(symbol, labels, results) {
-  results.forEach((result, i) => {
-    if (result.status === 'rejected') {
-      console.warn(`[WARN] ${symbol} ${labels[i]} failed: ${result.reason?.message || result.reason}`);
-    }
-  });
-}
-
-async function loadStock(symbol, exchange) {
-  const base = 'https://api.twelvedata.com';
-  // /statistics — which would hand back a ready-made trailing P/E and market
-  // cap in one call — requires Twelve Data's Pro tier or above, out of reach
-  // on the current Grow plan. /earnings *is* included on Grow, so trailing
-  // P/E is computed here instead from the last four quarters' reported EPS.
-  // Market cap has no such workaround (it needs shares outstanding, which no
-  // Grow-tier endpoint exposes) and stays unavailable until upgrading further.
-  // Each call is fetched independently (allSettled, not all) so a failure on
-  // one doesn't stop the rest of the row from rendering.
-  const exchangeParam = exchange ? `&exchange=${exchange}` : '';
-  const [quoteResult, earningsResult, historyResult, dividendResult] = await Promise.allSettled([
-    rateLimitedFetchJson(`${base}/quote?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`),
-    rateLimitedFetchJson(`${base}/earnings?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`),
-    rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}${exchangeParam}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
-    rateLimitedFetchJson(`${base}/dividends?symbol=${symbol}${exchangeParam}&range=1Y&apikey=${API_KEY}`),
-  ]);
-  logRejections(symbol, ['quote', 'earnings', 'time_series', 'dividends'], [quoteResult, earningsResult, historyResult, dividendResult]);
-
-  const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
-
-  // Trailing (TTM) P/E = price / sum of the last four quarters' actual EPS.
-  // Twelve Data returns earnings most-recent-first, so the first four
-  // entries with a reported (non-null) eps_actual are the trailing year.
-  // Requires a full four quarters to avoid a misleading partial-year figure.
   let pe = null;
-  if (earningsResult.status === 'fulfilled' && price !== null) {
+  if (!isIndex && earningsResult?.status === 'fulfilled' && currentPrice !== null) {
+    // Trailing (TTM) P/E = price / sum of the last four quarters' actual
+    // EPS. Twelve Data returns earnings most-recent-first, so the first
+    // four entries with a reported (non-null) eps_actual are the trailing
+    // year. Requires a full four quarters to avoid a misleading
+    // partial-year figure.
     const quarters = (earningsResult.value.earnings || [])
       .map((q) => q.eps_actual)
       .filter((v) => typeof v === 'number')
       .slice(0, 4);
     if (quarters.length === 4) {
-      const ttmEps = quarters.reduce((sum, v) => sum + v, 0);
-      if (ttmEps > 0) pe = price / ttmEps;
+      let ttmEps = quarters.reduce((sum, v) => sum + v, 0);
+      // LSE quotes are in pence but Twelve Data reports EPS in pounds for
+      // those same companies — dividing them directly inflates P/E 100x
+      // (e.g. NatWest showed 951 instead of ~9.5). Convert EPS to pence.
+      if (exchange === 'LSE') ttmEps *= 100;
+      if (ttmEps > 0) pe = currentPrice / ttmEps;
     }
   }
 
-  const stats = computeHistoryStats(price, historyResult, dividendResult);
-  return { symbol, price, pe, ...stats };
+  return { pe, dividendYield };
 }
 
-async function loadIndex(symbol, exchange) {
-  const base = 'https://api.twelvedata.com';
-  // An explicit exchange keeps ambiguous tickers pinned to the right
-  // instrument — without it, some symbols resolve to an unrelated company
-  // that happens to share the same ticker on a different exchange.
-  const exchangeParam = exchange ? `&exchange=${exchange}` : '';
-  const [quoteResult, historyResult, dividendResult] = await Promise.allSettled([
-    rateLimitedFetchJson(`${base}/quote?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`),
-    rateLimitedFetchJson(`${base}/time_series?symbol=${symbol}${exchangeParam}&interval=1day&outputsize=5000&apikey=${API_KEY}`),
-    rateLimitedFetchJson(`${base}/dividends?symbol=${symbol}${exchangeParam}&range=1Y&apikey=${API_KEY}`),
-  ]);
-  logRejections(symbol, ['quote', 'time_series', 'dividends'], [quoteResult, historyResult, dividendResult]);
+// Re-fetches the latest data.json from origin/main immediately before
+// merging in this run's results and pushing, retrying on a race instead of
+// trusting the checkout from job start — GitHub Actions resolves which
+// commit a scheduled run checks out at *trigger* time, not execution time,
+// so a run that sits queued for a bit can otherwise push based on a stale
+// base and lose a race with another run that pushed in the meantime.
+//
+// `resultsBySection` is a Map<section, Map<symbol, partialFields>> — only
+// the given fields are merged per symbol, leaving everything else (e.g.
+// price fields during a fundamentals run) untouched.
+async function commitMergedResults(resultsBySection) {
+  const { execSync, spawnSync } = await import('node:child_process');
+  const fs = await import('node:fs/promises');
+  const { fileURLToPath } = await import('node:url');
+  const outPath = new URL('../../the-lookout/data.json', import.meta.url);
+  const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
 
-  const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
-  const stats = computeHistoryStats(price, historyResult, dividendResult);
-  return { symbol, price, ...stats };
-}
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    execSync('git fetch origin main --quiet', { cwd: repoRoot, stdio: 'inherit' });
+    execSync('git reset --hard origin/main --quiet', { cwd: repoRoot, stdio: 'inherit' });
 
-// Fetching all five tables in one run means ~120 API calls in a single
-// burst, which is what pushed the account into the red. Instead each run
-// refreshes just one table, chosen by which minute triggered it (see
-// SCHEDULED_CRON in main() below), and merges the result into the existing
-// data.json rather than overwriting the whole file. Every table still
-// refreshes once an hour — just staggered. A future table can slot into
-// minute 5 next.
-const REFRESH_SCHEDULE = [
-  { minute: 0, key: 'stocks', list: STOCKS, loader: 'stock' },
-  { minute: 1, key: 'spaceForce', list: SPACE_FORCE, loader: 'stock' },
-  { minute: 2, key: 'ftseDividends', list: FTSE_DIVIDENDS, loader: 'stock' },
-  { minute: 3, key: 'indicesGbp', list: INDICES_GBP, loader: 'index' },
-  { minute: 4, key: 'indices', list: INDICES, loader: 'index' },
-];
-
-async function main() {
-  // FORCE_MINUTE lets a manual workflow_dispatch run target a specific
-  // table regardless of the current clock. Otherwise SCHEDULED_CRON (set by
-  // the workflow from github.event.schedule) names exactly which cron entry
-  // fired, e.g. "3 * * * *" — reliable even if GitHub Actions ran this a
-  // few minutes late. Falls back to the wall clock only for a manual run
-  // with no minute specified.
-  const forceMinute = process.env.FORCE_MINUTE;
-  const scheduledCron = process.env.SCHEDULED_CRON;
-  const minute = forceMinute
-    ? parseInt(forceMinute, 10)
-    : scheduledCron
-    ? parseInt(scheduledCron.split(' ')[0], 10)
-    : new Date().getUTCMinutes();
-  const entry = REFRESH_SCHEDULE.find((e) => e.minute === minute);
-  if (!entry) {
-    console.log(`No table scheduled for minute ${minute} — nothing to do.`);
-    return;
-  }
-
-  console.log(`Refreshing ${entry.key} (minute ${minute})`);
-  const results = {};
-  await Promise.all(entry.list.map(async (item) => {
+    let existing = {};
     try {
-      results[item.symbol] = entry.loader === 'stock'
-        ? await loadStock(item.symbol, item.exchange)
-        : await loadIndex(item.symbol, item.exchange);
-    } catch (err) {
-      results[item.symbol] = { symbol: item.symbol, error: err.message };
+      existing = JSON.parse(await fs.readFile(outPath, 'utf8'));
+    } catch {
+      // First run, or the file doesn't exist yet — start from an empty object.
     }
-  }));
 
+    const output = { ...existing, savedAt: new Date().toISOString() };
+    for (const [section, bySymbol] of resultsBySection) {
+      output[section] = { ...(existing[section] || {}) };
+      for (const [symbol, fields] of bySymbol) {
+        output[section][symbol] = { ...(output[section][symbol] || { symbol }), ...fields };
+      }
+    }
+
+    await fs.writeFile(outPath, JSON.stringify(output, null, 2) + '\n');
+    execSync('git add the-lookout/data.json', { cwd: repoRoot });
+
+    const diffStatus = spawnSync('git', ['diff', '--cached', '--quiet'], { cwd: repoRoot }).status;
+    if (diffStatus === 0) {
+      console.log('No changes to commit.');
+      return;
+    }
+    execSync('git commit -m "Refresh stock watch data" --quiet', { cwd: repoRoot });
+
+    const push = spawnSync('git', ['push', 'origin', 'HEAD:main'], { cwd: repoRoot, stdio: 'inherit' });
+    if (push.status === 0) {
+      console.log(`Pushed on attempt ${attempt}`);
+      return;
+    }
+    console.log(`Push attempt ${attempt} lost a race with another run — retrying with a fresh base...`);
+  }
+  throw new Error('Failed to push after retries');
+}
+
+function addResult(resultsBySection, section, symbol, fields) {
+  if (!resultsBySection.has(section)) resultsBySection.set(section, new Map());
+  resultsBySection.get(section).set(symbol, fields);
+}
+
+async function runPriceRefresh() {
+  const resultsBySection = new Map();
+  await Promise.all(ALL_SYMBOLS.map(async (item) => {
+    let fields;
+    try {
+      fields = await loadPrice(item.symbol, item.exchange);
+    } catch (err) {
+      console.warn(`[WARN] ${item.symbol} price refresh failed entirely: ${err.message}`);
+      fields = {};
+    }
+    addResult(resultsBySection, item.section, item.symbol, fields);
+  }));
+  await commitMergedResults(resultsBySection);
+}
+
+async function runFundamentalsRefresh() {
   const fs = await import('node:fs/promises');
   const outPath = new URL('../../the-lookout/data.json', import.meta.url);
-  let existing = {};
+  let current = {};
   try {
-    existing = JSON.parse(await fs.readFile(outPath, 'utf8'));
+    current = JSON.parse(await fs.readFile(outPath, 'utf8'));
   } catch {
-    // First run, or the file doesn't exist yet — start from an empty object.
+    // No existing data yet — fundamentals will just have a null price to
+    // work with, which loadFundamentals already handles gracefully.
   }
 
-  const output = { ...existing, savedAt: new Date().toISOString(), [entry.key]: results };
-  await fs.writeFile(outPath, JSON.stringify(output, null, 2) + '\n');
-  console.log(`Wrote the-lookout/data.json (${entry.key})`);
+  const resultsBySection = new Map();
+  await Promise.all(ALL_SYMBOLS.map(async (item) => {
+    const currentPrice = current[item.section]?.[item.symbol]?.price ?? null;
+    let fields;
+    try {
+      fields = await loadFundamentals(item.symbol, item.exchange, currentPrice, item.isIndex);
+    } catch (err) {
+      console.warn(`[WARN] ${item.symbol} fundamentals refresh failed entirely: ${err.message}`);
+      fields = {};
+    }
+    addResult(resultsBySection, item.section, item.symbol, fields);
+  }));
+  await commitMergedResults(resultsBySection);
+}
+
+async function main() {
+  const mode = process.env.REFRESH_MODE;
+  if (mode === 'price') {
+    await runPriceRefresh();
+  } else if (mode === 'fundamentals') {
+    await runFundamentalsRefresh();
+  } else {
+    throw new Error(`REFRESH_MODE must be "price" or "fundamentals", got: ${mode}`);
+  }
 }
 
 main().catch((err) => {

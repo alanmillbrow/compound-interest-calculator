@@ -1,7 +1,9 @@
-// Data is fetched hourly by a scheduled GitHub Action (see
-// .github/workflows/refresh-stock-data.yml) and committed to data.json, so
-// this page just reads that static file instead of calling Twelve Data
-// directly from every visitor's browser.
+// Data is fetched by two separate scheduled GitHub Actions and committed to
+// data.json, so this page just reads that static file instead of calling
+// Twelve Data directly from every visitor's browser: refresh-prices.yml
+// (hourly — price, all-time high, drawdown, 12-month change) and
+// refresh-fundamentals.yml (weekly — P/E, dividend yield), since those cost
+// far more API credits and barely change hour to hour.
 
 const STOCKS = [
   { symbol: 'AAPL', name: 'Apple' },
@@ -100,41 +102,36 @@ function fmtRefreshedAt(date) {
   return `${day} ${month} ${year}, ${hours}:${minutes}`;
 }
 
+// Price fields (quote/time_series) and fundamentals fields (earnings/
+// dividends) are now fetched by two entirely separate scheduled runs on
+// different cadences, so a symbol can legitimately have some fields present
+// and others still missing — each field just renders "—" independently
+// (via the fmt* helpers) rather than blanking the whole row on any gap.
 function renderRow(stock, result, { idPrefix = 'row', fmt = fmtUsd } = {}) {
   const row = document.getElementById(`${idPrefix}-${stock.symbol}`);
   if (!row) return;
+  const r = result || {};
 
-  if (!result || result.error) {
-    row.querySelectorAll('td[data-col]').forEach((td) => { td.textContent = '—'; });
-    if (result?.error) row.querySelector('[data-col="price"]').title = result.error;
-    return;
-  }
-
-  row.querySelector('[data-col="ath"]').textContent = fmt(result.athPrice);
-  row.querySelector('[data-col="price"]').textContent = fmt(result.price);
-  row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(result.vsAth);
-  row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(result.daysSinceAth);
-  row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(result.change12mo);
-  row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(result.dividendYield);
-  row.querySelector('[data-col="pe"]').textContent = fmtPe(result.pe);
+  row.querySelector('[data-col="ath"]').textContent = fmt(r.athPrice);
+  row.querySelector('[data-col="price"]').textContent = fmt(r.price);
+  row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(r.vsAth);
+  row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(r.daysSinceAth);
+  row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(r.change12mo);
+  row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(r.dividendYield);
+  row.querySelector('[data-col="pe"]').textContent = fmtPe(r.pe);
 }
 
 function renderIndexRow(index, result, { idPrefix = 'idx', fmt = fmtUsd } = {}) {
   const row = document.getElementById(`${idPrefix}-${index.symbol}`);
   if (!row) return;
+  const r = result || {};
 
-  if (!result || result.error) {
-    row.querySelectorAll('td[data-col]').forEach((td) => { td.textContent = '—'; });
-    if (result?.error) row.querySelector('[data-col="price"]').title = result.error;
-    return;
-  }
-
-  row.querySelector('[data-col="ath"]').textContent = fmt(result.athPrice);
-  row.querySelector('[data-col="price"]').textContent = fmt(result.price);
-  row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(result.vsAth);
-  row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(result.daysSinceAth);
-  row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(result.change12mo);
-  row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(result.dividendYield);
+  row.querySelector('[data-col="ath"]').textContent = fmt(r.athPrice);
+  row.querySelector('[data-col="price"]').textContent = fmt(r.price);
+  row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(r.vsAth);
+  row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(r.daysSinceAth);
+  row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(r.change12mo);
+  row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(r.dividendYield);
 }
 
 function buildRows() {
