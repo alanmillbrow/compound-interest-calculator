@@ -1,16 +1,16 @@
 {
-  "savedAt": "2026-08-04T15:23:49.183Z",
+  "savedAt": "2026-08-04T15:26:51.467Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
       "price": 306.2,
-      "pe": 34.79472477064221,
+      "pe": 35.11467889908257,
       "athPrice": 344.57001,
       "athDate": "2026-07-29",
       "daysSinceAth": 7,
       "vsAth": -11.135620885868748,
       "change12mo": 50.57781408518248,
-      "dividendYield": 0.3460663788273294
+      "dividendYield": 0.34291312867406926
     },
     "GOOGL": {
       "symbol": "GOOGL",
@@ -323,13 +323,13 @@
     "NWG": {
       "symbol": "NWG",
       "price": 722.79999,
-      "pe": null,
+      "pe": 9.510526184210526,
       "athPrice": 6220.42725,
       "athDate": "2007-02-20",
       "daysSinceAth": 7106,
       "vsAth": -88.38021954199368,
       "change12mo": 36.94581350787824,
-      "dividendYield": null
+      "dividendYield": 4.496402939905962
     },
     "BATS": {
       "symbol": "BATS",
