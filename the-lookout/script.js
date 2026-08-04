@@ -66,6 +66,15 @@ function fmtGbp(n) {
   return n.toLocaleString('en-GB', { style: 'currency', currency: 'GBP', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+// Individual LSE-listed companies (unlike the Vanguard ETF trackers, which
+// quote in whole pounds) are quoted by Twelve Data in pence — confirmed via
+// each symbol's own currency field (GBp vs GBP), not assumed. £3.04 would
+// otherwise render as "£303.80", 100x too high.
+function fmtGbx(n) {
+  if (n === null || n === undefined || Number.isNaN(n)) return '—';
+  return `${n.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}p`;
+}
+
 function fmtPercent(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return '—';
   const sign = n > 0 ? '+' : '';
@@ -218,7 +227,7 @@ async function init() {
     INDICES.forEach((index) => renderIndexRow(index, data.indices?.[index.symbol]));
     INDICES_GBP.forEach((index) => renderIndexRow(index, data.indicesGbp?.[index.symbol], { idPrefix: 'idxgbp', fmt: fmtGbp }));
     SPACE_FORCE.forEach((stock) => renderRow(stock, data.spaceForce?.[stock.symbol], { idPrefix: 'space', fmt: fmtUsd }));
-    FTSE_DIVIDENDS.forEach((stock) => renderRow(stock, data.ftseDividends?.[stock.symbol], { idPrefix: 'ftsediv', fmt: fmtGbp }));
+    FTSE_DIVIDENDS.forEach((stock) => renderRow(stock, data.ftseDividends?.[stock.symbol], { idPrefix: 'ftsediv', fmt: fmtGbx }));
     status.textContent = `Last refreshed ${fmtRefreshedAt(new Date(data.savedAt))}`;
   } catch (err) {
     status.textContent = `Couldn't load stock data: ${err.message}`;
