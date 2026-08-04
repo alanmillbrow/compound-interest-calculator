@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-04T00:05:24.734Z",
+  "savedAt": "2026-08-04T02:48:04.074Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -183,7 +183,7 @@
       "athDate": "2026-05-27",
       "daysSinceAth": 69,
       "vsAth": -53.35761589403973,
-      "change12mo": 57.17473778174516,
+      "change12mo": 58.12752581948813,
       "dividendYield": null
     },
     "ASTS": {
@@ -194,7 +194,7 @@
       "athDate": "2026-05-28",
       "daysSinceAth": 68,
       "vsAth": -52.54743762139549,
-      "change12mo": 21.082729698818152,
+      "change12mo": 23.627870766835343,
       "dividendYield": null
     },
     "PL": {
@@ -205,19 +205,8 @@
       "athDate": "2026-05-28",
       "daysSinceAth": 68,
       "vsAth": -58.40417310664605,
-      "change12mo": 248.38187702265375,
+      "change12mo": 229.20489296636092,
       "dividendYield": null
-    },
-    "LMT": {
-      "symbol": "LMT",
-      "price": 586.28998,
-      "pe": 37.75209143593045,
-      "athPrice": 692,
-      "athDate": "2026-03-02",
-      "daysSinceAth": 155,
-      "vsAth": -15.27601445086705,
-      "change12mo": 39.25796681176298,
-      "dividendYield": 2.3281994346892985
     },
     "LHX": {
       "symbol": "LHX",
@@ -227,8 +216,19 @@
       "athDate": "2026-03-02",
       "daysSinceAth": 155,
       "vsAth": -26.730484752512073,
-      "change12mo": -0.14375763157632332,
+      "change12mo": -0.07192979984126494,
       "dividendYield": 1.7634780739753144
+    },
+    "LMT": {
+      "symbol": "LMT",
+      "price": 586.28998,
+      "pe": 37.75209143593045,
+      "athPrice": 692,
+      "athDate": "2026-03-02",
+      "daysSinceAth": 155,
+      "vsAth": -15.27601445086705,
+      "change12mo": 38.373841435594954,
+      "dividendYield": 2.3281994346892985
     },
     "NOC": {
       "symbol": "NOC",
@@ -238,7 +238,7 @@
       "athDate": "2026-03-03",
       "daysSinceAth": 154,
       "vsAth": -29.138246770025837,
-      "change12mo": -6.474665779960449,
+      "change12mo": -6.999581178465453,
       "dividendYield": 1.7138586457158267
     }
   },
