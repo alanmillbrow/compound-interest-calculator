@@ -199,8 +199,15 @@ function buildRows() {
     </tr>
   `).join('');
 
+  buildFtseDividendRows(FTSE_DIVIDENDS);
+}
+
+// Broken out from buildRows so it can be called again after data loads,
+// rebuilding the table in dividend-yield order (highest first) instead of
+// the fixed order used for the initial loading-placeholder state.
+function buildFtseDividendRows(order) {
   const ftseDividendTbody = document.getElementById('ftseDividendTableBody');
-  ftseDividendTbody.innerHTML = FTSE_DIVIDENDS.map((stock) => `
+  ftseDividendTbody.innerHTML = order.map((stock) => `
     <tr id="ftsediv-${stock.symbol}">
       <td>${stock.name} <span class="section-note">(${stock.symbol})</span></td>
       <td data-col="ath">&hellip;</td>
@@ -227,6 +234,18 @@ async function init() {
     INDICES.forEach((index) => renderIndexRow(index, data.indices?.[index.symbol]));
     INDICES_GBP.forEach((index) => renderIndexRow(index, data.indicesGbp?.[index.symbol], { idPrefix: 'idxgbp', fmt: fmtGbp }));
     SPACE_FORCE.forEach((stock) => renderRow(stock, data.spaceForce?.[stock.symbol], { idPrefix: 'space', fmt: fmtUsd }));
+
+    // Highest dividend yield first — missing yields (e.g. a fetch gap) sink
+    // to the bottom rather than being treated as a 0% yield.
+    const byYieldDesc = [...FTSE_DIVIDENDS].sort((a, b) => {
+      const ay = data.ftseDividends?.[a.symbol]?.dividendYield;
+      const by = data.ftseDividends?.[b.symbol]?.dividendYield;
+      if (ay == null && by == null) return 0;
+      if (ay == null) return 1;
+      if (by == null) return -1;
+      return by - ay;
+    });
+    buildFtseDividendRows(byYieldDesc);
     FTSE_DIVIDENDS.forEach((stock) => renderRow(stock, data.ftseDividends?.[stock.symbol], { idPrefix: 'ftsediv', fmt: fmtGbx }));
     status.textContent = `Last refreshed ${fmtRefreshedAt(new Date(data.savedAt))}`;
   } catch (err) {
