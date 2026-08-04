@@ -4,7 +4,7 @@ on:
   schedule:
     # Earnings + dividends cost 20 credits each (confirmed via Twelve
     # Data's response headers) — refreshing P/E and dividend yield for all
-    # 32 symbols needs ~1100 credits, which the script's credit-aware pacer
+    # 32 symbols needs ~920 credits, which the script's credit-aware pacer
     # legitimately spreads across several real minutes to respect the
     # 144-credit/minute budget. P/E and yield barely change hour to hour,
     # so weekly is plenty; Sunday 03:00 UTC is a quiet time for the site.
@@ -23,7 +23,7 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    # A full run can take several minutes since it has to pace ~1100
+    # A full run can take several minutes since it has to pace ~920
     # credits' worth of calls against a 144-credit/minute budget.
     timeout-minutes: 30
     steps:
