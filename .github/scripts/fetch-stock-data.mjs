@@ -15,8 +15,10 @@
 //   - REFRESH_MODE=fundamentals: earnings + dividends, on a much slower
 //     weekly cadence, since P/E and dividend yield barely change hour to
 //     hour. Paced by real credit cost (see waitForCreditBudget) since even
-//     one run needs ~1100 credits total and has to legitimately spread
-//     across several real minutes to respect the budget.
+//     one run needs ~920 credits total and has to legitimately spread
+//     across several real minutes to respect the budget. (Earnings is only
+//     fetched for US companies — see loadFundamentals for why LSE
+//     companies don't get a P/E at all.)
 // Both modes merge their results into the existing data.json rather than
 // overwriting it, via commitMergedResults' fetch-latest-and-retry loop —
 // necessary because GitHub Actions resolves which commit a scheduled run
@@ -95,9 +97,7 @@ let ALL_SYMBOLS = [
   ...FTSE_DIVIDENDS.map((s) => ({ ...s, section: 'ftseDividends', isIndex: false })),
 ];
 
-// TEMPORARY: cheap test of the fundamentals path (2 symbols = 80 credits
-// instead of ~1120 for all 32) — confirms the LSE pence/pounds P/E fix
-// against NWG specifically. Remove before deploying to main.
+// TEMPORARY: test-branch-only symbol filter, wired to the harness workflow.
 if (process.env.TEST_LIMIT_SYMBOLS) {
   const wanted = process.env.TEST_LIMIT_SYMBOLS.split(',');
   ALL_SYMBOLS = ALL_SYMBOLS.filter((s) => wanted.includes(s.symbol));
@@ -269,12 +269,20 @@ async function loadFundamentals(symbol, exchange, currentPrice, isIndex) {
   const calls = [rateLimitedFetchJson(`${base}/dividends?symbol=${symbol}${exchangeParam}&range=1Y&apikey=${API_KEY}`, 'dividends')];
   // Indices are ETFs, not companies — there's no per-share earnings to
   // compute a P/E from, so skip that (expensive) call entirely for them.
-  if (!isIndex) {
+  // LSE companies are skipped too: Twelve Data's /earnings for UK companies
+  // isn't structured into 4 clean, evenly-spaced quarters the way US
+  // companies' is — it's a mix of annual results, interim results, and
+  // trading updates at irregular dates with no period-type field to tell
+  // them apart, so "sum the last 4 entries" isn't a valid trailing-12-month
+  // EPS for these (confirmed by checking Aviva's raw payload: 5 entries all
+  // within a 4-month window, eps_actual swinging from -0.61 to 2.68).
+  const fetchesEarnings = !isIndex && exchange !== 'LSE';
+  if (fetchesEarnings) {
     calls.push(rateLimitedFetchJson(`${base}/earnings?symbol=${symbol}${exchangeParam}&apikey=${API_KEY}`, 'earnings'));
   }
   const results = await Promise.allSettled(calls);
   const [dividendResult, earningsResult] = results;
-  logRejections(symbol, isIndex ? ['dividends'] : ['dividends', 'earnings'], results);
+  logRejections(symbol, fetchesEarnings ? ['dividends', 'earnings'] : ['dividends'], results);
 
   let dividendYield = null;
   if (currentPrice !== null && currentPrice > 0 && dividendResult.status === 'fulfilled') {
@@ -283,7 +291,7 @@ async function loadFundamentals(symbol, exchange, currentPrice, isIndex) {
   }
 
   let pe = null;
-  if (!isIndex && earningsResult?.status === 'fulfilled' && currentPrice !== null) {
+  if (fetchesEarnings && earningsResult?.status === 'fulfilled' && currentPrice !== null) {
     // Trailing (TTM) P/E = price / sum of the last four quarters' actual
     // EPS. Twelve Data returns earnings most-recent-first, so the first
     // four entries with a reported (non-null) eps_actual are the trailing
@@ -294,11 +302,7 @@ async function loadFundamentals(symbol, exchange, currentPrice, isIndex) {
       .filter((v) => typeof v === 'number')
       .slice(0, 4);
     if (quarters.length === 4) {
-      let ttmEps = quarters.reduce((sum, v) => sum + v, 0);
-      // LSE quotes are in pence but Twelve Data reports EPS in pounds for
-      // those same companies — dividing them directly inflates P/E 100x
-      // (e.g. NatWest showed 951 instead of ~9.5). Convert EPS to pence.
-      if (exchange === 'LSE') ttmEps *= 100;
+      const ttmEps = quarters.reduce((sum, v) => sum + v, 0);
       if (ttmEps > 0) pe = currentPrice / ttmEps;
     }
   }
@@ -420,20 +424,7 @@ async function runFundamentalsRefresh() {
   await commitMergedResults(resultsBySection);
 }
 
-async function debugEarningsCheck() {
-  const res = await fetch(`https://api.twelvedata.com/earnings?symbol=AV&exchange=LSE&apikey=${API_KEY}`);
-  const body = await res.json();
-  console.log('[DEBUG earnings AV]', JSON.stringify(body));
-  const quoteRes = await fetch(`https://api.twelvedata.com/quote?symbol=AV&exchange=LSE&apikey=${API_KEY}`);
-  const quoteBody = await quoteRes.json();
-  console.log('[DEBUG quote AV]', JSON.stringify({ close: quoteBody.close, currency: quoteBody.currency, name: quoteBody.name }));
-}
-
 async function main() {
-  if (process.env.REFRESH_MODE === 'debug') {
-    await debugEarningsCheck();
-    return;
-  }
   const mode = process.env.REFRESH_MODE;
   if (mode === 'price') {
     await runPriceRefresh();
