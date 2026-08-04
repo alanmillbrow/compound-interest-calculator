@@ -1,16 +1,16 @@
 {
-  "savedAt": "2026-08-04T15:21:39.594Z",
+  "savedAt": "2026-08-04T15:23:49.183Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
       "price": 306.2,
-      "pe": 34.795872706422024,
+      "pe": 34.79472477064221,
       "athPrice": 344.57001,
       "athDate": "2026-07-29",
       "daysSinceAth": 7,
       "vsAth": -11.135620885868748,
       "change12mo": 50.57781408518248,
-      "dividendYield": 0.34605496189918394
+      "dividendYield": 0.3460663788273294
     },
     "GOOGL": {
       "symbol": "GOOGL",
