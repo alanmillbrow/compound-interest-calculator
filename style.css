@@ -1028,13 +1028,17 @@ tbody tr:hover { background: var(--accent-soft); }
 }
 
 /* Four Stages of Financial Health */
-.stages-intro { margin-bottom: 24px; }
+/* Specificity has to beat .rf-p's own `margin: 0` (defined later in this
+   file) — a single .stages-intro class rule loses that fight on file
+   order alone and collapses the gap below the intro paragraph to zero. */
+.stages-card .stages-intro { margin: 0 0 28px; }
+/* 2x2 quadrant, reading order top-left, top-right, bottom-left,
+   bottom-right — all four cards the same size. */
 .stages-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  align-items: end;
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  margin: 0 0 28px;
+  margin: 8px 0 28px;
 }
 .stage-card {
   display: flex;
@@ -1044,12 +1048,6 @@ tbody tr:hover { background: var(--accent-soft); }
   border: 2px solid var(--card-border);
   background: var(--card-bg-solid);
 }
-/* Each stage sits a little higher than the last, echoing the climb from
-   dependency up to freedom that the section is describing. */
-.stage-card:nth-child(1) { margin-top: 48px; }
-.stage-card:nth-child(2) { margin-top: 32px; }
-.stage-card:nth-child(3) { margin-top: 16px; }
-.stage-card:nth-child(4) { margin-top: 0; }
 .stage-num {
   width: 34px;
   height: 34px;
@@ -1514,7 +1512,6 @@ main > .newsletter-signup:last-child { margin-bottom: 0; }
   .mob-grid { grid-template-columns: 1fr; }
   .rf-income-grid { grid-template-columns: 1fr; }
   .stages-grid { grid-template-columns: 1fr; }
-  .stage-card { margin-top: 0 !important; }
   .sankey-controls { grid-template-columns: 1fr; gap: 8px; }
   .sankey-col-label:not(:first-child) { margin-top: 24px; }
   .sankey-footer-row { flex-direction: column; gap: 24px; }
