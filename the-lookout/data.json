@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-04T04:09:39.630Z",
+  "savedAt": "2026-08-04T05:52:18.509Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -208,17 +208,6 @@
       "change12mo": 229.20489296636092,
       "dividendYield": null
     },
-    "LHX": {
-      "symbol": "LHX",
-      "price": 277.85999,
-      "pe": 22.96363553719008,
-      "athPrice": 379.23001,
-      "athDate": "2026-03-02",
-      "daysSinceAth": 155,
-      "vsAth": -26.730484752512073,
-      "change12mo": -0.07192979984126494,
-      "dividendYield": 1.7634780739753144
-    },
     "LMT": {
       "symbol": "LMT",
       "price": 586.28998,
@@ -229,6 +218,17 @@
       "vsAth": -15.27601445086705,
       "change12mo": 38.373841435594954,
       "dividendYield": 2.3281994346892985
+    },
+    "LHX": {
+      "symbol": "LHX",
+      "price": 277.85999,
+      "pe": 22.96363553719008,
+      "athPrice": 379.23001,
+      "athDate": "2026-03-02",
+      "daysSinceAth": 155,
+      "vsAth": -26.730484752512073,
+      "change12mo": -0.07192979984126494,
+      "dividendYield": 1.7634780739753144
     },
     "NOC": {
       "symbol": "NOC",
