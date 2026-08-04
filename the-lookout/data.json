@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-04T15:50:26.043Z",
+  "savedAt": "2026-08-04T15:58:30.748Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -26,7 +26,7 @@
     "NVDA": {
       "symbol": "NVDA",
       "price": 210.21,
-      "pe": 31.563063063063062,
+      "pe": null,
       "athPrice": 236.53999,
       "athDate": "2026-05-14",
       "daysSinceAth": 83,
@@ -254,7 +254,7 @@
     "SDLF": {
       "symbol": "SDLF",
       "price": 925,
-      "pe": 2.019650655021834,
+      "pe": null,
       "athPrice": 932,
       "athDate": "2026-07-31",
       "daysSinceAth": 5,
@@ -331,7 +331,7 @@
     "NWG": {
       "symbol": "NWG",
       "price": 722.79999,
-      "pe": 9.510526184210526,
+      "pe": null,
       "athPrice": 6220.42725,
       "athDate": "2007-02-20",
       "daysSinceAth": 7106,
@@ -342,7 +342,7 @@
     "BATS": {
       "symbol": "BATS",
       "price": 4466,
-      "pe": 10.219679633867276,
+      "pe": null,
       "athPrice": 5643.6001,
       "athDate": "2017-06-06",
       "daysSinceAth": 3347,
