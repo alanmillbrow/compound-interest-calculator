@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-04T09:44:57.515Z",
+  "savedAt": "2026-08-04T10:33:30.186Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -56,17 +56,6 @@
       "change12mo": -23.97439494055669,
       "dividendYield": 0.35578748230867924
     },
-    "TSLA": {
-      "symbol": "TSLA",
-      "price": 322.079987,
-      "pe": 240.35819925373133,
-      "athPrice": 498.82999,
-      "athDate": "2025-12-22",
-      "daysSinceAth": 225,
-      "vsAth": -35.432914328186236,
-      "change12mo": 4.145371721355113,
-      "dividendYield": null
-    },
     "AMZN": {
       "symbol": "AMZN",
       "price": 284.019989,
@@ -76,6 +65,17 @@
       "daysSinceAth": 1,
       "vsAth": -1.0934708873102157,
       "change12mo": 34.19324470556318,
+      "dividendYield": null
+    },
+    "TSLA": {
+      "symbol": "TSLA",
+      "price": 322.079987,
+      "pe": 240.35819925373133,
+      "athPrice": 498.82999,
+      "athDate": "2025-12-22",
+      "daysSinceAth": 225,
+      "vsAth": -35.432914328186236,
+      "change12mo": 4.145371721355113,
       "dividendYield": null
     }
   },
