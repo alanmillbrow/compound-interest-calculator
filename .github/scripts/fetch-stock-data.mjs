@@ -425,12 +425,9 @@ async function runFundamentalsRefresh() {
 }
 
 async function debugCurrencyCheck() {
-  const symbols = [...FTSE_DIVIDENDS, ...INDICES_GBP];
-  for (const item of symbols) {
-    const res = await fetch(`https://api.twelvedata.com/quote?symbol=${item.symbol}&exchange=LSE&apikey=${API_KEY}`);
-    const body = await res.json();
-    console.log(`[DEBUG currency] ${item.symbol} (${item.name}): currency=${body.currency}, close=${body.close}`);
-  }
+  const res = await fetch(`https://api.twelvedata.com/quote?symbol=BA&apikey=${API_KEY}`);
+  const body = await res.json();
+  console.log(`[DEBUG ticker BA]`, JSON.stringify({ name: body.name, exchange: body.exchange, currency: body.currency, close: body.close }));
 }
 
 async function main() {
