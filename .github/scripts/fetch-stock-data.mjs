@@ -298,12 +298,28 @@ async function loadFundamentals(symbol, exchange, currentPrice, isIndex) {
   return { pe, dividendYield };
 }
 
-// Re-fetches the latest data.json from origin/main immediately before
-// merging in this run's results and pushing, retrying on a race instead of
-// trusting the checkout from job start — GitHub Actions resolves which
-// commit a scheduled run checks out at *trigger* time, not execution time,
-// so a run that sits queued for a bit can otherwise push based on a stale
-// base and lose a race with another run that pushed in the meantime.
+// Reads data.json straight from origin/main's latest commit via git, not
+// the local checkout — GitHub Actions resolves which commit a scheduled run
+// checks out at *trigger* time, not execution time, so the local working
+// tree can be stale by the time a run actually executes (e.g. if it sat
+// queued for a bit behind another run that pushed in the meantime).
+async function readLatestDataJson() {
+  const { execSync } = await import('node:child_process');
+  const { fileURLToPath } = await import('node:url');
+  const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
+  execSync('git fetch origin main --quiet', { cwd: repoRoot, stdio: 'inherit' });
+  try {
+    const content = execSync('git show origin/main:the-lookout/data.json', { cwd: repoRoot, encoding: 'utf8' });
+    return JSON.parse(content);
+  } catch {
+    // First run, or the file doesn't exist yet.
+    return {};
+  }
+}
+
+// Re-fetches the latest data.json immediately before merging in this run's
+// results and pushing, retrying on a race instead of trusting the checkout
+// from job start (see readLatestDataJson above for why).
 //
 // `resultsBySection` is a Map<section, Map<symbol, partialFields>> — only
 // the given fields are merged per symbol, leaving everything else (e.g.
@@ -375,15 +391,11 @@ async function runPriceRefresh() {
 }
 
 async function runFundamentalsRefresh() {
-  const fs = await import('node:fs/promises');
-  const outPath = new URL('../../the-lookout/data.json', import.meta.url);
-  let current = {};
-  try {
-    current = JSON.parse(await fs.readFile(outPath, 'utf8'));
-  } catch {
-    // No existing data yet — fundamentals will just have a null price to
-    // work with, which loadFundamentals already handles gracefully.
-  }
+  // Read fresh rather than trusting the local checkout — this run can take
+  // several minutes (paced against the credit budget), so an hourly price
+  // refresh landing on main mid-run is a real possibility, not just a
+  // theoretical race.
+  const current = await readLatestDataJson();
 
   const resultsBySection = new Map();
   await Promise.all(ALL_SYMBOLS.map(async (item) => {
