@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-04T22:53:19.871Z",
+  "savedAt": "2026-08-04T23:55:45.962Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -185,13 +185,13 @@
     },
     "RKLB": {
       "symbol": "RKLB",
-      "price": 74.47,
+      "price": 74.48,
       "pe": 81.1413043478261,
       "athPrice": 151,
       "athDate": "2026-05-27",
       "daysSinceAth": 69,
-      "vsAth": -50.682119205298015,
-      "change12mo": 67.19802424786708,
+      "vsAth": -50.67549668874172,
+      "change12mo": 67.22047597665022,
       "dividendYield": null
     },
     "ASTS": {
