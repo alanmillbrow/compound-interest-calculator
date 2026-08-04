@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-04T15:41:06.752Z",
+  "savedAt": "2026-08-04T15:50:26.043Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -309,7 +309,7 @@
     "AV": {
       "symbol": "AV",
       "price": 701.59998,
-      "pe": 1.9597764804469273,
+      "pe": null,
       "athPrice": 858,
       "athDate": "2007-02-21",
       "daysSinceAth": 7105,
