@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-04T03:29:56.605Z",
+  "savedAt": "2026-08-04T04:09:39.630Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -23,17 +23,6 @@
       "change12mo": 14.799999999999994,
       "dividendYield": 0.13550135501355015
     },
-    "GOOGL": {
-      "symbol": "GOOGL",
-      "price": 373.51001,
-      "pe": 21.728331006399074,
-      "athPrice": 408.60999,
-      "athDate": "2026-05-18",
-      "daysSinceAth": 78,
-      "vsAth": -8.590093453172782,
-      "change12mo": 91.50431880911727,
-      "dividendYield": 0.22757087554360322
-    },
     "MSFT": {
       "symbol": "MSFT",
       "price": 487.64999,
@@ -45,10 +34,32 @@
       "change12mo": -8.959379266683227,
       "dividendYield": 0.7300318000621716
     },
+    "GOOGL": {
+      "symbol": "GOOGL",
+      "price": 373.51001,
+      "pe": 21.728331006399074,
+      "athPrice": 408.60999,
+      "athDate": "2026-05-18",
+      "daysSinceAth": 78,
+      "vsAth": -8.590093453172782,
+      "change12mo": 91.50431880911727,
+      "dividendYield": 0.22757087554360322
+    },
+    "AMZN": {
+      "symbol": "AMZN",
+      "price": 284.019989,
+      "pe": 32.38540353477765,
+      "athPrice": 287.16,
+      "athDate": "2026-08-03",
+      "daysSinceAth": 1,
+      "vsAth": -1.0934708873102157,
+      "change12mo": 34.19324470556318,
+      "dividendYield": null
+    },
     "META": {
       "symbol": "META",
       "price": 590.23999,
-      "pe": 26.105262715612565,
+      "pe": 30.206754861821906,
       "athPrice": 796.25,
       "athDate": "2025-08-15",
       "daysSinceAth": 354,
@@ -65,17 +76,6 @@
       "daysSinceAth": 225,
       "vsAth": -35.432914328186236,
       "change12mo": 4.145371721355113,
-      "dividendYield": null
-    },
-    "AMZN": {
-      "symbol": "AMZN",
-      "price": 284.019989,
-      "pe": 32.38540353477765,
-      "athPrice": 287.16,
-      "athDate": "2026-08-03",
-      "daysSinceAth": 1,
-      "vsAth": -1.0934708873102157,
-      "change12mo": 34.19324470556318,
       "dividendYield": null
     }
   },
