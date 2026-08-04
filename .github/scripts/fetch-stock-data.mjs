@@ -240,8 +240,12 @@ async function loadPrice(symbol, exchange) {
     }
   }
 
+  // Math.floor (not round) so "Today" stays correct for the entire calendar
+  // day the ATH happened on — with round, anything more than ~12 hours past
+  // midnight UTC on the ATH date rounded up to 1, showing "1" instead of
+  // "Today" even while it was still the same day.
   const daysSinceAth = athDate
-    ? Math.round((Date.now() - new Date(`${athDate}T00:00:00Z`).getTime()) / 86400000)
+    ? Math.floor((Date.now() - new Date(`${athDate}T00:00:00Z`).getTime()) / 86400000)
     : null;
   const vsAth = (price !== null && athPrice) ? ((price - athPrice) / athPrice) * 100 : null;
 
