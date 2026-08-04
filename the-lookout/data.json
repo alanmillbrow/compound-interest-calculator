@@ -1,54 +1,54 @@
 {
-  "savedAt": "2026-08-04T18:10:41.127Z",
+  "savedAt": "2026-08-04T18:18:51.287Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
       "price": 309.945,
-      "pe": 35.11467889908257,
+      "pe": 35.54415137614679,
       "athPrice": 344.57001,
       "athDate": "2026-07-29",
       "daysSinceAth": 7,
       "vsAth": -10.048759031582588,
       "change12mo": 52.41946631819688,
-      "dividendYield": 0.34291312867406926
+      "dividendYield": 0.3387697817354692
     },
     "GOOGL": {
       "symbol": "GOOGL",
       "price": 378.88,
-      "pe": 21.904595695171615,
+      "pe": 22.040721349621876,
       "athPrice": 408.60999,
       "athDate": "2026-05-18",
       "daysSinceAth": 79,
       "vsAth": -7.275884272922448,
       "change12mo": 94.25759515895797,
-      "dividendYield": 0.22573962925585594
+      "dividendYield": 0.2243454391891892
     },
     "NVDA": {
       "symbol": "NVDA",
       "price": 211.5,
-      "pe": null,
+      "pe": 31.756756756756754,
       "athPrice": 236.53999,
       "athDate": "2026-05-14",
       "daysSinceAth": 83,
       "vsAth": -10.585943628390273,
       "change12mo": 17.5,
-      "dividendYield": 0.1332001332001332
+      "dividendYield": 0.132387706855792
     },
     "MSFT": {
       "symbol": "MSFT",
       "price": 496.32,
-      "pe": 28.8119212962963,
+      "pe": 28.722222222222225,
       "athPrice": 555.45001,
       "athDate": "2025-07-31",
       "daysSinceAth": 370,
       "vsAth": -10.645424238987776,
       "change12mo": -7.340752980719266,
-      "dividendYield": 0.7150460963705385
+      "dividendYield": 0.7172791747259832
     },
     "AMZN": {
       "symbol": "AMZN",
       "price": 278.13,
-      "pe": 31.59064994298746,
+      "pe": 31.713797035347778,
       "athPrice": 287.16,
       "athDate": "2026-08-03",
       "daysSinceAth": 2,
@@ -59,18 +59,18 @@
     "META": {
       "symbol": "META",
       "price": 587.51,
-      "pe": 29.785056294779938,
+      "pe": 30.067041965199593,
       "athPrice": 796.25,
       "athDate": "2025-08-15",
       "daysSinceAth": 355,
       "vsAth": -26.215384615384618,
       "change12mo": -24.32603011450726,
-      "dividendYield": 0.36082474226804123
+      "dividendYield": 0.3574407244132015
     },
     "TSLA": {
       "symbol": "TSLA",
       "price": 325.63,
-      "pe": 242.47761194029852,
+      "pe": 243.00746268656715,
       "athPrice": 498.82999,
       "athDate": "2025-12-22",
       "daysSinceAth": 226,
@@ -88,7 +88,7 @@
       "daysSinceAth": 1,
       "vsAth": -0.16233871228535335,
       "change12mo": 22.284016106089208,
-      "dividendYield": 0.9806796337927215,
+      "dividendYield": 0.9749682568474515,
       "pe": null
     },
     "QQQ": {
@@ -99,7 +99,7 @@
       "daysSinceAth": 63,
       "vsAth": -3.4515486956108137,
       "change12mo": 28.13508788378321,
-      "dividendYield": 0.4227042237824585,
+      "dividendYield": 0.41979773384430213,
       "pe": null
     }
   },
@@ -123,7 +123,7 @@
       "daysSinceAth": 1,
       "vsAth": -0.05754534573243716,
       "change12mo": 20.551402263884206,
-      "dividendYield": 0.8756442865158034,
+      "dividendYield": 0.8626767083534859,
       "pe": null
     },
     "VWRP": {
@@ -156,7 +156,7 @@
       "daysSinceAth": 48,
       "vsAth": -0.7213731445436239,
       "change12mo": 21.705629979861666,
-      "dividendYield": 1.2741801722879251,
+      "dividendYield": 1.2556633093525178,
       "pe": null
     },
     "VUKE": {
@@ -167,7 +167,7 @@
       "daysSinceAth": 159,
       "vsAth": -1.162790697674418,
       "change12mo": 18.753933291378214,
-      "dividendYield": 2.9959409524971496,
+      "dividendYield": 2.9867323794382616,
       "pe": null
     }
   },
@@ -186,7 +186,7 @@
     "RKLB": {
       "symbol": "RKLB",
       "price": 74.65,
-      "pe": 80.90217391304348,
+      "pe": 81.1413043478261,
       "athPrice": 151,
       "athDate": "2026-05-27",
       "daysSinceAth": 70,
@@ -197,7 +197,7 @@
     "ASTS": {
       "symbol": "ASTS",
       "price": 70.285,
-      "pe": 85.37037037037037,
+      "pe": 86.7716049382716,
       "athPrice": 133.86,
       "athDate": "2026-05-28",
       "daysSinceAth": 69,
@@ -208,7 +208,7 @@
     "PL": {
       "symbol": "PL",
       "price": 22.71,
-      "pe": 28.987179487179485,
+      "pe": 29.115384615384617,
       "athPrice": 51.76,
       "athDate": "2026-05-28",
       "daysSinceAth": 69,
@@ -219,35 +219,35 @@
     "LMT": {
       "symbol": "LMT",
       "price": 591.61,
-      "pe": 37.701867353509336,
+      "pe": 38.09465550547328,
       "athPrice": 692,
       "athDate": "2026-03-02",
       "daysSinceAth": 156,
       "vsAth": -14.507225433526012,
       "change12mo": 39.62945150744745,
-      "dividendYield": 2.3313009171491523
+      "dividendYield": 2.3072632308446446
     },
     "LHX": {
       "symbol": "LHX",
       "price": 285.25,
-      "pe": 23.391735537190083,
+      "pe": 23.574380165289252,
       "athPrice": 379.23001,
       "athDate": "2026-03-02",
       "daysSinceAth": 156,
       "vsAth": -24.78179667268421,
       "change12mo": 2.5857735926474374,
-      "dividendYield": 1.7312040700960996
+      "dividendYield": 1.7177914110429449
     },
     "NOC": {
       "symbol": "NOC",
       "price": 553.41,
-      "pe": 26.53159671972986,
+      "pe": 26.696092619392182,
       "athPrice": 774,
       "athDate": "2026-03-03",
       "daysSinceAth": 155,
       "vsAth": -28.500000000000004,
       "change12mo": -6.161933022467152,
-      "dividendYield": 1.709090909090909
+      "dividendYield": 1.698559838094722
     },
     "BA": {
       "symbol": "BA",
@@ -256,7 +256,9 @@
       "athDate": "2019-03-01",
       "daysSinceAth": 2714,
       "vsAth": -46.9563474595559,
-      "change12mo": 6.404605559053706
+      "change12mo": 6.404605559053706,
+      "pe": null,
+      "dividendYield": null
     }
   },
   "ftseDividends": {
@@ -269,7 +271,7 @@
       "daysSinceAth": 5,
       "vsAth": -1.1266094420600858,
       "change12mo": null,
-      "dividendYield": 5.989189189189189
+      "dividendYield": 6.011937059142703
     },
     "LGEN": {
       "symbol": "LGEN",
@@ -280,7 +282,7 @@
       "daysSinceAth": 2427,
       "vsAth": -6.744693355568433,
       "change12mo": 16.911193050193045,
-      "dividendYield": 7.1724821320764365
+      "dividendYield": 7.1961693261614705
     },
     "MNG": {
       "symbol": "MNG",
@@ -291,7 +293,7 @@
       "daysSinceAth": 1,
       "vsAth": -0.7123315068493145,
       "change12mo": 39.49191837921165,
-      "dividendYield": 5.677097405785172
+      "dividendYield": 5.656732854766359
     },
     "LAND": {
       "symbol": "LAND",
@@ -302,7 +304,7 @@
       "daysSinceAth": 4096,
       "vsAth": -50.442495211630764,
       "change12mo": 24.978317432784042,
-      "dividendYield": 5.778401122019636
+      "dividendYield": 5.718251214434421
     },
     "LMP": {
       "symbol": "LMP",
@@ -313,7 +315,7 @@
       "daysSinceAth": 1674,
       "vsAth": -31.023675800011297,
       "change12mo": 4.263163157894736,
-      "dividendYield": 6.35528363222479
+      "dividendYield": 6.284704377349602
     },
     "AV": {
       "symbol": "AV",
@@ -324,7 +326,7 @@
       "daysSinceAth": 7105,
       "vsAth": -19.18414685314685,
       "change12mo": 7.603972451769941,
-      "dividendYield": 5.6014822007264025
+      "dividendYield": 5.667723805372836
     },
     "IMB": {
       "symbol": "IMB",
@@ -335,7 +337,7 @@
       "daysSinceAth": 3640,
       "vsAth": -34.13577274915744,
       "change12mo": -8.21871855082187,
-      "dividendYield": 5.858176338639653
+      "dividendYield": 5.918128435672515
     },
     "NWG": {
       "symbol": "NWG",
@@ -346,7 +348,7 @@
       "daysSinceAth": 7106,
       "vsAth": -88.48953663110521,
       "change12mo": 35.65744857251703,
-      "dividendYield": 4.496402939905962
+      "dividendYield": 4.539106145251397
     },
     "BATS": {
       "symbol": "BATS",
@@ -357,7 +359,7 @@
       "daysSinceAth": 3347,
       "vsAth": -22.177334995794613,
       "change12mo": 4.97131931166348,
-      "dividendYield": 5.433049798477385
+      "dividendYield": 5.524590255009108
     },
     "SBRY": {
       "symbol": "SBRY",
@@ -368,7 +370,7 @@
       "daysSinceAth": 4647,
       "vsAth": -16.9392523364486,
       "change12mo": 19.05558877911625,
-      "dividendYield": 6.918767226890756
+      "dividendYield": 6.9479603375527414
     }
   }
 }
