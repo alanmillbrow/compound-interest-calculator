@@ -424,7 +424,20 @@ async function runFundamentalsRefresh() {
   await commitMergedResults(resultsBySection);
 }
 
+async function debugCurrencyCheck() {
+  const symbols = [...FTSE_DIVIDENDS, ...INDICES_GBP];
+  for (const item of symbols) {
+    const res = await fetch(`https://api.twelvedata.com/quote?symbol=${item.symbol}&exchange=LSE&apikey=${API_KEY}`);
+    const body = await res.json();
+    console.log(`[DEBUG currency] ${item.symbol} (${item.name}): currency=${body.currency}, close=${body.close}`);
+  }
+}
+
 async function main() {
+  if (process.env.REFRESH_MODE === 'debug') {
+    await debugCurrencyCheck();
+    return;
+  }
   const mode = process.env.REFRESH_MODE;
   if (mode === 'price') {
     await runPriceRefresh();
