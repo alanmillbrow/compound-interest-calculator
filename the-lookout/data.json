@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-04T02:48:04.074Z",
+  "savedAt": "2026-08-04T02:50:51.281Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -262,7 +262,7 @@
       "athDate": "2019-12-13",
       "daysSinceAth": 2426,
       "vsAth": -6.436716771274519,
-      "change12mo": 19.606295275590544,
+      "change12mo": 17.29729343629343,
       "dividendYield": 7.1724821320764365
     },
     "MNG": {
@@ -273,7 +273,7 @@
       "athDate": "2026-08-03",
       "daysSinceAth": 1,
       "vsAth": -0.30369960508836613,
-      "change12mo": 40.77973099415205,
+      "change12mo": 38.9915411467106,
       "dividendYield": 5.677097405785172
     },
     "LAND": {
@@ -284,7 +284,7 @@
       "athDate": "2015-05-19",
       "daysSinceAth": 4095,
       "vsAth": -50.958360979726216,
-      "change12mo": 24.324324324324326,
+      "change12mo": 23.67736339982654,
       "dividendYield": 5.778401122019636
     },
     "LMP": {
@@ -295,7 +295,7 @@
       "athDate": "2022-01-04",
       "daysSinceAth": 1673,
       "vsAth": -31.789699450219384,
-      "change12mo": 3.815574986751465,
+      "change12mo": 3.1052578947368437,
       "dividendYield": 6.35528363222479
     },
     "AV": {
@@ -306,7 +306,7 @@
       "athDate": "2007-02-21",
       "daysSinceAth": 7104,
       "vsAth": -18.228440559440564,
-      "change12mo": 10.592679363408582,
+      "change12mo": 8.876467756782489,
       "dividendYield": 5.6014822007264025
     },
     "IMB": {
@@ -317,12 +317,12 @@
       "athDate": "2016-08-17",
       "daysSinceAth": 3639,
       "vsAth": -33.46172363986519,
-      "change12mo": -6.305084745762713,
+      "change12mo": -7.2794364307279436,
       "dividendYield": 5.858176338639653
     },
-    "SBRY": {
-      "symbol": "SBRY",
-      "price": 357,
+    "NWG": {
+      "symbol": "NWG",
+      "price": 722.79999,
       "pe": null,
       "athPrice": null,
       "athDate": null,
@@ -330,17 +330,6 @@
       "vsAth": null,
       "change12mo": null,
       "dividendYield": null
-    },
-    "NWG": {
-      "symbol": "NWG",
-      "price": 722.79999,
-      "pe": 951.0526184210526,
-      "athPrice": 6220.42725,
-      "athDate": "2007-02-20",
-      "daysSinceAth": 7105,
-      "vsAth": -88.38021954199368,
-      "change12mo": 41.28224704295842,
-      "dividendYield": 4.496402939905962
     },
     "BATS": {
       "symbol": "BATS",
@@ -350,8 +339,19 @@
       "athDate": "2017-06-06",
       "daysSinceAth": 3346,
       "vsAth": -20.86611523024106,
-      "change12mo": 8.109416606148633,
+      "change12mo": 6.739961759082218,
       "dividendYield": 5.433049798477385
+    },
+    "SBRY": {
+      "symbol": "SBRY",
+      "price": null,
+      "pe": null,
+      "athPrice": null,
+      "athDate": null,
+      "daysSinceAth": null,
+      "vsAth": null,
+      "change12mo": null,
+      "dividendYield": null
     }
   }
 }
