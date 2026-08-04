@@ -1,0 +1,35 @@
+name: Refresh lookout prices
+
+on:
+  schedule:
+    # Cheap (quote + time_series only, ~1 credit each) — all 32 symbols
+    # across every table fit comfortably in one run, so no staggering needed.
+    - cron: '0 * * * *'
+  workflow_dispatch: {}
+
+# Shares a concurrency group with refresh-fundamentals.yml since both write
+# to the same data.json — never run simultaneously with each other.
+concurrency:
+  group: refresh-lookout-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Refresh prices
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+          REFRESH_MODE: price
+        run: node .github/scripts/fetch-stock-data.mjs

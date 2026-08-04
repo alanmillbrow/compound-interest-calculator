@@ -1,7 +1,9 @@
-// Data is fetched hourly by a scheduled GitHub Action (see
-// .github/workflows/refresh-stock-data.yml) and committed to data.json, so
-// this page just reads that static file instead of calling Twelve Data
-// directly from every visitor's browser.
+// Data is fetched by two separate scheduled GitHub Actions and committed to
+// data.json, so this page just reads that static file instead of calling
+// Twelve Data directly from every visitor's browser: refresh-prices.yml
+// (hourly — price, all-time high, drawdown, 12-month change) and
+// refresh-fundamentals.yml (weekly — P/E, dividend yield), since those cost
+// far more API credits and barely change hour to hour.
 
 const STOCKS = [
   { symbol: 'AAPL', name: 'Apple' },
@@ -27,6 +29,31 @@ const INDICES_GBP = [
   { symbol: 'VUSA', name: 'S&P 500 (Dist)' },
   { symbol: 'VWRP', name: 'FTSE All-World (Acc)' },
   { symbol: 'VWRL', name: 'FTSE All-World (Dist)' },
+  { symbol: 'VUKG', name: 'FTSE 100 (Acc)' },
+  { symbol: 'VUKE', name: 'FTSE 100 (Dist)' },
+];
+
+const SPACE_FORCE = [
+  { symbol: 'SPCX', name: 'SpaceX' },
+  { symbol: 'RKLB', name: 'Rocket Lab' },
+  { symbol: 'ASTS', name: 'AST SpaceMobile' },
+  { symbol: 'PL', name: 'Planet Labs' },
+  { symbol: 'LMT', name: 'Lockheed Martin' },
+  { symbol: 'LHX', name: 'L3Harris' },
+  { symbol: 'NOC', name: 'Northrop Grumman' },
+];
+
+const FTSE_DIVIDENDS = [
+  { symbol: 'LGEN', name: 'Legal & General' },
+  { symbol: 'SDLF', name: 'Standard Life' },
+  { symbol: 'MNG', name: 'M&G' },
+  { symbol: 'LAND', name: 'Landsec' },
+  { symbol: 'LMP', name: 'LondonMetric' },
+  { symbol: 'AV', name: 'Aviva' },
+  { symbol: 'IMB', name: 'Imperial Brands' },
+  { symbol: 'BATS', name: 'British American Tobacco' },
+  { symbol: 'NWG', name: 'NatWest Group' },
+  { symbol: 'SBRY', name: "Sainsbury's" },
 ];
 
 function fmtUsd(n) {
@@ -75,41 +102,36 @@ function fmtRefreshedAt(date) {
   return `${day} ${month} ${year}, ${hours}:${minutes}`;
 }
 
-function renderRow(stock, result) {
-  const row = document.getElementById(`row-${stock.symbol}`);
+// Price fields (quote/time_series) and fundamentals fields (earnings/
+// dividends) are now fetched by two entirely separate scheduled runs on
+// different cadences, so a symbol can legitimately have some fields present
+// and others still missing — each field just renders "—" independently
+// (via the fmt* helpers) rather than blanking the whole row on any gap.
+function renderRow(stock, result, { idPrefix = 'row', fmt = fmtUsd } = {}) {
+  const row = document.getElementById(`${idPrefix}-${stock.symbol}`);
   if (!row) return;
+  const r = result || {};
 
-  if (!result || result.error) {
-    row.querySelectorAll('td[data-col]').forEach((td) => { td.textContent = '—'; });
-    if (result?.error) row.querySelector('[data-col="price"]').title = result.error;
-    return;
-  }
-
-  row.querySelector('[data-col="ath"]').textContent = fmtUsd(result.athPrice);
-  row.querySelector('[data-col="price"]').textContent = fmtUsd(result.price);
-  row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(result.vsAth);
-  row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(result.daysSinceAth);
-  row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(result.change12mo);
-  row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(result.dividendYield);
-  row.querySelector('[data-col="pe"]').textContent = fmtPe(result.pe);
+  row.querySelector('[data-col="ath"]').textContent = fmt(r.athPrice);
+  row.querySelector('[data-col="price"]').textContent = fmt(r.price);
+  row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(r.vsAth);
+  row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(r.daysSinceAth);
+  row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(r.change12mo);
+  row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(r.dividendYield);
+  row.querySelector('[data-col="pe"]').textContent = fmtPe(r.pe);
 }
 
 function renderIndexRow(index, result, { idPrefix = 'idx', fmt = fmtUsd } = {}) {
   const row = document.getElementById(`${idPrefix}-${index.symbol}`);
   if (!row) return;
+  const r = result || {};
 
-  if (!result || result.error) {
-    row.querySelectorAll('td[data-col]').forEach((td) => { td.textContent = '—'; });
-    if (result?.error) row.querySelector('[data-col="price"]').title = result.error;
-    return;
-  }
-
-  row.querySelector('[data-col="ath"]').textContent = fmt(result.athPrice);
-  row.querySelector('[data-col="price"]').textContent = fmt(result.price);
-  row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(result.vsAth);
-  row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(result.daysSinceAth);
-  row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(result.change12mo);
-  row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(result.dividendYield);
+  row.querySelector('[data-col="ath"]').textContent = fmt(r.athPrice);
+  row.querySelector('[data-col="price"]').textContent = fmt(r.price);
+  row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(r.vsAth);
+  row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(r.daysSinceAth);
+  row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(r.change12mo);
+  row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(r.dividendYield);
 }
 
 function buildRows() {
@@ -154,6 +176,34 @@ function buildRows() {
       <td>&mdash;</td>
     </tr>
   `).join('');
+
+  const spaceForceTbody = document.getElementById('spaceForceTableBody');
+  spaceForceTbody.innerHTML = SPACE_FORCE.map((stock) => `
+    <tr id="space-${stock.symbol}">
+      <td>${stock.name} <span class="section-note">(${stock.symbol})</span></td>
+      <td data-col="ath">&hellip;</td>
+      <td data-col="price">&hellip;</td>
+      <td data-col="vsAth">&hellip;</td>
+      <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change12mo">&hellip;</td>
+      <td data-col="dividendYield">&hellip;</td>
+      <td data-col="pe">&hellip;</td>
+    </tr>
+  `).join('');
+
+  const ftseDividendTbody = document.getElementById('ftseDividendTableBody');
+  ftseDividendTbody.innerHTML = FTSE_DIVIDENDS.map((stock) => `
+    <tr id="ftsediv-${stock.symbol}">
+      <td>${stock.name} <span class="section-note">(${stock.symbol})</span></td>
+      <td data-col="ath">&hellip;</td>
+      <td data-col="price">&hellip;</td>
+      <td data-col="vsAth">&hellip;</td>
+      <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change12mo">&hellip;</td>
+      <td data-col="dividendYield">&hellip;</td>
+      <td data-col="pe">&hellip;</td>
+    </tr>
+  `).join('');
 }
 
 async function init() {
@@ -168,6 +218,8 @@ async function init() {
     STOCKS.forEach((stock) => renderRow(stock, data.stocks?.[stock.symbol]));
     INDICES.forEach((index) => renderIndexRow(index, data.indices?.[index.symbol]));
     INDICES_GBP.forEach((index) => renderIndexRow(index, data.indicesGbp?.[index.symbol], { idPrefix: 'idxgbp', fmt: fmtGbp }));
+    SPACE_FORCE.forEach((stock) => renderRow(stock, data.spaceForce?.[stock.symbol], { idPrefix: 'space', fmt: fmtUsd }));
+    FTSE_DIVIDENDS.forEach((stock) => renderRow(stock, data.ftseDividends?.[stock.symbol], { idPrefix: 'ftsediv', fmt: fmtGbp }));
     status.textContent = `Last refreshed ${fmtRefreshedAt(new Date(data.savedAt))}`;
   } catch (err) {
     status.textContent = `Couldn't load stock data: ${err.message}`;
