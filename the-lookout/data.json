@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-05T22:11:52.453Z",
+  "savedAt": "2026-08-05T23:50:39.842Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -174,24 +174,24 @@
   "spaceForce": {
     "SPCX": {
       "symbol": "SPCX",
-      "price": 108.285,
+      "price": 108.27,
       "pe": null,
       "athPrice": 225.64,
       "athDate": "2026-06-16",
       "daysSinceAth": 50,
-      "vsAth": -52.00983868108491,
+      "vsAth": -52.01648643857472,
       "change12mo": null,
       "dividendYield": null
     },
     "RKLB": {
       "symbol": "RKLB",
-      "price": 74.8,
+      "price": 74.82,
       "pe": 81.1413043478261,
       "athPrice": 151,
       "athDate": "2026-05-27",
       "daysSinceAth": 70,
-      "vsAth": -50.463576158940405,
-      "change12mo": 67.15083798882681,
+      "vsAth": -50.450331125827816,
+      "change12mo": 67.19553072625698,
       "dividendYield": null
     },
     "ASTS": {
