@@ -82,6 +82,14 @@ function fmtPercent(n) {
   return `${sign}${n.toFixed(1)}%`;
 }
 
+// Drawdown is never positive, so (unlike fmtPercent) the leading "-" is
+// dropped — it carries no information since every value in this column is
+// already known to be a decline from the all-time high.
+function fmtDrawdown(n) {
+  if (n === null || n === undefined || Number.isNaN(n)) return '—';
+  return `${Math.abs(n).toFixed(1)}%`;
+}
+
 // Dividend yield is never negative, so (unlike fmtPercent) this never
 // prefixes a sign.
 function fmtYield(n) {
@@ -123,7 +131,7 @@ function renderRow(stock, result, { idPrefix = 'row', fmt = fmtUsd } = {}) {
 
   row.querySelector('[data-col="ath"]').textContent = fmt(r.athPrice);
   row.querySelector('[data-col="price"]').textContent = fmt(r.price);
-  row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(r.vsAth);
+  row.querySelector('[data-col="vsAth"]').textContent = fmtDrawdown(r.vsAth);
   row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(r.daysSinceAth);
   row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(r.change12mo);
   row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(r.dividendYield);
@@ -137,7 +145,7 @@ function renderIndexRow(index, result, { idPrefix = 'idx', fmt = fmtUsd } = {}) 
 
   row.querySelector('[data-col="ath"]').textContent = fmt(r.athPrice);
   row.querySelector('[data-col="price"]').textContent = fmt(r.price);
-  row.querySelector('[data-col="vsAth"]').textContent = fmtPercent(r.vsAth);
+  row.querySelector('[data-col="vsAth"]').textContent = fmtDrawdown(r.vsAth);
   row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(r.daysSinceAth);
   row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(r.change12mo);
   row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(r.dividendYield);
