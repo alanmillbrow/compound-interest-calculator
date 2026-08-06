@@ -196,6 +196,17 @@ function findPriceDaysAgo(bars, days) {
   return null;
 }
 
+// Percentage change from `days` ago to `price`, using the same daily-bar
+// history for every lookback window (1 month, 12 months, 3 years, 5 years)
+// — no extra API calls, since time_series is already fetched with enough
+// history (outputsize=5000 daily bars is ~19 years) to cover all of them.
+function changeOverDays(price, bars, days) {
+  if (price === null || !bars.length) return null;
+  const priceThen = findPriceDaysAgo(bars, days);
+  if (!priceThen) return null;
+  return ((price - priceThen) / priceThen) * 100;
+}
+
 function sumTrailingDividends(dividends, days) {
   const cutoff = Date.now() - days * 86400000;
   return dividends
@@ -216,8 +227,8 @@ function logRejections(symbol, labels, results) {
   });
 }
 
-// Cheap half: current price, all-time high, drawdown, and 12-month change —
-// quote + time_series only (1 credit each).
+// Cheap half: current price, all-time high, drawdown, and price change over
+// several lookback windows — quote + time_series only (1 credit each).
 async function loadPrice(symbol, exchange) {
   const base = 'https://api.twelvedata.com';
   const exchangeParam = exchange ? `&exchange=${exchange}` : '';
@@ -249,13 +260,12 @@ async function loadPrice(symbol, exchange) {
     : null;
   const vsAth = (price !== null && athPrice) ? ((price - athPrice) / athPrice) * 100 : null;
 
-  let change12mo = null;
-  if (price !== null && bars.length) {
-    const priceYearAgo = findPriceDaysAgo(bars, 365);
-    if (priceYearAgo) change12mo = ((price - priceYearAgo) / priceYearAgo) * 100;
-  }
+  const change1mo = changeOverDays(price, bars, 30);
+  const change12mo = changeOverDays(price, bars, 365);
+  const change3yr = changeOverDays(price, bars, 365 * 3);
+  const change5yr = changeOverDays(price, bars, 365 * 5);
 
-  return { price, athPrice, athDate, daysSinceAth, vsAth, change12mo };
+  return { price, athPrice, athDate, daysSinceAth, vsAth, change1mo, change12mo, change3yr, change5yr };
 }
 
 // Expensive half: trailing P/E and dividend yield — earnings + dividends

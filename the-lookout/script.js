@@ -1,7 +1,8 @@
 // Data is fetched by two separate scheduled GitHub Actions and committed to
 // data.json, so this page just reads that static file instead of calling
 // Twelve Data directly from every visitor's browser: refresh-prices.yml
-// (hourly — price, all-time high, drawdown, 12-month change) and
+// (hourly — price, all-time high, drawdown, price change over several
+// lookback windows) and
 // refresh-fundamentals.yml (weekly — P/E, dividend yield), since those cost
 // far more API credits and barely change hour to hour.
 
@@ -133,7 +134,10 @@ function renderRow(stock, result, { idPrefix = 'row', fmt = fmtUsd } = {}) {
   row.querySelector('[data-col="price"]').textContent = fmt(r.price);
   row.querySelector('[data-col="vsAth"]').textContent = fmtDrawdown(r.vsAth);
   row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(r.daysSinceAth);
+  row.querySelector('[data-col="change1mo"]').textContent = fmtPercent(r.change1mo);
   row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(r.change12mo);
+  row.querySelector('[data-col="change3yr"]').textContent = fmtPercent(r.change3yr);
+  row.querySelector('[data-col="change5yr"]').textContent = fmtPercent(r.change5yr);
   row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(r.dividendYield);
   row.querySelector('[data-col="pe"]').textContent = fmtPe(r.pe);
 }
@@ -147,7 +151,10 @@ function renderIndexRow(index, result, { idPrefix = 'idx', fmt = fmtUsd } = {}) 
   row.querySelector('[data-col="price"]').textContent = fmt(r.price);
   row.querySelector('[data-col="vsAth"]').textContent = fmtDrawdown(r.vsAth);
   row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(r.daysSinceAth);
+  row.querySelector('[data-col="change1mo"]').textContent = fmtPercent(r.change1mo);
   row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(r.change12mo);
+  row.querySelector('[data-col="change3yr"]').textContent = fmtPercent(r.change3yr);
+  row.querySelector('[data-col="change5yr"]').textContent = fmtPercent(r.change5yr);
   row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(r.dividendYield);
 }
 
@@ -160,7 +167,10 @@ function buildRows() {
       <td data-col="price">&hellip;</td>
       <td data-col="vsAth">&hellip;</td>
       <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change1mo">&hellip;</td>
       <td data-col="change12mo">&hellip;</td>
+      <td data-col="change3yr">&hellip;</td>
+      <td data-col="change5yr">&hellip;</td>
       <td data-col="dividendYield">&hellip;</td>
       <td data-col="pe">&hellip;</td>
     </tr>
@@ -174,7 +184,10 @@ function buildRows() {
       <td data-col="price">&hellip;</td>
       <td data-col="vsAth">&hellip;</td>
       <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change1mo">&hellip;</td>
       <td data-col="change12mo">&hellip;</td>
+      <td data-col="change3yr">&hellip;</td>
+      <td data-col="change5yr">&hellip;</td>
       <td data-col="dividendYield">&hellip;</td>
       <td>&mdash;</td>
     </tr>
@@ -188,7 +201,10 @@ function buildRows() {
       <td data-col="price">&hellip;</td>
       <td data-col="vsAth">&hellip;</td>
       <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change1mo">&hellip;</td>
       <td data-col="change12mo">&hellip;</td>
+      <td data-col="change3yr">&hellip;</td>
+      <td data-col="change5yr">&hellip;</td>
       <td data-col="dividendYield">&hellip;</td>
       <td>&mdash;</td>
     </tr>
@@ -202,7 +218,10 @@ function buildRows() {
       <td data-col="price">&hellip;</td>
       <td data-col="vsAth">&hellip;</td>
       <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change1mo">&hellip;</td>
       <td data-col="change12mo">&hellip;</td>
+      <td data-col="change3yr">&hellip;</td>
+      <td data-col="change5yr">&hellip;</td>
       <td data-col="dividendYield">&hellip;</td>
       <td data-col="pe">&hellip;</td>
     </tr>
@@ -223,7 +242,10 @@ function buildFtseDividendRows(order) {
       <td data-col="price">&hellip;</td>
       <td data-col="vsAth">&hellip;</td>
       <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change1mo">&hellip;</td>
       <td data-col="change12mo">&hellip;</td>
+      <td data-col="change3yr">&hellip;</td>
+      <td data-col="change5yr">&hellip;</td>
       <td data-col="dividendYield">&hellip;</td>
       <td data-col="pe">&hellip;</td>
     </tr>

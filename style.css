@@ -113,6 +113,15 @@ body {
   padding: 48px 24px 72px;
 }
 
+/* The Lookout is a pure data-table page, unlike the narrative pages that
+   deliberately stay at a cozy reading width — widened just for this page
+   so its 11-column tables have room without cramming or a horizontal
+   scroll fallback on desktop. See .stock-table below for the matching
+   min-width. */
+.app.lookout-app {
+  max-width: 1560px;
+}
+
 .app-header {
   display: flex;
   align-items: flex-end;
@@ -921,15 +930,15 @@ select#frequency:focus {
      everything instead of scrolling. A min-width forces genuine overflow
      so .table-wrap's horizontal scroll kicks in instead, matching the
      other data tables on the site (e.g. Freedom Formula, Liquid Asset
-     Forecaster) which scroll rather than squash on mobile. Kept under the
-     card's ~1076px content width (.app's 1180px max-width minus its 48px
+     Forecaster) which scroll rather than squash on mobile. Kept under
+     .lookout-app's ~1456px content width (1560px max-width minus its 48px
      padding minus .card's 56px padding) so desktop viewports fit without
      triggering the scroll fallback at all. */
-  min-width: 1040px;
+  min-width: 1360px;
 }
 .stock-table th:first-child, .stock-table td:first-child { width: 26%; }
 .stock-table th:not(:first-child), .stock-table td:not(:first-child) {
-  width: calc(74% / 7);
+  width: calc(74% / 10);
   padding-left: 10px;
   padding-right: 10px;
 }
