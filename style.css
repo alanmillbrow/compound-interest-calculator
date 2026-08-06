@@ -1044,10 +1044,6 @@ tbody tr:hover { background: var(--accent-soft); }
 }
 
 /* Four Stages of Financial Health */
-/* Specificity has to beat .rf-p's own `margin: 0` (defined later in this
-   file) — a single .stages-intro class rule loses that fight on file
-   order alone and collapses the gap below the intro paragraph to zero. */
-.stages-card .stages-intro { margin: 0 0 28px; }
 /* 2x2 quadrant, reading order top-left, top-right, bottom-left,
    bottom-right — all four cards the same size. */
 .stages-grid {
@@ -1195,6 +1191,12 @@ tbody tr:hover { background: var(--accent-soft); }
   font-size: 0.98rem;
   font-style: normal;
 }
+/* The explainer line (the second, longer note) reads as body copy rather
+   than a caption, so size it like the page's main text instead of the
+   smaller note size used for the tagline above it. */
+.sankey-card > .section-note + .section-note {
+  font-size: 1.1rem;
+}
 .sankey-card > .section-note strong {
   color: var(--text-primary);
   font-weight: 400;
@@ -1311,10 +1313,20 @@ tbody tr:hover { background: var(--accent-soft); }
 .story-cta {
   color: var(--text-primary);
 }
-/* Pull the standalone CTA line (Financial Freedom Roadmap page) closer to
-   its neighbours than the default 48px narrow-layout gap */
-.narrow-layout > .story-cta {
+/* Pull standalone lines of body text (the CTA line, and the intro/outro
+   paragraphs around the four-stages card) closer to their neighbours
+   than the default 48px narrow-layout gap */
+.narrow-layout > .story-cta,
+.narrow-layout > .rf-p {
   margin: -24px 0;
+}
+/* ...except when one of these is the very first thing on the page — the
+   negative top margin would otherwise also pull it up towards the header,
+   shrinking that gap below the same header-to-content spacing every other
+   page uses. */
+.narrow-layout > .story-cta:first-child,
+.narrow-layout > .rf-p:first-child {
+  margin-top: 0;
 }
 .story-photo-row {
   display: flex;

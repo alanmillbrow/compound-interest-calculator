@@ -307,12 +307,14 @@
     const rightSpans = layoutColumn(outputs.map((d) => d.value), totalIncome, availableH);
 
     svg.innerHTML = '';
+    const diagramGroup = svgEl('g', { class: 'sankey-diagram-inner' });
     const ribbonLayer = svgEl('g', { class: 'sankey-ribbons' });
     const nodeLayer = svgEl('g', { class: 'sankey-nodes' });
     const labelLayer = svgEl('g', { class: 'sankey-labels' });
-    svg.appendChild(ribbonLayer);
-    svg.appendChild(nodeLayer);
-    svg.appendChild(labelLayer);
+    diagramGroup.appendChild(ribbonLayer);
+    diagramGroup.appendChild(nodeLayer);
+    diagramGroup.appendChild(labelLayer);
+    svg.appendChild(diagramGroup);
 
     // Column captions
     labelLayer.appendChild(svgEl('text', { x: LEFT_X, y: PLOT_TOP - 26, class: 'sankey-col-caption' }));
@@ -352,6 +354,9 @@
     // Nodes + labels — a node with a value of exactly 0 (e.g. a slider
     // dragged all the way down) is skipped entirely, rect and labels alike,
     // rather than leaving a zero-height sliver with orphaned text next to it
+    const leftLabelEls = [];
+    const rightLabelEls = [];
+
     function drawColumn(defs, spans, side) {
       defs.forEach((d, i) => {
         if (d.value <= 0) return;
@@ -389,11 +394,28 @@
         });
         valueEl.textContent = fmtCurrency(d.value);
         labelLayer.appendChild(valueEl);
+
+        (side === 'left' ? leftLabelEls : rightLabelEls).push(nameEl, valueEl);
       });
     }
 
     drawColumn(inputs, leftSpans, 'left');
     drawColumn(outputs, rightSpans, 'right');
+
+    // The two label columns have equal inner margins by construction
+    // (LEFT_X and RIGHT_X mirror each other around the centre), but
+    // "Personal Development" is longer than "Leveraged Income" — the two
+    // longest labels on each side — so its text reaches further out
+    // towards its edge than the left side's longest label does towards
+    // its own edge. That makes the whole diagram look pushed right even
+    // though the nodes themselves are centred. Measure the actual
+    // rendered label widths and nudge the whole diagram so both sides'
+    // longest label sits the same distance from its edge.
+    const maxLabelWidth = (els) => (els.length
+      ? Math.max(...els.map((el) => el.getComputedTextLength()))
+      : 0);
+    const shiftX = (maxLabelWidth(leftLabelEls) - maxLabelWidth(rightLabelEls)) / 2;
+    diagramGroup.setAttribute('transform', `translate(${shiftX}, 0)`);
   }
 
   function render() {
