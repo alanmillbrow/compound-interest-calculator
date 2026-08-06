@@ -188,7 +188,7 @@ body {
 
 .header-text h1 {
   font-family: 'shackleton', Georgia, serif;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-size: clamp(1.6rem, 3vmin, 2.2rem);
   margin: 0 0 6px;
   letter-spacing: -0.01em;
   font-weight: 400;
@@ -758,7 +758,7 @@ select#frequency:focus {
   align-items: center;
   justify-content: center;
   font-family: 'shackleton', Georgia, serif;
-  font-size: clamp(2rem, 4.4vw, 2.9rem);
+  font-size: clamp(2rem, 4.4vmin, 2.9rem);
   font-weight: 400;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
@@ -1018,7 +1018,7 @@ tbody tr:hover { background: var(--accent-soft); }
 }
 .rm-quote {
   font-family: 'shackleton', Georgia, serif;
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: clamp(1.6rem, 4vmin, 2.4rem);
   line-height: 1.25;
   letter-spacing: -0.01em;
   margin: 0 auto 20px;
