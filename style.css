@@ -1569,14 +1569,3 @@ main > .newsletter-signup:last-child { margin-bottom: 0; }
   .formula-term { border-right: none; border-bottom: 2px solid var(--card-border); }
   .formula-term:last-child { border-bottom: none; }
 }
-
-/* Phone in landscape: the footer disclaimer's font-size never actually
-   changes, but a ~430px-tall viewport is so short that the same two-line
-   paragraph eats up roughly a tenth of the whole visible screen — reads as
-   oversized even though nothing about the text itself grew. max-height
-   (not max-width) targets this specifically, so a normal short-but-wide
-   desktop window is unaffected. */
-@media (orientation: landscape) and (max-height: 500px) {
-  .app-footer { margin-top: 16px; }
-  .app-footer p { font-size: 0.65rem; }
-}
