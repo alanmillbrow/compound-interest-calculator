@@ -77,6 +77,13 @@
 html, body {
   margin: 0;
   padding: 0;
+  /* Stop mobile browsers auto-inflating font size ("text size adjust" /
+     font boosting) based on how wide a block of text happens to be laid
+     out — otherwise a standalone full-width paragraph can render visibly
+     larger than the same text sat in a narrower column next to an image,
+     with no CSS rule actually asking for that. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
