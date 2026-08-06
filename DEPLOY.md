@@ -5,7 +5,7 @@
 - **Live site:** https://investingbuffalo.com (custom domain, registered and DNS-managed through Netlify)
 - **Netlify default subdomain:** https://compound-interest-calculator-611.netlify.app (still works, redirects aren't needed since both point at the same site)
 - **Netlify admin:** https://app.netlify.com/projects/compound-interest-calculator-611
-- **Source code:** https://github.com/alanmillbrow/compound-interest-calculator
+- **Source code:** https://github.com/alanmillbrow/investing-buffalo
 
 ## Site structure
 
@@ -45,7 +45,7 @@ be pushed and redeployed easily.
 Two ways to ship an update, pick whichever you prefer:
 
 ### Option A — push to GitHub, Netlify deploys automatically (default going forward)
-Netlify is linked to the GitHub repo (`alanmillbrow/compound-interest-calculator`, branch `main`)
+Netlify is linked to the GitHub repo (`alanmillbrow/investing-buffalo`, branch `main`)
 via a read-only SSH deploy key on the repo, plus a webhook that triggers a build on every push.
 Just:
 ```bash

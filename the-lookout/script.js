@@ -305,7 +305,7 @@ async function init() {
     // refresh workflow commits with [skip netlify] so data-only updates
     // don't burn a Netlify deploy, so the Netlify-served copy of this file
     // would otherwise only be as fresh as the last real code deploy.
-    const res = await fetch('https://raw.githubusercontent.com/alanmillbrow/compound-interest-calculator/main/the-lookout/data.json', { cache: 'no-store' });
+    const res = await fetch('https://raw.githubusercontent.com/alanmillbrow/investing-buffalo/main/the-lookout/data.json', { cache: 'no-store' });
     if (!res.ok) throw new Error(`Failed to load data (${res.status})`);
     const data = await res.json();
     STOCKS.forEach((stock) => renderRow(stock, data.stocks?.[stock.symbol]));
