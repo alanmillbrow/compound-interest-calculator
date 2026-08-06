@@ -45,6 +45,15 @@ const SPACE_FORCE = [
   { symbol: 'BA', name: 'Boeing' },
 ];
 
+// Neither P/E nor dividend yield is a meaningful concept for these, so
+// (unlike the indices tables, which still have a real dividend yield) both
+// columns are static dashes — see renderCommodityRow.
+const COMMODITIES = [
+  { symbol: 'BTC/USD', name: 'Bitcoin' },
+  { symbol: 'XAU/USD', name: 'Gold' },
+  { symbol: 'XAG/USD', name: 'Silver' },
+];
+
 const FTSE_DIVIDENDS = [
   { symbol: 'LGEN', name: 'Legal & General' },
   { symbol: 'SDLF', name: 'Standard Life' },
@@ -158,6 +167,23 @@ function renderIndexRow(index, result, { idPrefix = 'idx', fmt = fmtUsd } = {}) 
   row.querySelector('[data-col="dividendYield"]').textContent = fmtYield(r.dividendYield);
 }
 
+// No dividendYield/pe columns to fill in — both are static dashes in the
+// row template (see buildRows), since neither concept applies here.
+function renderCommodityRow(commodity, result) {
+  const row = document.getElementById(`commodity-${commodity.symbol}`);
+  if (!row) return;
+  const r = result || {};
+
+  row.querySelector('[data-col="ath"]').textContent = fmtUsd(r.athPrice);
+  row.querySelector('[data-col="price"]').textContent = fmtUsd(r.price);
+  row.querySelector('[data-col="vsAth"]').textContent = fmtDrawdown(r.vsAth);
+  row.querySelector('[data-col="daysSinceAth"]').textContent = fmtDays(r.daysSinceAth);
+  row.querySelector('[data-col="change1mo"]').textContent = fmtPercent(r.change1mo);
+  row.querySelector('[data-col="change12mo"]').textContent = fmtPercent(r.change12mo);
+  row.querySelector('[data-col="change3yr"]').textContent = fmtPercent(r.change3yr);
+  row.querySelector('[data-col="change5yr"]').textContent = fmtPercent(r.change5yr);
+}
+
 function buildRows() {
   const tbody = document.getElementById('stockTableBody');
   tbody.innerHTML = STOCKS.map((stock) => `
@@ -227,6 +253,23 @@ function buildRows() {
     </tr>
   `).join('');
 
+  const commodityTbody = document.getElementById('commodityTableBody');
+  commodityTbody.innerHTML = COMMODITIES.map((commodity) => `
+    <tr id="commodity-${commodity.symbol}">
+      <td>${commodity.name}</td>
+      <td data-col="ath">&hellip;</td>
+      <td data-col="price">&hellip;</td>
+      <td data-col="vsAth">&hellip;</td>
+      <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change1mo">&hellip;</td>
+      <td data-col="change12mo">&hellip;</td>
+      <td data-col="change3yr">&hellip;</td>
+      <td data-col="change5yr">&hellip;</td>
+      <td>&mdash;</td>
+      <td>&mdash;</td>
+    </tr>
+  `).join('');
+
   buildFtseDividendRows(FTSE_DIVIDENDS);
 }
 
@@ -269,6 +312,7 @@ async function init() {
     INDICES.forEach((index) => renderIndexRow(index, data.indices?.[index.symbol]));
     INDICES_GBP.forEach((index) => renderIndexRow(index, data.indicesGbp?.[index.symbol], { idPrefix: 'idxgbp', fmt: fmtGbp }));
     SPACE_FORCE.forEach((stock) => renderRow(stock, data.spaceForce?.[stock.symbol], { idPrefix: 'space', fmt: fmtUsd }));
+    COMMODITIES.forEach((commodity) => renderCommodityRow(commodity, data.commodities?.[commodity.symbol]));
 
     // Highest dividend yield first — missing yields (e.g. a fetch gap) sink
     // to the bottom rather than being treated as a 0% yield.

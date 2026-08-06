@@ -10,15 +10,17 @@
 // Fetching everything for every symbol every run blew well past the
 // 144-credit/minute budget — a single 10-company table needed 420 credits.
 //   - REFRESH_MODE=price: quote + time_series for every symbol, every run.
-//     Cheap (~64 credits total for all 32 symbols), so it just runs hourly
+//     Cheap (~70 credits total for all 35 symbols), so it just runs hourly
 //     covering everything in one go — no staggering needed.
 //   - REFRESH_MODE=fundamentals: earnings + dividends, on a much slower
 //     weekly cadence, since P/E and dividend yield barely change hour to
 //     hour. Paced by real credit cost (see waitForCreditBudget) since even
-//     one run needs ~920 credits total and has to legitimately spread
+//     one run needs ~960 credits total and has to legitimately spread
 //     across several real minutes to respect the budget. (Earnings is only
 //     fetched for US companies — see loadFundamentals for why LSE
-//     companies don't get a P/E at all.)
+//     companies don't get a P/E at all. Commodities/crypto skip this tier
+//     entirely — see the noFundamentals flag on COMMODITIES below — neither
+//     P/E nor dividend yield is a meaningful concept for them.)
 // Both modes merge their results into the existing data.json rather than
 // overwriting it, via commitMergedResults' fetch-latest-and-retry loop —
 // necessary because GitHub Actions resolves which commit a scheduled run
@@ -88,14 +90,25 @@ const FTSE_DIVIDENDS = [
   { symbol: 'SBRY', name: "Sainsbury's", exchange: 'LSE' },
 ];
 
+// No exchange param needed — resolve fine as plain pair symbols, confirmed
+// live (both /quote and /time_series, on the current plan, no paywall).
+const COMMODITIES = [
+  { symbol: 'BTC/USD', name: 'Bitcoin' },
+  { symbol: 'XAU/USD', name: 'Gold' },
+  { symbol: 'XAG/USD', name: 'Silver' },
+];
+
 // Flat registry combining every table. `isIndex` marks the ETF-tracker
 // tables (no per-company earnings, so no P/E) vs. individual companies.
+// `noFundamentals` (commodities/crypto only) skips the fundamentals tier
+// entirely — no earnings, no dividends, since neither concept applies.
 const ALL_SYMBOLS = [
   ...STOCKS.map((s) => ({ ...s, section: 'stocks', isIndex: false })),
   ...INDICES.map((s) => ({ ...s, section: 'indices', isIndex: true })),
   ...INDICES_GBP.map((s) => ({ ...s, section: 'indicesGbp', isIndex: true })),
   ...SPACE_FORCE.map((s) => ({ ...s, section: 'spaceForce', isIndex: false })),
   ...FTSE_DIVIDENDS.map((s) => ({ ...s, section: 'ftseDividends', isIndex: false })),
+  ...COMMODITIES.map((s) => ({ ...s, section: 'commodities', isIndex: true, noFundamentals: true })),
 ];
 
 // Real per-call cost, confirmed via Twelve Data's api-credits-used response
@@ -423,7 +436,7 @@ async function runFundamentalsRefresh() {
   const current = await readLatestDataJson();
 
   const resultsBySection = new Map();
-  await Promise.all(ALL_SYMBOLS.map(async (item) => {
+  await Promise.all(ALL_SYMBOLS.filter((item) => !item.noFundamentals).map(async (item) => {
     const currentPrice = current[item.section]?.[item.symbol]?.price ?? null;
     let fields;
     try {
