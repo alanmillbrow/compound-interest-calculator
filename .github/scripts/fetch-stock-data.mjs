@@ -70,6 +70,7 @@ const SPACE_FORCE = [
   { symbol: 'LMT', name: 'Lockheed Martin' },
   { symbol: 'LHX', name: 'L3Harris' },
   { symbol: 'NOC', name: 'Northrop Grumman' },
+  { symbol: 'BA', name: 'Boeing' },
 ];
 
 // LSE-listed. Aviva resolves as "AV" — Twelve Data doesn't accept its
@@ -89,19 +90,13 @@ const FTSE_DIVIDENDS = [
 
 // Flat registry combining every table. `isIndex` marks the ETF-tracker
 // tables (no per-company earnings, so no P/E) vs. individual companies.
-let ALL_SYMBOLS = [
+const ALL_SYMBOLS = [
   ...STOCKS.map((s) => ({ ...s, section: 'stocks', isIndex: false })),
   ...INDICES.map((s) => ({ ...s, section: 'indices', isIndex: true })),
   ...INDICES_GBP.map((s) => ({ ...s, section: 'indicesGbp', isIndex: true })),
   ...SPACE_FORCE.map((s) => ({ ...s, section: 'spaceForce', isIndex: false })),
   ...FTSE_DIVIDENDS.map((s) => ({ ...s, section: 'ftseDividends', isIndex: false })),
 ];
-
-// TEMPORARY: test-branch-only symbol filter, wired to the harness workflow.
-if (process.env.TEST_LIMIT_SYMBOLS) {
-  const wanted = process.env.TEST_LIMIT_SYMBOLS.split(',');
-  ALL_SYMBOLS = ALL_SYMBOLS.filter((s) => wanted.includes(s.symbol));
-}
 
 // Real per-call cost, confirmed via Twelve Data's api-credits-used response
 // header — quote and time_series are cheap; earnings and dividends are not.
@@ -201,6 +196,17 @@ function findPriceDaysAgo(bars, days) {
   return null;
 }
 
+// Percentage change from `days` ago to `price`, using the same daily-bar
+// history for every lookback window (1 month, 12 months, 3 years, 5 years)
+// — no extra API calls, since time_series is already fetched with enough
+// history (outputsize=5000 daily bars is ~19 years) to cover all of them.
+function changeOverDays(price, bars, days) {
+  if (price === null || !bars.length) return null;
+  const priceThen = findPriceDaysAgo(bars, days);
+  if (!priceThen) return null;
+  return ((price - priceThen) / priceThen) * 100;
+}
+
 function sumTrailingDividends(dividends, days) {
   const cutoff = Date.now() - days * 86400000;
   return dividends
@@ -221,8 +227,8 @@ function logRejections(symbol, labels, results) {
   });
 }
 
-// Cheap half: current price, all-time high, drawdown, and 12-month change —
-// quote + time_series only (1 credit each).
+// Cheap half: current price, all-time high, drawdown, and price change over
+// several lookback windows — quote + time_series only (1 credit each).
 async function loadPrice(symbol, exchange) {
   const base = 'https://api.twelvedata.com';
   const exchangeParam = exchange ? `&exchange=${exchange}` : '';
@@ -245,18 +251,21 @@ async function loadPrice(symbol, exchange) {
     }
   }
 
+  // Math.floor (not round) so "Today" stays correct for the entire calendar
+  // day the ATH happened on — with round, anything more than ~12 hours past
+  // midnight UTC on the ATH date rounded up to 1, showing "1" instead of
+  // "Today" even while it was still the same day.
   const daysSinceAth = athDate
-    ? Math.round((Date.now() - new Date(`${athDate}T00:00:00Z`).getTime()) / 86400000)
+    ? Math.floor((Date.now() - new Date(`${athDate}T00:00:00Z`).getTime()) / 86400000)
     : null;
   const vsAth = (price !== null && athPrice) ? ((price - athPrice) / athPrice) * 100 : null;
 
-  let change12mo = null;
-  if (price !== null && bars.length) {
-    const priceYearAgo = findPriceDaysAgo(bars, 365);
-    if (priceYearAgo) change12mo = ((price - priceYearAgo) / priceYearAgo) * 100;
-  }
+  const change1mo = changeOverDays(price, bars, 30);
+  const change12mo = changeOverDays(price, bars, 365);
+  const change3yr = changeOverDays(price, bars, 365 * 3);
+  const change5yr = changeOverDays(price, bars, 365 * 5);
 
-  return { price, athPrice, athDate, daysSinceAth, vsAth, change12mo };
+  return { price, athPrice, athDate, daysSinceAth, vsAth, change1mo, change12mo, change3yr, change5yr };
 }
 
 // Expensive half: trailing P/E and dividend yield — earnings + dividends
@@ -370,7 +379,11 @@ async function commitMergedResults(resultsBySection) {
       console.log('No changes to commit.');
       return;
     }
-    execSync('git commit -m "Refresh stock watch data" --quiet', { cwd: repoRoot });
+    // [skip netlify] stops this push from triggering a full Netlify deploy
+    // (which costs build credits) for a data-only commit — the live page
+    // reads data.json straight from GitHub's raw CDN instead, so it doesn't
+    // need a Netlify deploy to see the update anyway.
+    execSync('git commit -m "Refresh stock watch data [skip netlify]" --quiet', { cwd: repoRoot });
 
     const push = spawnSync('git', ['push', 'origin', 'HEAD:main'], { cwd: repoRoot, stdio: 'inherit' });
     if (push.status === 0) {
@@ -424,15 +437,21 @@ async function runFundamentalsRefresh() {
   await commitMergedResults(resultsBySection);
 }
 
-async function debugCurrencyCheck() {
-  const res = await fetch(`https://api.twelvedata.com/quote?symbol=BA&apikey=${API_KEY}`);
-  const body = await res.json();
-  console.log(`[DEBUG ticker BA]`, JSON.stringify({ name: body.name, exchange: body.exchange, currency: body.currency, close: body.close }));
+async function debugCommodityCheck() {
+  const candidates = [['BTC/USD', 'quote'], ['XAU/USD', 'quote'], ['XAG/USD', 'quote'], ['BTC/USD', 'time_series'], ['XAU/USD', 'time_series'], ['XAG/USD', 'time_series']];
+  for (const [symbol, endpoint] of candidates) {
+    const url = endpoint === 'quote'
+      ? `https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}&apikey=${API_KEY}`
+      : `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=1day&outputsize=3&apikey=${API_KEY}`;
+    const res = await fetch(url);
+    const body = await res.json();
+    console.log(`[DEBUG ${endpoint}] ${symbol}:`, JSON.stringify(body).slice(0, 500));
+  }
 }
 
 async function main() {
   if (process.env.REFRESH_MODE === 'debug') {
-    await debugCurrencyCheck();
+    await debugCommodityCheck();
     return;
   }
   const mode = process.env.REFRESH_MODE;
