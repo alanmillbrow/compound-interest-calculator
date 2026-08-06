@@ -369,7 +369,11 @@ async function commitMergedResults(resultsBySection) {
       console.log('No changes to commit.');
       return;
     }
-    execSync('git commit -m "Refresh stock watch data" --quiet', { cwd: repoRoot });
+    // [skip netlify] stops this push from triggering a full Netlify deploy
+    // (which costs build credits) for a data-only commit — the live page
+    // reads data.json straight from GitHub's raw CDN instead, so it doesn't
+    // need a Netlify deploy to see the update anyway.
+    execSync('git commit -m "Refresh stock watch data [skip netlify]" --quiet', { cwd: repoRoot });
 
     const push = spawnSync('git', ['push', 'origin', 'HEAD:main'], { cwd: repoRoot, stdio: 'inherit' });
     if (push.status === 0) {
