@@ -114,7 +114,7 @@ function fmtGbpAsPence(n) {
 function fmtPercent(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return '—';
   const sign = n > 0 ? '+' : '';
-  return `${sign}${n.toFixed(1)}%`;
+  return `${sign}${n.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
 }
 
 // Drawdown is never positive, so (unlike fmtPercent) the leading "-" is
