@@ -1,0 +1,35 @@
+name: Refresh stock watch data
+
+# TEMPORARY test-branch-only harness, repurposed to inspect SPXP's raw
+# time_series history. This workflow ID is already registered on the
+# default branch, which is required before GitHub will let a *new*
+# workflow file be dispatched at all.
+
+on:
+  workflow_dispatch:
+    inputs:
+      symbol:
+        description: 'Symbol to check'
+        required: true
+      exchange:
+        description: 'Exchange qualifier (e.g. LSE), optional'
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Check symbol
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+          DEBUG_SYMBOL: ${{ inputs.symbol }}
+          DEBUG_EXCHANGE: ${{ inputs.exchange }}
+        run: node .github/scripts/debug-symbol.mjs
