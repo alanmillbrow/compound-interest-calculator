@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-08T05:36:08.510Z",
+  "savedAt": "2026-08-08T05:58:57.777Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -236,8 +236,20 @@
       "vsAth": -0.8102808160139878,
       "change1mo": 2.0554822185499106,
       "change12mo": 23.822806982113445,
-      "change3yr": null,
+      "change3yr": 65.95570618827792,
       "change5yr": null
+    },
+    "SPXP": {
+      "symbol": "SPXP",
+      "price": 11.5380005,
+      "athPrice": 11.6,
+      "athDate": "2026-08-05",
+      "daysSinceAth": 3,
+      "vsAth": -0.5344784482758524,
+      "change1mo": 2.4507282210410404,
+      "change12mo": 22.60121666135375,
+      "change3yr": 69.7626074993931,
+      "change5yr": 92.44273669638318
     }
   },
   "spaceForce": {
@@ -499,39 +511,39 @@
   "commodities": {
     "BTC/USD": {
       "symbol": "BTC/USD",
-      "price": 65017.73,
+      "price": 64990.86,
       "athPrice": 126199.63,
       "athDate": "2025-10-06",
       "daysSinceAth": 306,
-      "vsAth": -48.480253072057344,
-      "change1mo": 2.8273446148979966,
-      "change12mo": -44.27437335622089,
-      "change3yr": 119.78822078733408,
-      "change5yr": 40.49263409756838
+      "vsAth": -48.50154473511531,
+      "change1mo": 2.7848489640993206,
+      "change12mo": -44.29740319112775,
+      "change3yr": 119.6973884944725,
+      "change5yr": 40.43457244149084
     },
     "XAU/USD": {
       "symbol": "XAU/USD",
-      "price": 4342.31596,
+      "price": 4342.36371,
       "athPrice": 5597.22988,
       "athDate": "2026-01-29",
       "daysSinceAth": 191,
-      "vsAth": -22.42026764853903,
-      "change1mo": 5.302919930619591,
-      "change12mo": 28.19742383849835,
-      "change3yr": 126.80146928035974,
-      "change5yr": 151.07965415652419
+      "vsAth": -22.41941454796922,
+      "change1mo": 5.304077887450227,
+      "change12mo": 28.19883355327835,
+      "change3yr": 126.80396328822509,
+      "change5yr": 151.08241513789827
     },
     "XAG/USD": {
       "symbol": "XAG/USD",
-      "price": 63.55632,
+      "price": 63.55127,
       "athPrice": 121.57769,
       "athDate": "2026-01-29",
       "daysSinceAth": 191,
-      "vsAth": -47.7236983199796,
-      "change1mo": 6.008172575819167,
-      "change12mo": 65.8178402775966,
-      "change3yr": 180.34193463014424,
-      "change5yr": 171.2488583500491
+      "vsAth": -47.72785204259104,
+      "change1mo": 5.9997494753075635,
+      "change12mo": 65.8046648751598,
+      "change3yr": 180.31965947686473,
+      "change5yr": 171.22730570611583
     }
   }
 }
