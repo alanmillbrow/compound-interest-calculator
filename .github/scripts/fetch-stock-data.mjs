@@ -327,13 +327,16 @@ async function loadPrice(symbol, exchange, isIndex) {
   // Some LSE-listed instruments are quoted by Twelve Data in pence
   // ("GBp") rather than pounds — confirmed per-symbol via the quote's own
   // currency field, not assumed by exchange (the Vanguard trackers above
-  // are GBP; Invesco's FWRG and SPXP both came back GBp). This site's
-  // GBP tables are pound-denominated, so normalise to pounds here. Safe
-  // to apply to every bar uniformly at this point, now that
-  // normalizeHistoricalScale has already made the whole series share
-  // today's raw scale.
+  // are GBP; Invesco's FWRG and SPXP both came back GBp). Only the
+  // Indices GBP table is pound-denominated (fmtGbp on the frontend), so
+  // this conversion is scoped to isIndex — the FTSE Dividend Plays table
+  // (individual LSE stocks, isIndex: false) is *also* GBp-quoted but
+  // intentionally displayed in pence via fmtGbx, and applying this
+  // unconditionally by currency alone (as an earlier version of this fix
+  // did) wrongly divided every one of those prices by 100 too — e.g.
+  // LGEN's real 316.4p rendered as "3.2p".
   const currency = quoteResult.status === 'fulfilled' ? quoteResult.value.currency : null;
-  const divisor = currency === 'GBp' ? 100 : 1;
+  const divisor = (isIndex && currency === 'GBp') ? 100 : 1;
 
   const price = rawPrice !== null ? rawPrice / divisor : null;
   const bars = divisor === 1 ? scaledBars : scaledBars.map((bar) => ({
