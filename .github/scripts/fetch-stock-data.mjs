@@ -55,7 +55,7 @@ const INDICES = [
 
 // GBP-denominated LSE-listed index trackers. Acc/Dist pairs of the same
 // underlying index, labelled by issuer since Vanguard, iShares and Invesco
-// all track FTSE All-World here.
+// all track FTSE All-World (and, with SPXP, S&P 500) here.
 const INDICES_GBP = [
   { symbol: 'VWRP', name: 'FTSE All-World Vanguard (Acc)', exchange: 'LSE' },
   { symbol: 'VWRL', name: 'FTSE All-World Vanguard (Dist)', exchange: 'LSE' },
@@ -63,6 +63,7 @@ const INDICES_GBP = [
   { symbol: 'FTAW', name: 'FTSE All-World iShares (Acc)', exchange: 'LSE' },
   { symbol: 'VUAG', name: 'S&P 500 Vanguard (Acc)', exchange: 'LSE' },
   { symbol: 'VUSA', name: 'S&P 500 Vanguard (Dist)', exchange: 'LSE' },
+  { symbol: 'SPXP', name: 'S&P 500 Invesco (Acc)', exchange: 'LSE' },
   { symbol: 'VUKG', name: 'FTSE 100 Vanguard (Acc)', exchange: 'LSE' },
   { symbol: 'VUKE', name: 'FTSE 100 Vanguard (Dist)', exchange: 'LSE' },
 ];
@@ -218,12 +219,12 @@ function findPriceDaysAgo(bars, days) {
 // history (outputsize=5000 daily bars is ~19 years) to cover all of them.
 // isIndex caps the result to a sane range: a diversified index/ETF tracker
 // cannot plausibly move >999% in any of these windows, so a figure beyond
-// that means the underlying data is broken, not that the fund mooned —
-// confirmed on FWRG, whose historical time_series switches units partway
-// through (recent bars in pence, bars from mid-2023 in pounds, with no
-// signal in the data itself marking the switch), producing a bogus 16495%
-// 3-year change. Not applied to individual stocks, where a >999% move over
-// several years is rare but genuinely possible.
+// that means the underlying data is still broken even after
+// normalizeHistoricalScale (bars are pre-stitched by the time this runs,
+// but this stays as a defense-in-depth backstop for a pattern the
+// stitching heuristic doesn't catch cleanly). Not applied to individual
+// stocks, where a >999% move over several years is rare but genuinely
+// possible.
 function changeOverDays(price, bars, days, isIndex) {
   if (price === null || !bars.length) return null;
   const priceThen = findPriceDaysAgo(bars, days);
@@ -231,6 +232,43 @@ function changeOverDays(price, bars, days, isIndex) {
   const change = ((price - priceThen) / priceThen) * 100;
   if (isIndex && Math.abs(change) > 999) return null;
   return change;
+}
+
+// Corrects scale-unit discontinuities in Twelve Data's own historical
+// time_series (see loadPrice's call site for the full story — confirmed on
+// SPXP, whose 2014-2025 block is smoothly reported 100x too high). Walks
+// bars newest-to-oldest (their natural order) anchored to the trusted live
+// quote, and whenever a day-over-day ratio implies a >20x move — something
+// no real diversified index/ETF does — assumes a scale switch and folds a
+// power-of-10 correction into every earlier bar until the next switch.
+function normalizeHistoricalScale(bars, anchorPrice, isIndex) {
+  if (!isIndex || !bars.length || !(anchorPrice > 0)) return bars;
+  let scale = 1;
+  let prevClose = anchorPrice;
+  return bars.map((bar) => {
+    const rawClose = parseFloat(bar.close);
+    if (Number.isFinite(rawClose) && rawClose > 0 && prevClose > 0) {
+      const ratio = (rawClose / scale) / prevClose;
+      if (ratio > 20 || ratio < 1 / 20) {
+        const factor = Math.pow(10, Math.round(Math.log10(ratio)));
+        if (Number.isFinite(factor) && factor > 0) scale *= factor;
+      }
+    }
+    const scaleField = (v) => {
+      const n = parseFloat(v);
+      return Number.isFinite(n) ? String(n / scale) : v;
+    };
+    const corrected = {
+      ...bar,
+      open: scaleField(bar.open),
+      high: scaleField(bar.high),
+      low: scaleField(bar.low),
+      close: scaleField(bar.close),
+    };
+    const correctedClose = parseFloat(corrected.close);
+    if (Number.isFinite(correctedClose) && correctedClose > 0) prevClose = correctedClose;
+    return corrected;
+  });
 }
 
 function sumTrailingDividends(dividends, days) {
@@ -264,21 +302,38 @@ async function loadPrice(symbol, exchange, isIndex) {
   ]);
   logRejections(symbol, ['quote', 'time_series'], [quoteResult, historyResult]);
 
+  const rawPrice = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
+  const rawBars = historyResult.status === 'fulfilled' ? (historyResult.value.values || []) : [];
+
+  // Twelve Data's own historical time_series for some instruments switches
+  // scale partway through — not a single bad data point, but a genuinely
+  // smooth, internally-consistent block reported ~100x off from the rest
+  // of the series. Confirmed on SPXP: 2010-2014 and Dec 2025-now are one
+  // scale, but 2014-2025 is a *smooth* ~11-year block (real-shaped 2020
+  // COVID dip and all) reported 100x too high throughout — Twelve Data
+  // switched units for over a decade, then switched back. Stitches the
+  // whole series onto today's raw scale by walking backward from the
+  // trusted live quote and correcting any implausible (>20x) day-over-day
+  // jump, rounding the correction to the nearest power of 10. Scoped to
+  // indices/ETFs only — a real diversified tracker never moves anywhere
+  // near 20x in a day, so a jump that size means the data is broken, not
+  // that the price actually moved (individual stocks can occasionally
+  // see large genuine jumps, e.g. reverse splits).
+  const scaledBars = normalizeHistoricalScale(rawBars, rawPrice, isIndex);
+
   // Some LSE-listed instruments are quoted by Twelve Data in pence
   // ("GBp") rather than pounds — confirmed per-symbol via the quote's own
   // currency field, not assumed by exchange (the Vanguard trackers above
-  // are GBP; Invesco's FWRG came back GBp). This site's GBP tables are
-  // pound-denominated, so normalise to pounds here rather than mixing
-  // units within one table's Price/All-Time High columns. This assumes
-  // the whole bars series shares the current quote's currency — true in
-  // general, but FWRG's own history breaks that assumption further back
-  // (see changeOverDays' isIndex cap for the fallout).
+  // are GBP; Invesco's FWRG and SPXP both came back GBp). This site's
+  // GBP tables are pound-denominated, so normalise to pounds here. Safe
+  // to apply to every bar uniformly at this point, now that
+  // normalizeHistoricalScale has already made the whole series share
+  // today's raw scale.
   const currency = quoteResult.status === 'fulfilled' ? quoteResult.value.currency : null;
   const divisor = currency === 'GBp' ? 100 : 1;
 
-  const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) / divisor : null;
-  const rawBars = historyResult.status === 'fulfilled' ? (historyResult.value.values || []) : [];
-  const bars = divisor === 1 ? rawBars : rawBars.map((bar) => ({
+  const price = rawPrice !== null ? rawPrice / divisor : null;
+  const bars = divisor === 1 ? scaledBars : scaledBars.map((bar) => ({
     ...bar,
     open: String(parseFloat(bar.open) / divisor),
     high: String(parseFloat(bar.high) / divisor),

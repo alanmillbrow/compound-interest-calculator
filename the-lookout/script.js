@@ -32,6 +32,7 @@ const INDICES_GBP = [
   { symbol: 'FTAW', name: 'FTSE All-World iShares (Acc)' },
   { symbol: 'VUAG', name: 'S&P 500 Vanguard (Acc)' },
   { symbol: 'VUSA', name: 'S&P 500 Vanguard (Dist)' },
+  { symbol: 'SPXP', name: 'S&P 500 Invesco (Acc)' },
   { symbol: 'VUKG', name: 'FTSE 100 Vanguard (Acc)' },
   { symbol: 'VUKE', name: 'FTSE 100 Vanguard (Dist)' },
 ];
