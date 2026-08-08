@@ -28,11 +28,11 @@ const INDICES = [
 const INDICES_GBP = [
   { symbol: 'VWRL', name: 'FTSE All-World Vanguard (Dist)' },
   { symbol: 'VWRP', name: 'FTSE All-World Vanguard (Acc)' },
-  { symbol: 'FWRG', name: 'FTSE All-World Invesco (Acc)' },
+  { symbol: 'FWRG', name: 'FTSE All-World Invesco (Acc)', quoteInPence: true },
   { symbol: 'FTAW', name: 'FTSE All-World iShares (Acc)' },
   { symbol: 'VUSA', name: 'S&P 500 Vanguard (Dist)' },
   { symbol: 'VUAG', name: 'S&P 500 Vanguard (Acc)' },
-  { symbol: 'SPXP', name: 'S&P 500 Invesco (Acc)' },
+  { symbol: 'SPXP', name: 'S&P 500 Invesco (Acc)', quoteInPence: true },
   { symbol: 'CSP1', name: 'S&P 500 iShares (Acc)' },
   { symbol: 'VUKE', name: 'FTSE 100 Vanguard (Dist)' },
   { symbol: 'VUKG', name: 'FTSE 100 Vanguard (Acc)' },
@@ -90,6 +90,17 @@ function fmtGbp(n) {
 function fmtGbx(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return '—';
   return `${n.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}p`;
+}
+
+// A couple of Indices GBP entries (flagged quoteInPence) are commonly
+// quoted in pence on other sites (e.g. FWRG, SPXP) and carry sub-penny
+// precision from Twelve Data that whole-pound formatting rounds away.
+// data.json stores these in pounds like every other index (for
+// consistent maths), so this just converts back to pence for display
+// on those specific rows.
+function fmtGbpAsPence(n) {
+  if (n === null || n === undefined || Number.isNaN(n)) return '—';
+  return fmtGbx(n * 100);
 }
 
 function fmtPercent(n) {
@@ -316,7 +327,7 @@ async function init() {
     const data = await res.json();
     STOCKS.forEach((stock) => renderRow(stock, data.stocks?.[stock.symbol]));
     INDICES.forEach((index) => renderIndexRow(index, data.indices?.[index.symbol]));
-    INDICES_GBP.forEach((index) => renderIndexRow(index, data.indicesGbp?.[index.symbol], { idPrefix: 'idxgbp', fmt: fmtGbp }));
+    INDICES_GBP.forEach((index) => renderIndexRow(index, data.indicesGbp?.[index.symbol], { idPrefix: 'idxgbp', fmt: index.quoteInPence ? fmtGbpAsPence : fmtGbp }));
     SPACE_FORCE.forEach((stock) => renderRow(stock, data.spaceForce?.[stock.symbol], { idPrefix: 'space', fmt: fmtUsd }));
     COMMODITIES.forEach((commodity) => renderCommodityRow(commodity, data.commodities?.[commodity.symbol]));
 
