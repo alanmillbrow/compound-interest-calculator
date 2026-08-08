@@ -64,13 +64,21 @@ const FTSE_DIVIDENDS = [
   { symbol: 'LGEN', name: 'Legal & General' },
   { symbol: 'SDLF', name: 'Standard Life' },
   { symbol: 'MNG', name: 'M&G' },
-  { symbol: 'LAND', name: 'Landsec' },
   { symbol: 'LMP', name: 'LondonMetric' },
   { symbol: 'AV', name: 'Aviva' },
   { symbol: 'IMB', name: 'Imperial Brands' },
   { symbol: 'BATS', name: 'British American Tobacco' },
   { symbol: 'NWG', name: 'NatWest Group' },
   { symbol: 'SBRY', name: "Sainsbury's" },
+];
+
+// UK-listed REITs, broken out from FTSE_DIVIDENDS into their own table —
+// see the comment in .github/scripts/fetch-stock-data.mjs.
+const REITS = [
+  { symbol: 'LAND', name: 'Landsec' },
+  { symbol: 'BLND', name: 'British Land' },
+  { symbol: 'BBOX', name: 'Tritax Big Box REIT' },
+  { symbol: 'SGRO', name: 'Segro' },
 ];
 
 function fmtUsd(n) {
@@ -288,6 +296,7 @@ function buildRows() {
   `).join('');
 
   buildFtseDividendRows(FTSE_DIVIDENDS);
+  buildReitRows(REITS);
 }
 
 // Broken out from buildRows so it can be called again after data loads,
@@ -297,6 +306,28 @@ function buildFtseDividendRows(order) {
   const ftseDividendTbody = document.getElementById('ftseDividendTableBody');
   ftseDividendTbody.innerHTML = order.map((stock) => `
     <tr id="ftsediv-${stock.symbol}">
+      <td>${stock.name} <span class="section-note">(${stock.symbol})</span></td>
+      <td data-col="ath">&hellip;</td>
+      <td data-col="price">&hellip;</td>
+      <td data-col="vsAth">&hellip;</td>
+      <td data-col="daysSinceAth">&hellip;</td>
+      <td data-col="change1mo">&hellip;</td>
+      <td data-col="change12mo">&hellip;</td>
+      <td data-col="change3yr">&hellip;</td>
+      <td data-col="change5yr">&hellip;</td>
+      <td data-col="dividendYield">&hellip;</td>
+      <td data-col="pe">&hellip;</td>
+    </tr>
+  `).join('');
+}
+
+// Same pattern as buildFtseDividendRows — rebuilt in dividend-yield order
+// once data loads.
+function buildReitRows(order) {
+  const reitTbody = document.getElementById('reitTableBody');
+  if (!reitTbody) return;
+  reitTbody.innerHTML = order.map((stock) => `
+    <tr id="reit-${stock.symbol}">
       <td>${stock.name} <span class="section-note">(${stock.symbol})</span></td>
       <td data-col="ath">&hellip;</td>
       <td data-col="price">&hellip;</td>
@@ -343,6 +374,17 @@ async function init() {
     });
     buildFtseDividendRows(byYieldDesc);
     FTSE_DIVIDENDS.forEach((stock) => renderRow(stock, data.ftseDividends?.[stock.symbol], { idPrefix: 'ftsediv', fmt: fmtGbx }));
+
+    const reitsByYieldDesc = [...REITS].sort((a, b) => {
+      const ay = data.reits?.[a.symbol]?.dividendYield;
+      const by = data.reits?.[b.symbol]?.dividendYield;
+      if (ay == null && by == null) return 0;
+      if (ay == null) return 1;
+      if (by == null) return -1;
+      return by - ay;
+    });
+    buildReitRows(reitsByYieldDesc);
+    REITS.forEach((stock) => renderRow(stock, data.reits?.[stock.symbol], { idPrefix: 'reit', fmt: fmtGbx }));
     status.textContent = `Last refreshed ${fmtRefreshedAt(new Date(data.savedAt))}`;
   } catch (err) {
     status.textContent = `Couldn't load stock data: ${err.message}`;

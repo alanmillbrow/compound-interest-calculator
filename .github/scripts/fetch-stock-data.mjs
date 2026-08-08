@@ -10,12 +10,12 @@
 // Fetching everything for every symbol every run blew well past the
 // 144-credit/minute budget — a single 10-company table needed 420 credits.
 //   - REFRESH_MODE=price: quote + time_series for every symbol, every run.
-//     Cheap (~70 credits total for all 35 symbols), so it just runs hourly
+//     Cheap (~90 credits total for all 45 symbols), so it just runs hourly
 //     covering everything in one go — no staggering needed.
 //   - REFRESH_MODE=fundamentals: earnings + dividends, on a much slower
 //     weekly cadence, since P/E and dividend yield barely change hour to
 //     hour. Paced by real credit cost (see waitForCreditBudget) since even
-//     one run needs ~960 credits total and has to legitimately spread
+//     one run needs ~1140 credits total and has to legitimately spread
 //     across several real minutes to respect the budget. (Earnings is only
 //     fetched for US companies — see loadFundamentals for why LSE
 //     companies don't get a P/E at all. Commodities/crypto skip this tier
@@ -88,13 +88,22 @@ const FTSE_DIVIDENDS = [
   { symbol: 'LGEN', name: 'Legal & General', exchange: 'LSE' },
   { symbol: 'SDLF', name: 'Standard Life', exchange: 'LSE' },
   { symbol: 'MNG', name: 'M&G', exchange: 'LSE' },
-  { symbol: 'LAND', name: 'Landsec', exchange: 'LSE' },
   { symbol: 'LMP', name: 'LondonMetric', exchange: 'LSE' },
   { symbol: 'AV', name: 'Aviva', exchange: 'LSE' },
   { symbol: 'IMB', name: 'Imperial Brands', exchange: 'LSE' },
   { symbol: 'BATS', name: 'British American Tobacco', exchange: 'LSE' },
   { symbol: 'NWG', name: 'NatWest Group', exchange: 'LSE' },
   { symbol: 'SBRY', name: "Sainsbury's", exchange: 'LSE' },
+];
+
+// UK-listed REITs, broken out from FTSE_DIVIDENDS into their own table.
+// Landsec (LAND) moved here rather than being fetched under both — it was
+// already in FTSE_DIVIDENDS before this table existed.
+const REITS = [
+  { symbol: 'LAND', name: 'Landsec', exchange: 'LSE' },
+  { symbol: 'BLND', name: 'British Land', exchange: 'LSE' },
+  { symbol: 'BBOX', name: 'Tritax Big Box REIT', exchange: 'LSE' },
+  { symbol: 'SGRO', name: 'Segro', exchange: 'LSE' },
 ];
 
 // No exchange param needed — resolve fine as plain pair symbols, confirmed
@@ -115,6 +124,7 @@ const ALL_SYMBOLS = [
   ...INDICES_GBP.map((s) => ({ ...s, section: 'indicesGbp', isIndex: true })),
   ...SPACE_FORCE.map((s) => ({ ...s, section: 'spaceForce', isIndex: false })),
   ...FTSE_DIVIDENDS.map((s) => ({ ...s, section: 'ftseDividends', isIndex: false })),
+  ...REITS.map((s) => ({ ...s, section: 'reits', isIndex: false })),
   ...COMMODITIES.map((s) => ({ ...s, section: 'commodities', isIndex: true, noFundamentals: true })),
 ];
 
