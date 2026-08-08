@@ -33,6 +33,7 @@ const INDICES_GBP = [
   { symbol: 'VUAG', name: 'S&P 500 Vanguard (Acc)' },
   { symbol: 'VUSA', name: 'S&P 500 Vanguard (Dist)' },
   { symbol: 'SPXP', name: 'S&P 500 Invesco (Acc)' },
+  { symbol: 'CSP1', name: 'S&P 500 iShares (Acc)' },
   { symbol: 'VUKG', name: 'FTSE 100 Vanguard (Acc)' },
   { symbol: 'VUKE', name: 'FTSE 100 Vanguard (Dist)' },
 ];
