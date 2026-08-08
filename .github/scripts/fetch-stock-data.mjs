@@ -54,14 +54,16 @@ const INDICES = [
 ];
 
 // GBP-denominated LSE-listed index trackers. Acc/Dist pairs of the same
-// underlying index (Vanguard's accumulating vs distributing share classes).
+// underlying index, labelled by issuer since Vanguard and iShares both
+// track FTSE All-World here.
 const INDICES_GBP = [
-  { symbol: 'VUAG', name: 'S&P 500 (Acc)', exchange: 'LSE' },
-  { symbol: 'VUSA', name: 'S&P 500 (Dist)', exchange: 'LSE' },
-  { symbol: 'VWRP', name: 'FTSE All-World (Acc)', exchange: 'LSE' },
-  { symbol: 'VWRL', name: 'FTSE All-World (Dist)', exchange: 'LSE' },
-  { symbol: 'VUKG', name: 'FTSE 100 (Acc)', exchange: 'LSE' },
-  { symbol: 'VUKE', name: 'FTSE 100 (Dist)', exchange: 'LSE' },
+  { symbol: 'VUAG', name: 'S&P 500 Vanguard (Acc)', exchange: 'LSE' },
+  { symbol: 'VUSA', name: 'S&P 500 Vanguard (Dist)', exchange: 'LSE' },
+  { symbol: 'VWRP', name: 'FTSE All-World Vanguard (Acc)', exchange: 'LSE' },
+  { symbol: 'VWRL', name: 'FTSE All-World Vanguard (Dist)', exchange: 'LSE' },
+  { symbol: 'FTAW', name: 'FTSE All-World iShares (Acc)', exchange: 'LSE' },
+  { symbol: 'VUKG', name: 'FTSE 100 Vanguard (Acc)', exchange: 'LSE' },
+  { symbol: 'VUKE', name: 'FTSE 100 Vanguard (Dist)', exchange: 'LSE' },
 ];
 
 const SPACE_FORCE = [
