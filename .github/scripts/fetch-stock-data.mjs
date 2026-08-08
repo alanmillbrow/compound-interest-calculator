@@ -411,13 +411,16 @@ async function loadFundamentals(symbol, exchange, currentPrice, isIndex) {
 
   let dividendYield = null;
   if (currentPrice !== null && currentPrice > 0 && dividendResult.status === 'fulfilled') {
-    // currentPrice is already normalised to pounds (see loadPrice) — match
-    // that here so the ratio stays in consistent units. Per-symbol, not
-    // assumed: dividends' own currency field confirmed GBp for a
-    // pence-quoted instrument (FWRG) even though it pays no cash
-    // dividends itself (an Acc fund), so a future Dist pence-quoted
-    // instrument would otherwise get a yield 100x too high.
-    const dividendDivisor = dividendResult.value.meta?.currency === 'GBp' ? 100 : 1;
+    // currentPrice is already normalised to pounds for indices (see
+    // loadPrice) — match that here so the ratio stays in consistent units.
+    // Scoped to isIndex, same as the price divisor: individual LSE stocks
+    // (FTSE_DIVIDENDS, REITS) keep currentPrice in raw pence on purpose
+    // (fmtGbx on the frontend), so dividing their dividend total by 100
+    // too would create a fresh mismatch the other way — confirmed live,
+    // every FTSE_DIVIDENDS yield except the stale LAND entry came back
+    // ~100x too low (e.g. LGEN 0.069% instead of 6.9%) after this was
+    // first added without the isIndex check.
+    const dividendDivisor = (isIndex && dividendResult.value.meta?.currency === 'GBp') ? 100 : 1;
     const total = sumTrailingDividends(dividendResult.value.dividends || [], 365) / dividendDivisor;
     if (total > 0) dividendYield = (total / currentPrice) * 100;
   }
