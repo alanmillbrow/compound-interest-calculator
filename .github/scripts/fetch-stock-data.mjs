@@ -216,11 +216,21 @@ function findPriceDaysAgo(bars, days) {
 // history for every lookback window (1 month, 12 months, 3 years, 5 years)
 // — no extra API calls, since time_series is already fetched with enough
 // history (outputsize=5000 daily bars is ~19 years) to cover all of them.
-function changeOverDays(price, bars, days) {
+// isIndex caps the result to a sane range: a diversified index/ETF tracker
+// cannot plausibly move >999% in any of these windows, so a figure beyond
+// that means the underlying data is broken, not that the fund mooned —
+// confirmed on FWRG, whose historical time_series switches units partway
+// through (recent bars in pence, bars from mid-2023 in pounds, with no
+// signal in the data itself marking the switch), producing a bogus 16495%
+// 3-year change. Not applied to individual stocks, where a >999% move over
+// several years is rare but genuinely possible.
+function changeOverDays(price, bars, days, isIndex) {
   if (price === null || !bars.length) return null;
   const priceThen = findPriceDaysAgo(bars, days);
   if (!priceThen) return null;
-  return ((price - priceThen) / priceThen) * 100;
+  const change = ((price - priceThen) / priceThen) * 100;
+  if (isIndex && Math.abs(change) > 999) return null;
+  return change;
 }
 
 function sumTrailingDividends(dividends, days) {
@@ -245,7 +255,7 @@ function logRejections(symbol, labels, results) {
 
 // Cheap half: current price, all-time high, drawdown, and price change over
 // several lookback windows — quote + time_series only (1 credit each).
-async function loadPrice(symbol, exchange) {
+async function loadPrice(symbol, exchange, isIndex) {
   const base = 'https://api.twelvedata.com';
   const exchangeParam = exchange ? `&exchange=${exchange}` : '';
   const [quoteResult, historyResult] = await Promise.allSettled([
@@ -259,9 +269,10 @@ async function loadPrice(symbol, exchange) {
   // currency field, not assumed by exchange (the Vanguard trackers above
   // are GBP; Invesco's FWRG came back GBp). This site's GBP tables are
   // pound-denominated, so normalise to pounds here rather than mixing
-  // units within one table's Price/All-Time High columns. Percentage
-  // fields (drawdown, change) are unaffected either way since they're
-  // ratios of same-unit values.
+  // units within one table's Price/All-Time High columns. This assumes
+  // the whole bars series shares the current quote's currency — true in
+  // general, but FWRG's own history breaks that assumption further back
+  // (see changeOverDays' isIndex cap for the fallout).
   const currency = quoteResult.status === 'fulfilled' ? quoteResult.value.currency : null;
   const divisor = currency === 'GBp' ? 100 : 1;
 
@@ -294,10 +305,10 @@ async function loadPrice(symbol, exchange) {
     : null;
   const vsAth = (price !== null && athPrice) ? ((price - athPrice) / athPrice) * 100 : null;
 
-  const change1mo = changeOverDays(price, bars, 30);
-  const change12mo = changeOverDays(price, bars, 365);
-  const change3yr = changeOverDays(price, bars, 365 * 3);
-  const change5yr = changeOverDays(price, bars, 365 * 5);
+  const change1mo = changeOverDays(price, bars, 30, isIndex);
+  const change12mo = changeOverDays(price, bars, 365, isIndex);
+  const change3yr = changeOverDays(price, bars, 365 * 3, isIndex);
+  const change5yr = changeOverDays(price, bars, 365 * 5, isIndex);
 
   return { price, athPrice, athDate, daysSinceAth, vsAth, change1mo, change12mo, change3yr, change5yr };
 }
@@ -446,7 +457,7 @@ async function runPriceRefresh() {
   await Promise.all(ALL_SYMBOLS.map(async (item) => {
     let fields;
     try {
-      fields = await loadPrice(item.symbol, item.exchange);
+      fields = await loadPrice(item.symbol, item.exchange, item.isIndex);
     } catch (err) {
       console.warn(`[WARN] ${item.symbol} price refresh failed entirely: ${err.message}`);
       fields = {};
