@@ -26,12 +26,12 @@ const INDICES = [
 // GBP-denominated LSE-listed index trackers — see the comment in
 // .github/scripts/fetch-stock-data.mjs for why these specific symbols.
 const INDICES_GBP = [
-  { symbol: 'VUAG', name: 'S&P 500 Vanguard (Acc)' },
-  { symbol: 'VUSA', name: 'S&P 500 Vanguard (Dist)' },
   { symbol: 'VWRP', name: 'FTSE All-World Vanguard (Acc)' },
   { symbol: 'VWRL', name: 'FTSE All-World Vanguard (Dist)' },
-  { symbol: 'FTAW', name: 'FTSE All-World iShares (Acc)' },
   { symbol: 'FWRG', name: 'FTSE All-World Invesco (Acc)' },
+  { symbol: 'FTAW', name: 'FTSE All-World iShares (Acc)' },
+  { symbol: 'VUAG', name: 'S&P 500 Vanguard (Acc)' },
+  { symbol: 'VUSA', name: 'S&P 500 Vanguard (Dist)' },
   { symbol: 'VUKG', name: 'FTSE 100 Vanguard (Acc)' },
   { symbol: 'VUKE', name: 'FTSE 100 Vanguard (Dist)' },
 ];

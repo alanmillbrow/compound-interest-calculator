@@ -57,12 +57,12 @@ const INDICES = [
 // underlying index, labelled by issuer since Vanguard, iShares and Invesco
 // all track FTSE All-World here.
 const INDICES_GBP = [
-  { symbol: 'VUAG', name: 'S&P 500 Vanguard (Acc)', exchange: 'LSE' },
-  { symbol: 'VUSA', name: 'S&P 500 Vanguard (Dist)', exchange: 'LSE' },
   { symbol: 'VWRP', name: 'FTSE All-World Vanguard (Acc)', exchange: 'LSE' },
   { symbol: 'VWRL', name: 'FTSE All-World Vanguard (Dist)', exchange: 'LSE' },
-  { symbol: 'FTAW', name: 'FTSE All-World iShares (Acc)', exchange: 'LSE' },
   { symbol: 'FWRG', name: 'FTSE All-World Invesco (Acc)', exchange: 'LSE' },
+  { symbol: 'FTAW', name: 'FTSE All-World iShares (Acc)', exchange: 'LSE' },
+  { symbol: 'VUAG', name: 'S&P 500 Vanguard (Acc)', exchange: 'LSE' },
+  { symbol: 'VUSA', name: 'S&P 500 Vanguard (Dist)', exchange: 'LSE' },
   { symbol: 'VUKG', name: 'FTSE 100 Vanguard (Acc)', exchange: 'LSE' },
   { symbol: 'VUKE', name: 'FTSE 100 Vanguard (Dist)', exchange: 'LSE' },
 ];
