@@ -36,6 +36,8 @@ const INDICES_GBP = [
   { symbol: 'CSP1', name: 'S&P 500 iShares (Acc)' },
   { symbol: 'VUKG', name: 'FTSE 100 Vanguard (Acc)' },
   { symbol: 'VUKE', name: 'FTSE 100 Vanguard (Dist)' },
+  { symbol: 'S100', name: 'FTSE 100 Invesco (Acc)' },
+  { symbol: 'CUKX', name: 'FTSE 100 iShares (Acc)' },
 ];
 
 const SPACE_FORCE = [

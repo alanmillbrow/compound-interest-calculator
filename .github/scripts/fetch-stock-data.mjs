@@ -55,7 +55,7 @@ const INDICES = [
 
 // GBP-denominated LSE-listed index trackers. Acc/Dist pairs of the same
 // underlying index, labelled by issuer since Vanguard, iShares and Invesco
-// all track FTSE All-World (and, with SPXP/CSP1, S&P 500) here.
+// all track FTSE All-World, S&P 500 and FTSE 100 here.
 const INDICES_GBP = [
   { symbol: 'VWRP', name: 'FTSE All-World Vanguard (Acc)', exchange: 'LSE' },
   { symbol: 'VWRL', name: 'FTSE All-World Vanguard (Dist)', exchange: 'LSE' },
@@ -67,6 +67,8 @@ const INDICES_GBP = [
   { symbol: 'CSP1', name: 'S&P 500 iShares (Acc)', exchange: 'LSE' },
   { symbol: 'VUKG', name: 'FTSE 100 Vanguard (Acc)', exchange: 'LSE' },
   { symbol: 'VUKE', name: 'FTSE 100 Vanguard (Dist)', exchange: 'LSE' },
+  { symbol: 'S100', name: 'FTSE 100 Invesco (Acc)', exchange: 'LSE' },
+  { symbol: 'CUKX', name: 'FTSE 100 iShares (Acc)', exchange: 'LSE' },
 ];
 
 const SPACE_FORCE = [
