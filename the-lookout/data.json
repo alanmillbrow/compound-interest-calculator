@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-08T08:28:58.048Z",
+  "savedAt": "2026-08-08T08:43:19.392Z",
   "stocks": {
     "AAPL": {
       "symbol": "AAPL",
@@ -547,39 +547,89 @@
   "commodities": {
     "BTC/USD": {
       "symbol": "BTC/USD",
-      "price": 64975.41,
+      "price": 65005.62,
       "athPrice": 126199.63,
       "athDate": "2025-10-06",
       "daysSinceAth": 306,
-      "vsAth": -48.513787243274805,
-      "change1mo": 2.7604143602720286,
-      "change12mo": -44.3106451319283,
-      "change3yr": 119.6451607711859,
-      "change5yr": 40.4011875294552
+      "vsAth": -48.48984897974741,
+      "change1mo": 2.808192313775111,
+      "change12mo": -44.28475263797459,
+      "change3yr": 119.74728371749583,
+      "change5yr": 40.466466376872475
     },
     "XAU/USD": {
       "symbol": "XAU/USD",
-      "price": 4342.19227,
+      "price": 4342.23893,
       "athPrice": 5597.22988,
       "athDate": "2026-01-29",
       "daysSinceAth": 191,
-      "vsAth": -22.42247749166951,
-      "change1mo": 5.299920398046136,
-      "change12mo": 28.193772160568713,
-      "change3yr": 126.79500888595412,
-      "change5yr": 151.07250220288728
+      "vsAth": -22.42164386501845,
+      "change1mo": 5.301051921935534,
+      "change12mo": 28.195149695472093,
+      "change3yr": 126.79744596254052,
+      "change5yr": 151.075200158718
     },
     "XAG/USD": {
       "symbol": "XAG/USD",
-      "price": 63.54895,
+      "price": 63.54894,
       "athPrice": 121.57769,
       "athDate": "2026-01-29",
       "daysSinceAth": 191,
-      "vsAth": -47.72976028743432,
-      "change1mo": 5.995879852894303,
-      "change12mo": 65.79861201701061,
-      "change3yr": 180.30942613912046,
-      "change5yr": 171.21740429345735
+      "vsAth": -47.72976851262761,
+      "change1mo": 5.995863173487356,
+      "change12mo": 65.7985859271048,
+      "change3yr": 180.30938202990606,
+      "change5yr": 171.21736161495454
+    }
+  },
+  "reits": {
+    "LAND": {
+      "symbol": "LAND",
+      "price": 714.5,
+      "athPrice": 1453.86658,
+      "athDate": "2015-05-19",
+      "daysSinceAth": 4099,
+      "vsAth": -50.85518782610713,
+      "change1mo": 8.58662613981763,
+      "change12mo": 22.136752136752136,
+      "change3yr": 12.272152348455293,
+      "change5yr": 0.520541650542232
+    },
+    "BLND": {
+      "symbol": "BLND",
+      "price": 443.20001,
+      "athPrice": 891.5,
+      "athDate": "2015-05-19",
+      "daysSinceAth": 4099,
+      "vsAth": -50.286033651149744,
+      "change1mo": 5.72519070312045,
+      "change12mo": 25.197742937853114,
+      "change3yr": 34.09985173978821,
+      "change5yr": -14.07521935004302
+    },
+    "BBOX": {
+      "symbol": "BBOX",
+      "price": 166.3,
+      "athPrice": 288,
+      "athDate": "2021-10-27",
+      "daysSinceAth": 1746,
+      "vsAth": -42.256944444444436,
+      "change1mo": 2.4014841380224277,
+      "change12mo": 17.36062103034582,
+      "change3yr": 16.865776528460998,
+      "change5yr": -23.645546372819098
+    },
+    "SGRO": {
+      "symbol": "SGRO",
+      "price": 959.59998,
+      "athPrice": 1508,
+      "athDate": "2022-01-04",
+      "daysSinceAth": 1677,
+      "vsAth": -36.366049071618036,
+      "change1mo": 10.451196022688718,
+      "change12mo": 49.14515855936714,
+      "change3yr": 27.03202999650436,
+      "change5yr": -22.79967980691875
     }
   }
 }
