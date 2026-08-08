@@ -54,14 +54,15 @@ const INDICES = [
 ];
 
 // GBP-denominated LSE-listed index trackers. Acc/Dist pairs of the same
-// underlying index, labelled by issuer since Vanguard and iShares both
-// track FTSE All-World here.
+// underlying index, labelled by issuer since Vanguard, iShares and Invesco
+// all track FTSE All-World here.
 const INDICES_GBP = [
   { symbol: 'VUAG', name: 'S&P 500 Vanguard (Acc)', exchange: 'LSE' },
   { symbol: 'VUSA', name: 'S&P 500 Vanguard (Dist)', exchange: 'LSE' },
   { symbol: 'VWRP', name: 'FTSE All-World Vanguard (Acc)', exchange: 'LSE' },
   { symbol: 'VWRL', name: 'FTSE All-World Vanguard (Dist)', exchange: 'LSE' },
   { symbol: 'FTAW', name: 'FTSE All-World iShares (Acc)', exchange: 'LSE' },
+  { symbol: 'FWRG', name: 'FTSE All-World Invesco (Acc)', exchange: 'LSE' },
   { symbol: 'VUKG', name: 'FTSE 100 Vanguard (Acc)', exchange: 'LSE' },
   { symbol: 'VUKE', name: 'FTSE 100 Vanguard (Dist)', exchange: 'LSE' },
 ];
@@ -253,8 +254,26 @@ async function loadPrice(symbol, exchange) {
   ]);
   logRejections(symbol, ['quote', 'time_series'], [quoteResult, historyResult]);
 
-  const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) : null;
-  const bars = historyResult.status === 'fulfilled' ? (historyResult.value.values || []) : [];
+  // Some LSE-listed instruments are quoted by Twelve Data in pence
+  // ("GBp") rather than pounds — confirmed per-symbol via the quote's own
+  // currency field, not assumed by exchange (the Vanguard trackers above
+  // are GBP; Invesco's FWRG came back GBp). This site's GBP tables are
+  // pound-denominated, so normalise to pounds here rather than mixing
+  // units within one table's Price/All-Time High columns. Percentage
+  // fields (drawdown, change) are unaffected either way since they're
+  // ratios of same-unit values.
+  const currency = quoteResult.status === 'fulfilled' ? quoteResult.value.currency : null;
+  const divisor = currency === 'GBp' ? 100 : 1;
+
+  const price = quoteResult.status === 'fulfilled' ? parseFloat(quoteResult.value.close) / divisor : null;
+  const rawBars = historyResult.status === 'fulfilled' ? (historyResult.value.values || []) : [];
+  const bars = divisor === 1 ? rawBars : rawBars.map((bar) => ({
+    ...bar,
+    open: String(parseFloat(bar.open) / divisor),
+    high: String(parseFloat(bar.high) / divisor),
+    low: String(parseFloat(bar.low) / divisor),
+    close: String(parseFloat(bar.close) / divisor),
+  }));
 
   let athPrice = null;
   let athDate = null;
@@ -310,7 +329,14 @@ async function loadFundamentals(symbol, exchange, currentPrice, isIndex) {
 
   let dividendYield = null;
   if (currentPrice !== null && currentPrice > 0 && dividendResult.status === 'fulfilled') {
-    const total = sumTrailingDividends(dividendResult.value.dividends || [], 365);
+    // currentPrice is already normalised to pounds (see loadPrice) — match
+    // that here so the ratio stays in consistent units. Per-symbol, not
+    // assumed: dividends' own currency field confirmed GBp for a
+    // pence-quoted instrument (FWRG) even though it pays no cash
+    // dividends itself (an Acc fund), so a future Dist pence-quoted
+    // instrument would otherwise get a yield 100x too high.
+    const dividendDivisor = dividendResult.value.meta?.currency === 'GBp' ? 100 : 1;
+    const total = sumTrailingDividends(dividendResult.value.dividends || [], 365) / dividendDivisor;
     if (total > 0) dividendYield = (total / currentPrice) * 100;
   }
 
